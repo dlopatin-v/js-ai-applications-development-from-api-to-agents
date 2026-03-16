@@ -6,11 +6,6 @@ import { Message } from "../commons";
  * This class defines the interface that all AI service implementations must follow.
  * It handles common initialization logic and requires concrete implementations for
  * both synchronous and asynchronous response methods.
- *
- * @param endpoint The base URL endpoint for the AI service API.
- * @param modelName The name/identifier of the AI model to use.
- * @param apiKey The API key for authenticating with the AI service.
- * @param systemPrompt The system prompt that guides the AI's behavior.
  */
 class AIClient {
   /**

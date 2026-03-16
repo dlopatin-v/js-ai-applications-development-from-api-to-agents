@@ -33,11 +33,11 @@ export class OpenAIClient extends BaseOpenAiClient {
     // https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/create
     // 0. Make a request in Postman to see the request and response
     // 1. Prepare messages list with system message first:
-    //   const messagesDicts = [{ role: "system", content: this.systemPrompt }, ...messages]
+    //   const messagesWithSystem = [{ role: "system", content: this.systemPrompt }, ...messages]
     // 2. Create completion using OpenAI client:
     //   - call `this.client.chat.completions.create()` with:
     //     - model: this.modelName
-    //     - messages: messagesDicts as ChatCompletionMessageParam[]
+    //     - messages: messagesWithSystem as ChatCompletionMessageParam[]
     // 3. Extract content from response: `const content = completion.choices[0].message.content`
     // 4. Print content
     // 5. Return ASSISTANT message
@@ -58,13 +58,13 @@ export class OpenAIClient extends BaseOpenAiClient {
     // https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/create
     // 0. Make a request in Postman to see the request and response
     // 1. Prepare messages list with system message first:
-    //   const messagesDicts = [{ role: "system", content: this.systemPrompt }, ...messages]
+    //   const messagesWithSystem = [{ role: "system", content: this.systemPrompt }, ...messages]
     // 2. Initialize empty contents array to collect streamed chunks
     // 3. Create streaming completion using OpenAI client:
     //   - call `this.client.chat.completions.create()` with:
     //     - model: this.modelName
     //     - stream: true
-    //     - messages: messagesDicts as ChatCompletionMessageParam[]
+    //     - messages: messagesWithSystem as ChatCompletionMessageParam[]
     // 4. Iterate through stream chunks using `for await (const chunk of stream):`
     // 5. For each chunk, check if delta content exists:
     //   - `const deltaContent = chunk.choices[0]?.delta?.content`

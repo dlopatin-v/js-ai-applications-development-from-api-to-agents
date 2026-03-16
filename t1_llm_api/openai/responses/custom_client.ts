@@ -23,18 +23,17 @@ export class CustomOpenAIResponsesClient extends BaseOpenAiClient {
     // 1. Prepare headers object with:
     //   - "Authorization" (this.apiKey)
     //   - "Content-Type" ("application/json")
-    // 2. Prepare input messages: `const inputMessages = messages`
-    // 3. Prepare request data object:
+    // 2. Prepare request data object:
     //   - "model" (this.modelName)
     //   - "instructions" (this.systemPrompt)
-    //   - "input" (inputMessages)
-    // 4. Execute fetch POST to this.endpoint with headers, method "POST", body JSON.stringify(requestData)
-    // 5.1. If response.status === 200 then:
+    //   - "input" (messages)
+    // 3. Execute fetch POST to this.endpoint with headers, method "POST", body JSON.stringify(requestData)
+    // 4.1. If response.status === 200 then:
     //   - get response json
     //   - get content using this._extractOutputText(result)
     //   - console.log(content)
     //   - return new Message(Role.ASSISTANT, content)
-    // 5.2. Otherwise throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+    // 4.2. Otherwise throw new Error(`HTTP ${response.status}: ${response.statusText}`)
     throw new Error("Not implemented.");
   };
 
@@ -54,15 +53,14 @@ export class CustomOpenAIResponsesClient extends BaseOpenAiClient {
     // 1. Prepare headers object with:
     //   - "Authorization" (this.apiKey)
     //   - "Content-Type" ("application/json")
-    // 2. Prepare input messages: `const inputMessages = messages`
-    // 3. Prepare request data object:
+    // 2. Prepare request data object:
     //   - "model" (this.modelName)
     //   - "instructions" (this.systemPrompt)
-    //   - "input" (inputMessages)
+    //   - "input" (messages)
     //   - "stream" (true)
-    // 4. Initialize empty contents array to collect streamed text chunks
-    // 5. Execute fetch POST to this.endpoint with headers, method "POST", body JSON.stringify(requestData)
-    // 6.1. If response.status === 200:
+    // 3. Initialize empty contents array to collect streamed text chunks
+    // 4. Execute fetch POST to this.endpoint with headers, method "POST", body JSON.stringify(requestData)
+    // 5.1. If response.status === 200:
     //   - get reader from response.body (response.body.getReader())
     //   - create TextDecoder
     //   - initialize buffer = '' and eventType = ''
@@ -78,9 +76,9 @@ export class CustomOpenAIResponsesClient extends BaseOpenAiClient {
     //               - if delta: process.stdout.write(delta) and push to contents
     //           - else if line === "":
     //               - reset eventType = ""
-    // 6.2. Otherwise throw new Error(`HTTP ${response.status}: ${response.statusText}`)
-    // 7. Print empty line (console.log())
-    // 8. Return new Message(Role.ASSISTANT, contents.join(''))
+    // 5.2. Otherwise throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+    // 6. Print empty line (console.log())
+    // 7. Return new Message(Role.ASSISTANT, contents.join(''))
     throw new Error("Not implemented.");
   };
 

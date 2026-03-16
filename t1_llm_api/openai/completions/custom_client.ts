@@ -22,14 +22,14 @@ export class CustomOpenAIClient extends BaseOpenAiClient {
       "Authorization": this.apiKey,
     };
 
-    const messagesDicts = [
+    const messagesWithSystem = [
       { role: "system", content: this.systemPrompt },
       ...messages
     ];
 
     const requestData = {
       model: this.modelName,
-      messages: messagesDicts
+      messages: messagesWithSystem
     };
 
     const response = await fetch(this.endpoint, {
@@ -65,14 +65,14 @@ export class CustomOpenAIClient extends BaseOpenAiClient {
       "Authorization": this.apiKey,
     };
 
-    const messagesDicts = [
+    const messagesWithSystem = [
       { role: "system", content: this.systemPrompt },
       ...messages
     ];
 
     const requestData = {
       model: this.modelName,
-      messages: messagesDicts,
+      messages: messagesWithSystem,
       stream: true,
     };
 

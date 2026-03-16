@@ -22,12 +22,10 @@ export class CustomOpenAIResponsesClient extends BaseOpenAiClient {
       "Authorization": this.apiKey,
     };
 
-    const inputMessages = messages;
-
     const requestData = {
       model: this.modelName,
       instructions: this.systemPrompt,
-      input: inputMessages
+      input: messages
     };
 
     const response = await fetch(this.endpoint, {
@@ -63,12 +61,10 @@ export class CustomOpenAIResponsesClient extends BaseOpenAiClient {
       "Authorization": this.apiKey,
     };
 
-    const inputMessages = messages;
-
     const requestData = {
       model: this.modelName,
       instructions: this.systemPrompt,
-      input: inputMessages,
+      input: messages,
       stream: true,
     };
 

@@ -22,7 +22,7 @@ import { AnthropicAIClient } from "./_clients/anthropic_client";
 
  // TODO 5: output_config — enforce structured JSON output
  //  Query: "List 3 programming languages with their year of creation"
- //  Try: output_config={"format":{"type": "json_schema", "schema": {"type": "object", "additionalProperties": False, "properties": {"languages": {"type": "array", "items": {"type": "object", "additionalProperties": False, "properties": {"name": {"type": "string"}, "year": {"type": "integer"}},"required": ["name", "year"]}}}}}}
+ //  Try: output_config={"format":{"type": "json_schema", "schema": {"type": "object", "additionalProperties": false, "properties": {"languages": {"type": "array", "items": {"type": "object", "additionalProperties": false, "properties": {"name": {"type": "string"}, "year": {"type": "integer"}},"required": ["name", "year"]}}}}}}
 
  // TODO 6: thinking — enables extended thinking (chain-of-thought). Requires budget_tokens param
  //  Model reasons step-by-step before answering. Needs max_tokens > budget_tokens

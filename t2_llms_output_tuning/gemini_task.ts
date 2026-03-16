@@ -1,7 +1,7 @@
 import { run } from "./_main";
 import { GeminiAICLient } from "./_clients/gemini_client";
 
- // All parameters below must be passed inside generationConfig={...}
+ // All parameters below must be passed inside generationConfig: {...}
 
  // TODO 1: temperature — controls randomness. Range: 0.0-2.0, default: 1.0
  //  Lower = more deterministic, higher = more creative

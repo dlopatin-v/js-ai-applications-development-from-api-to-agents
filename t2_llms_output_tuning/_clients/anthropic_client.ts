@@ -28,12 +28,13 @@ export class AnthropicAIClient extends AIClient {
    * @param messages The conversation history.
    * @param printRequest If true, prints the full request (endpoint, headers, body) before sending.
    * @param printOnlyContent If true, prints only the response text; otherwise prints the full response JSON.
+   * @param args Optional provider-specific parameters to include in the request body (e.g. `{ temperature: 0.5 }`).
    * @returns The AI's response message.
    *
    * Note: Claude's API uses a separate 'system' parameter for system instructions.
    * Response content blocks are concatenated into a single text response.
    */
-  response = async (messages: Array<Message>, printRequest: boolean, printOnlyContent: boolean, ...args: any[]): Promise<Message> => {
+  response = async (messages: Array<Message>, printRequest: boolean, printOnlyContent: boolean, args?: any): Promise<Message> => {
     const headers = {
       "Content-Type": "application/json",
       "anthropic-version": "2023-06-01",
@@ -42,9 +43,9 @@ export class AnthropicAIClient extends AIClient {
 
     const requestData = {
       model: this.modelName,
-      max_tokens: args["max_tokens"] || 1024,
+      max_tokens: args?.["max_tokens"] || 1024,
       messages,
-      ...args
+      ...(args || {})
     };
 
     const response = await fetch(this.endpoint, {

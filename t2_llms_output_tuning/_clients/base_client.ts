@@ -36,9 +36,10 @@ class AIClient {
    * @param messages Conversation history sent to the model.
    * @param printRequest If true, prints the full request (endpoint, headers, body) before sending.
    * @param printOnlyContent If true, prints only the response text; otherwise prints the full response JSON.
+   * @param args Optional provider-specific parameters to include in the request body (e.g. `{ temperature: 0.5 }`).
    * @returns The AI response as a single message.
    */
-  response = async (messages: Array<Message>, printRequest: boolean, printOnlyContent: boolean, ...args: any[]): Promise<Message> => {
+  response = async (messages: Array<Message>, printRequest: boolean, printOnlyContent: boolean, args?: any): Promise<Message> => {
     throw new Error("Method not implemented.");
   };
 

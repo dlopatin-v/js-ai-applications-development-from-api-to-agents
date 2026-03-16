@@ -1,4 +1,4 @@
-import { OpenAI, ResponseInput } from "openai";
+import { OpenAI } from "openai";
 import { Message, Role } from "../../../commons";
 import { BaseOpenAiClient } from "../base";
 
@@ -31,7 +31,7 @@ export class OpenAIResponsesClient extends BaseOpenAiClient {
     const response = await this.client.responses.create({
       model: this.modelName,
       instructions: this.systemPrompt,
-      input: messages as ResponseInput,
+      input: messages as any,
     });
 
     console.log(response.output_text);
@@ -52,7 +52,7 @@ export class OpenAIResponsesClient extends BaseOpenAiClient {
     const stream = await this.client.responses.create({
       model: this.modelName,
       instructions: this.systemPrompt,
-      input: messages as ResponseInput,
+      input: messages as any,
       stream: true,
     });
 

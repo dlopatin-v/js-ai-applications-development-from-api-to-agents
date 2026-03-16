@@ -1,4 +1,4 @@
-import { OpenAI, ChatCompletionMessageParam } from "openai";
+import { OpenAI } from "openai";
 import { Message, Role } from "../../../commons";
 import { BaseOpenAiClient } from "../base";
 
@@ -34,7 +34,7 @@ export class OpenAIClient extends BaseOpenAiClient {
     ];
     const completion = await this.client.chat.completions.create({
       model: this.modelName,
-      messages: messagesWithSystem as ChatCompletionMessageParam[],
+      messages: messagesWithSystem as any[],
     });
 
     console.log(completion.choices[0].message.content);
@@ -58,7 +58,7 @@ export class OpenAIClient extends BaseOpenAiClient {
     ];
     const stream = await this.client.chat.completions.create({
       model: this.modelName,
-      messages: messagesWithSystem as ChatCompletionMessageParam[],
+      messages: messagesWithSystem as any[],
       stream: true
     });
 

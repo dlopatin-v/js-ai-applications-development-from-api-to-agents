@@ -11,7 +11,7 @@ const API_KEY_HEADER_NAME = "Authorization";
  */
 export class OpenAIClient extends AIClient {
   constructor(modelName: string) {
-    super(OPENAI_CHAT_COMPLETIONS_ENDPOINT, modelName, OPENAI_API_KEY, API_KEY_HEADER_NAME);
+    super(OPENAI_CHAT_COMPLETIONS_ENDPOINT, modelName, `Bearer ${OPENAI_API_KEY}`, API_KEY_HEADER_NAME);
   }
 
   /**
@@ -20,9 +20,10 @@ export class OpenAIClient extends AIClient {
    * @param messages Conversation history sent to the model.
    * @param printRequest If true, prints the full request (endpoint, headers, body) before sending.
    * @param printOnlyContent If true, prints only the response text; otherwise prints the full response JSON.
+   * @param args Optional provider-specific parameters to include in the request body (e.g. `{ temperature: 0.5 }`).
    * @returns The AI response as a single message.
    */
-  response = async (messages: Array<Message>, printRequest: boolean, printOnlyContent: boolean, ...args: any[]): Promise<Message> => {
+  response = async (messages: Array<Message>, printRequest: boolean, printOnlyContent: boolean, args?: any): Promise<Message> => {
     const headers = {
       "Content-Type": "application/json",
       [API_KEY_HEADER_NAME]: this.apiKey,
@@ -30,7 +31,8 @@ export class OpenAIClient extends AIClient {
 
     const requestData = {
       model: this.modelName,
-      messages
+      messages,
+      ...(args || {})
     };
 
     const response = await fetch(this.endpoint, {

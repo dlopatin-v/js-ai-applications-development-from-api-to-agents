@@ -40,11 +40,12 @@ export class GeminiAICLient extends AIClient {
    * @param messages The conversation history.
    * @param printRequest If true, prints the full request (endpoint, headers, body) before sending.
    * @param printOnlyContent If true, prints only the response text; otherwise prints the full response JSON.
+   * @param args Optional provider-specific parameters to include in the request body (e.g. `{ generationConfig: { temperature: 0.5 } }`).
    * @returns The AI's response message.
    *
    * Note: Gemini requires a model-specific URL and wraps generation settings in a generationConfig object.
    */
-  response = async (messages: Array<Message>, printRequest: boolean, printOnlyContent: boolean, ...args: any[]): Promise<Message> => {
+  response = async (messages: Array<Message>, printRequest: boolean, printOnlyContent: boolean, args?: any): Promise<Message> => {
     const headers = {
       "Content-Type": "application/json",
       [API_KEY_HEADER_NAME]: this.apiKey,
@@ -53,7 +54,7 @@ export class GeminiAICLient extends AIClient {
     const url = `${this.endpoint}/${this.modelName}:generateContent`;
     const requestData = {
       contents: this._toGeminiContents(messages),
-      generationConfig: args["generationConfig"] || { maxOutputTokens: 1024 }
+      generationConfig: args?.["generationConfig"] || { maxOutputTokens: 1024 }
     };
 
     const response = await fetch(url, {
@@ -62,8 +63,8 @@ export class GeminiAICLient extends AIClient {
       body: JSON.stringify(requestData)
     });
 
-    if(args["safetySettings"]) {
-      requestData["safetySettings"] = args["safetySettings"];
+    if(args?.["safetySettings"]) {
+      requestData["safetySettings"] = args?.["safetySettings"];
     }
 
     if (printRequest) {

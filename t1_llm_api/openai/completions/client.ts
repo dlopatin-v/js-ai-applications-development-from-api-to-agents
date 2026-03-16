@@ -12,14 +12,16 @@ import { BaseOpenAiClient } from "../base";
  * @property client The OpenAI SDK client instance.
  */
 export class OpenAIClient extends BaseOpenAiClient {
+  client!: OpenAI;
+
   constructor(...args: ConstructorParameters<typeof BaseOpenAiClient>) {
     super(...args);
-    this.client = new OpenAI({
-      apiKey: this.apiKey
-    });
+    //TODO:
+    // - Initialize the OpenAI SDK client https://github.com/openai/openai-node
+    // Useful link with request/response samples:
+    //   https://platform.openai.com/docs/api-reference/chat/create
+    throw new Error("Not implemented.");
   }
-
-  client: OpenAI;
 
   /**
    * Sends a non-streaming request to the OpenAI Chat Completions API.
@@ -28,14 +30,12 @@ export class OpenAIClient extends BaseOpenAiClient {
    * @returns The AI response as a single message.
    */
   response = async (messages: Array<Message>): Promise<Message> => {
-    const completion = await this.client.chat.completions.create({
-      model: this.modelName,
-      messages: messages as ChatCompletionMessageParam[],
-    });
-
-    console.log(completion.choices[0].message.content);
-
-    return new Message(Role.ASSISTANT, completion.choices[0].message.content);
+    //TODO:
+    // - Prepare message history with the system prompt
+    // - Call the SDK client
+    // - Print the response to console
+    // - Return an ASSISTANT Message
+    throw new Error("Not implemented.");
   };
 
   /**
@@ -48,22 +48,11 @@ export class OpenAIClient extends BaseOpenAiClient {
    * @returns The final aggregated AI message after the stream completes.
    */
   streamResponse = async (messages: Array<Message>): Promise<Message> => {
-    const stream = await this.client.chat.completions.create({
-      model: this.modelName,
-      messages: messages as ChatCompletionMessageParam[],
-      stream: true
-    });
-
-    const contents: Array<string> = [];
-
-    for await (const chunk of stream) {
-      const deltaContent = chunk.choices[0]?.delta?.content;
-      if (deltaContent) {
-        contents.push(deltaContent);
-        process.stdout.write(deltaContent);
-      }
-    }
-
-    return new Message(Role.ASSISTANT, contents.join(''));
+    //TODO:
+    // - Prepare message history with the system prompt
+    // - Call the SDK client with streaming enabled
+    // - Iterate over stream chunks and write to stdout
+    // - Return the assembled ASSISTANT Message
+    throw new Error("Not implemented.");
   };
 }

@@ -17,4 +17,4 @@ const anthropicCustomClient = new CustomAnthropicAIClient(
   DEFAULT_SYSTEM_PROMPT,
 );
 
-start(true, anthropicCustomClient);
+start(true, anthropicClient);

@@ -12,19 +12,22 @@ import { MessageParam } from "@anthropic-ai/sdk/resources";
  * Inherits all attributes from AIClient.
  */
 export class AnthropicAIClient extends AIClient {
+  client!: Anthropic;
+
   /**
    * Initialize the Anthropic client with the official SDK.
    *
-   * @param args Constructor parameters inherited from AIClient (endpoint, modelName, systemPrompt, apiKey).
+   * @param args Constructor parameters inherited from AIClient (endpoint, modelName, apiKey, systemPrompt).
    */
   constructor(...args: ConstructorParameters<typeof AIClient>) {
     super(...args);
-    this.client = new Anthropic({
-      apiKey: this.apiKey
-    });
+    //TODO:
+    // - Initialize the Anthropic SDK client https://github.com/anthropics/anthropic-sdk-python?tab=readme-ov-file#usage
+    // Useful links with request/response samples:
+    //   - https://docs.anthropic.com/en/api/overview
+    //   - https://docs.anthropic.com/en/api/messages
+    throw new Error("Not implemented.");
   }
-
-  client: Anthropic;
 
   /**
    * Get a synchronous response from Anthropic's Claude API.
@@ -37,20 +40,11 @@ export class AnthropicAIClient extends AIClient {
    * The response is printed to stdout before being returned.
    */
   response = async (messages: Array<Message>): Promise<Message> => {
-    const {content} = await this.client.messages.create({
-      max_tokens: 1024,
-      model: this.modelName,
-      messages: messages as MessageParam[],
-    });
-
-    let message = "";
-
-    if (content[0].type === "text") {
-      message = content[0].text;
-    }
-    console.log(message);
-
-    return new Message(Role.ASSISTANT, message);
+    //TODO:
+    // - Call the SDK client (use system parameter for system prompt)
+    // - Print the response to console
+    // - Return an ASSISTANT Message
+    throw new Error("Not implemented.");
   };
 
   /**
@@ -66,21 +60,10 @@ export class AnthropicAIClient extends AIClient {
    * Each delta is printed to stdout as it arrives for real-time display.
    */
   streamResponse = async (messages: Array<Message>): Promise<Message> => {
-    const stream = this.client.messages.stream({
-      max_tokens: 1024,
-      model: this.modelName,
-      messages: messages as MessageParam[],
-    }).on("text", (text) => {
-      process.stdout.write(text);
-    })
-
-    const {content} = await stream.finalMessage();
-    let message = "";
-
-    if (content[0].type === "text") {
-      message = content[0].text;
-    }
-
-    return new Message(Role.ASSISTANT, message);
+    //TODO:
+    // - Call the SDK client with streaming (use system parameter for system prompt)
+    // - Listen for text events and write to stdout
+    // - Return the assembled ASSISTANT Message
+    throw new Error("Not implemented.");
   };
 }

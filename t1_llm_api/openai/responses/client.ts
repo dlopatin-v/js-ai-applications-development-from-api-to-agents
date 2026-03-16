@@ -12,14 +12,14 @@ import { BaseOpenAiClient } from "../base";
  * @property client The OpenAI SDK client instance.
  */
 export class OpenAIResponsesClient extends BaseOpenAiClient {
+  client!: OpenAI;
+
   constructor(...args: ConstructorParameters<typeof BaseOpenAiClient>) {
     super(...args);
-    this.client = new OpenAI({
-      apiKey: this.apiKey
-    });
+    //TODO:
+    // - Initialize the OpenAI SDK client https://github.com/openai/openai-node
+    throw new Error("Not implemented.");
   }
-
-  client: OpenAI;
 
   /**
    * Sends a non-streaming request to the OpenAI Responses API.
@@ -28,15 +28,12 @@ export class OpenAIResponsesClient extends BaseOpenAiClient {
    * @returns The AI response as a single message.
    */
   response = async (messages: Array<Message>): Promise<Message> => {
-    const response = await this.client.responses.create({
-      model: this.modelName,
-      instructions: this.systemPrompt,
-      input: messages as ResponseInput,
-    });
-
-    console.log(response.output_text);
-
-    return new Message(Role.ASSISTANT, response.output_text);
+    //TODO:
+    // - Prepare input messages
+    // - Call the SDK client (use instructions for system prompt)
+    // - Print the response to console
+    // - Return an ASSISTANT Message
+    throw new Error("Not implemented.");
   };
 
   /**
@@ -49,22 +46,11 @@ export class OpenAIResponsesClient extends BaseOpenAiClient {
    * @returns The final aggregated AI message after the stream completes.
    */
   streamResponse = async (messages: Array<Message>): Promise<Message> => {
-    const stream = await this.client.responses.create({
-      model: this.modelName,
-      instructions: this.systemPrompt,
-      input: messages as ResponseInput,
-      stream: true,
-    });
-
-    const contents: Array<string> = [];
-
-    for await (const event of stream) {
-      if (event.type === "response.output_text.delta") {
-        process.stdout.write(event.delta);
-        contents.push(event.delta);
-      }
-    }
-
-    return new Message(Role.ASSISTANT, contents.join(""));
+    //TODO:
+    // - Prepare input messages
+    // - Call the SDK client with streaming enabled
+    // - Listen for 'response.output_text.delta' events and write to stdout
+    // - Return the assembled ASSISTANT Message
+    throw new Error("Not implemented.");
   };
 }

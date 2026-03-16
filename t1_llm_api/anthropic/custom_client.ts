@@ -1,4 +1,3 @@
-import Anthropic from "@anthropic-ai/sdk";
 import { Message, Role } from "../../commons";
 import AIClient from "../base_client";
 
@@ -11,12 +10,6 @@ import AIClient from "../base_client";
  */
 export class CustomAnthropicAIClient extends AIClient {
 
-  private headers = {
-    "Content-Type": "application/json",
-    "x-api-key": this.apiKey,
-    "anthropic-version": "2023-06-01"
-  }
-
   /**
    * Get a synchronous response using a raw HTTP POST request.
    *
@@ -28,32 +21,15 @@ export class CustomAnthropicAIClient extends AIClient {
    * The response is printed to stdout before being returned.
    */
   response = async (messages: Array<Message>): Promise<Message> => {
-    const requestData = {
-      model: this.modelName,
-      system: this.systemPrompt,
-      max_tokens: 1024,
-      messages
-    };
-
-    const response = await fetch(this.endpoint, {
-      headers: this.headers,
-      method: "POST",
-      body: JSON.stringify(requestData)
-    });
-
-    if (response.status === 200) {
-      const result = await response.json() as Anthropic.Message;
-      const message = result.content
-        .filter(block => block.type === "text")
-        .map(block => block.text || "")
-        .join("");
-
-      console.log(message);
-
-      return new Message(Role.ASSISTANT, message);
-    } else {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-    }
+    //TODO:
+    // https://docs.anthropic.com/en/api/messages-examples
+    // - Prepare headers with x-api-key, anthropic-version, and content type
+    // - Build request body with system prompt, messages, and max_tokens
+    // - Execute POST request to the API (use fetch)
+    // - Parse the response (content blocks)
+    // - Print the response to console
+    // - Return an ASSISTANT Message
+    throw new Error("Not implemented.");
   }
 
   /**
@@ -70,53 +46,14 @@ export class CustomAnthropicAIClient extends AIClient {
    * Each delta is printed to stdout as it arrives.
    */
   streamResponse = async (messages: Array<Message>): Promise<Message> => {
-    const requestData = {
-      model: this.modelName,
-      system: this.systemPrompt,
-      max_tokens: 1024,
-      stream: true,
-      messages
-    };
-
-    const response = await fetch(this.endpoint, {
-      headers: this.headers,
-      method: "POST",
-      body: JSON.stringify(requestData)
-    });
-    const contents: Array<string> = [];
-
-    if (response.status === 200) {
-      if (!response.body) {
-        throw new Error("Missing body");
-      }
-
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      let buffer = '';
-      while (true) {
-        const {done, value} = await reader.read();
-        if (done) {
-          return new Message(Role.ASSISTANT, contents.join(''));
-        }
-
-        buffer += decoder.decode(value, {stream: true});
-        const lines = buffer.split('\n');
-        buffer = lines.pop() || '';
-
-        for (const line of lines) {
-          if (line.startsWith('data: ')) {
-            const data = line.slice(6).trim();
-            const parsed = JSON.parse(data);
-            if (parsed.type === 'content_block_delta' && parsed.delta?.type === 'text_delta') {
-              const text = parsed.delta.text || '';
-              process.stdout.write(text);
-              contents.push(text);
-            }
-          }
-        }
-      }
-    } else {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-    }
+    //TODO:
+    // https://docs.anthropic.com/en/docs/build-with-claude/streaming
+    // - Prepare headers with x-api-key, anthropic-version, and content type
+    // - Build request body with system prompt, messages, max_tokens, and stream: true
+    // - Execute POST request to the API (use fetch)
+    // - Read the SSE stream: parse "data: " lines for 'content_block_delta' events
+    // - Write text deltas to stdout
+    // - Return the assembled ASSISTANT Message
+    throw new Error("Not implemented.");
   }
 }

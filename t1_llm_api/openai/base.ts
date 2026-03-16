@@ -17,6 +17,8 @@ export class BaseOpenAiClient extends AIClient {
    */
   constructor(...args: ConstructorParameters<typeof AIClient>) {
     super(...args);
-    this.apiKey = `Bearer ${this.apiKey}`
+    //TODO:
+    // - Format the apiKey as a Bearer token (OpenAI uses "Authorization: Bearer <key>")
+    throw new Error("Not implemented.");
   }
 }

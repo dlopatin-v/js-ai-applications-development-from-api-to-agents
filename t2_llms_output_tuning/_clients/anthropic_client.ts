@@ -1,57 +1,78 @@
-import { Message, Role } from "../../commons";
+import { ANTHROPIC_API_KEY, ANTHROPIC_ENDPOINT, Message, Role } from "../../commons";
 import AIClient from "./base_client";
-
 import Anthropic from "@anthropic-ai/sdk";
-import { MessageParam } from "@anthropic-ai/sdk/resources";
+
+const API_KEY_HEADER_NAME = "x-api-key";
 
 /**
- * Client for Anthropic's Claude API using the official SDK.
+ * Client for Anthropic's Claude API using raw HTTP fetch.
  *
- * This implementation uses the official Anthropic TypeScript library to interact
- * with Claude models, providing both synchronous and streaming response capabilities.
+ * This implementation uses the native fetch API to send direct HTTP requests
+ * to the Anthropic Messages endpoint, giving full control over request parameters.
  *
  * Inherits all attributes from AIClient.
  */
 export class AnthropicAIClient extends AIClient {
   /**
-   * Initialize the Anthropic client with the official SDK.
+   * Initialize the Anthropic client.
    *
-   * @param args Constructor parameters inherited from AIClient (endpoint, modelName, systemPrompt, apiKey).
+   * @param modelName The specific model identifier to use.
    */
-  constructor(...args: ConstructorParameters<typeof AIClient>) {
-    super(...args);
-    this.client = new Anthropic({
-      apiKey: this.apiKey
-    });
+  constructor(modelName: string) {
+    super(ANTHROPIC_ENDPOINT, modelName, ANTHROPIC_API_KEY, API_KEY_HEADER_NAME);
   }
-
-  client: Anthropic;
 
   /**
    * Get a synchronous response from Anthropic's Claude API.
    *
    * @param messages The conversation history.
+   * @param printRequest If true, prints the full request (endpoint, headers, body) before sending.
+   * @param printOnlyContent If true, prints only the response text; otherwise prints the full response JSON.
    * @returns The AI's response message.
    *
    * Note: Claude's API uses a separate 'system' parameter for system instructions.
    * Response content blocks are concatenated into a single text response.
-   * The response is printed to stdout before being returned.
    */
-  response = async (messages: Array<Message>): Promise<Message> => {
-    const {content} = await this.client.messages.create({
-      max_tokens: 1024,
+  response = async (messages: Array<Message>, printRequest: boolean, printOnlyContent: boolean, ...args: any[]): Promise<Message> => {
+    const headers = {
+      "Content-Type": "application/json",
+      "anthropic-version": "2023-06-01",
+      [API_KEY_HEADER_NAME]: this.apiKey,
+    }
+
+    const requestData = {
       model: this.modelName,
-      system: this.systemPrompt,
-      messages: messages as MessageParam[],
+      max_tokens: args["max_tokens"] || 1024,
+      messages,
+      ...args
+    };
+
+    const response = await fetch(this.endpoint, {
+      headers,
+      method: "POST",
+      body: JSON.stringify(requestData)
     });
 
-    let message = "";
-
-    if (content[0].type === "text") {
-      message = content[0].text;
+    if (printRequest) {
+      this._printRequest(requestData, headers);
     }
-    console.log(message);
 
-    return new Message(Role.ASSISTANT, message);
-  };
+    if (response.status === 200) {
+      const result = await response.json() as Anthropic.Message;
+      const message = result.content
+        .filter(block => block.type === "text")
+        .map(block => block.text || "")
+        .join("");
+
+      if (printOnlyContent) {
+        console.log(message);
+      } else {
+        this._printResponse(JSON.stringify(result, null, 2));
+      }
+    // @TODO Add error handling for no Value "No Choice has been present in the response"
+      return new Message(Role.ASSISTANT, message);
+    } else {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+  }
 }

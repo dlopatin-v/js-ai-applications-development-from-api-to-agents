@@ -14,9 +14,9 @@ import AIClient from "./_clients/base_client";
  *
  * The loop continues until the user types 'exit'.
  *
- * @param printRequest @TODO
- * @param printOnlyContent @TODO
  * @param client The AI client instance to use for generating responses.
+ * @param printRequest If true, prints the full request (endpoint, headers, body) before each API call.
+ * @param printOnlyContent If true, prints only the response text; otherwise prints the full response JSON.
  */
 export async function run(client: AIClient, printRequest: boolean, printOnlyContent: boolean) {
   const conversation = new Conversation();
@@ -28,7 +28,6 @@ export async function run(client: AIClient, printRequest: boolean, printOnlyCont
   console.log("Type your question or 'exit' to quit.")
 
   while (true) {
-
     const input = await rl.question(`➡️. `);
 
     if (input === "exit") {
@@ -41,7 +40,7 @@ export async function run(client: AIClient, printRequest: boolean, printOnlyCont
 
     console.log("🤖: ");
 
-    const aiMessage = client.response(conversation.messages, printRequest, printOnlyContent);
+    const aiMessage = await client.response(conversation.messages, printRequest, printOnlyContent);
     conversation.addMessage(aiMessage);
   }
 }

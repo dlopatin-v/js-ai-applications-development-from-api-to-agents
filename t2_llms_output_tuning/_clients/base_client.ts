@@ -6,11 +6,6 @@ import { Message } from "../../commons";
  * This class defines the interface that all AI service implementations must follow.
  * It handles common initialization logic and requires concrete implementations for
  * both synchronous and asynchronous response methods.
- *
- * @param endpoint The base URL endpoint for the AI service API.
- * @param modelName The name/identifier of the AI model to use.
- * @param apiKey The API key for authenticating with the AI service.
- * @param systemPrompt The system prompt that guides the AI's behavior.
  */
 class AIClient {
   /**
@@ -19,7 +14,7 @@ class AIClient {
    * @param endpoint The API endpoint URL for the AI service.
    * @param modelName The specific model identifier to use.
    * @param apiKey The API key for authentication.
-   * @param systemPrompt The system-level instruction for the AI model.
+   * @param apiKeyHeaderName The API key header name (e.g., "Authorization" or "x-api-key") used in HTTP requests.
    *
    * @throws Error if apiKey is null or empty.
    */
@@ -27,12 +22,11 @@ class AIClient {
     public endpoint: string,
     public modelName: string,
     public apiKey: string,
-    public systemPrompt: string
+    public apiKeyHeaderName: string
   ) {
     if (!apiKey) {
       throw new Error("API key cannot be null or empty")
     }
-
   }
 
   /**
@@ -40,10 +34,11 @@ class AIClient {
    * Override this in provider-specific clients.
    *
    * @param messages Conversation history sent to the model.
-   * @param args Conversation history sent to the model.
+   * @param printRequest If true, prints the full request (endpoint, headers, body) before sending.
+   * @param printOnlyContent If true, prints only the response text; otherwise prints the full response JSON.
    * @returns The AI response as a single message.
    */
-  response = async (messages: Array<Message>, ...args: any[]): Promise<Message> => {
+  response = async (messages: Array<Message>, printRequest: boolean, printOnlyContent: boolean, ...args: any[]): Promise<Message> => {
     throw new Error("Method not implemented.");
   };
 
@@ -88,6 +83,12 @@ class AIClient {
       }
     }
     return safeHeaders;
+  }
+
+  protected _printResponse(responseData: string): void {
+    console.log("\n" + "=".repeat(50) + " RESPONSE " + "=".repeat(50));
+    console.log(responseData);
+    console.log("=".repeat(109) + "\n");
   }
 }
 

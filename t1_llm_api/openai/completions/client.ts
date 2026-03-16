@@ -12,14 +12,15 @@ import { BaseOpenAiClient } from "../base";
  * @property client The OpenAI SDK client instance.
  */
 export class OpenAIClient extends BaseOpenAiClient {
+  client!: OpenAI;
+
   constructor(...args: ConstructorParameters<typeof BaseOpenAiClient>) {
     super(...args);
-    this.client = new OpenAI({
-      apiKey: this.apiKey
-    });
+    //TODO:
+    // https://github.com/openai/openai-python?tab=readme-ov-file#usage
+    // 1. Initialize OpenAI client: `this.client = new OpenAI({ apiKey: this.apiKey })`
+    throw new Error("Not implemented.");
   }
-
-  client: OpenAI;
 
   /**
    * Sends a non-streaming request to the OpenAI Chat Completions API.
@@ -28,14 +29,19 @@ export class OpenAIClient extends BaseOpenAiClient {
    * @returns The AI response as a single message.
    */
   response = async (messages: Array<Message>): Promise<Message> => {
-    const completion = await this.client.chat.completions.create({
-      model: this.modelName,
-      messages: messages as ChatCompletionMessageParam[],
-    });
-
-    console.log(completion.choices[0].message.content);
-
-    return new Message(Role.ASSISTANT, completion.choices[0].message.content);
+    //TODO:
+    // https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/create
+    // 0. Make a request in Postman to see the request and response
+    // 1. Prepare messages list with system message first:
+    //   const messagesDicts = [{ role: "system", content: this.systemPrompt }, ...messages]
+    // 2. Create completion using OpenAI client:
+    //   - call `this.client.chat.completions.create()` with:
+    //     - model: this.modelName
+    //     - messages: messagesDicts as ChatCompletionMessageParam[]
+    // 3. Extract content from response: `const content = completion.choices[0].message.content`
+    // 4. Print content
+    // 5. Return ASSISTANT message
+    throw new Error("Not implemented.");
   };
 
   /**
@@ -48,22 +54,23 @@ export class OpenAIClient extends BaseOpenAiClient {
    * @returns The final aggregated AI message after the stream completes.
    */
   streamResponse = async (messages: Array<Message>): Promise<Message> => {
-    const stream = await this.client.chat.completions.create({
-      model: this.modelName,
-      messages: messages as ChatCompletionMessageParam[],
-      stream: true
-    });
-
-    const contents: Array<string> = [];
-
-    for await (const chunk of stream) {
-      const deltaContent = chunk.choices[0]?.delta?.content;
-      if (deltaContent) {
-        contents.push(deltaContent);
-        process.stdout.write(deltaContent);
-      }
-    }
-
-    return new Message(Role.ASSISTANT, contents.join(''));
+    //TODO:
+    // https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/create
+    // 0. Make a request in Postman to see the request and response
+    // 1. Prepare messages list with system message first:
+    //   const messagesDicts = [{ role: "system", content: this.systemPrompt }, ...messages]
+    // 2. Initialize empty contents array to collect streamed chunks
+    // 3. Create streaming completion using OpenAI client:
+    //   - call `this.client.chat.completions.create()` with:
+    //     - model: this.modelName
+    //     - stream: true
+    //     - messages: messagesDicts as ChatCompletionMessageParam[]
+    // 4. Iterate through stream chunks using `for await (const chunk of stream):`
+    // 5. For each chunk, check if delta content exists:
+    //   - `const deltaContent = chunk.choices[0]?.delta?.content`
+    //   - if deltaContent exists: push to contents array, write to stdout
+    // 6. Print empty line (for formatting)
+    // 7. Return ASSISTANT message with joined contents: `new Message(Role.ASSISTANT, contents.join(''))`
+    throw new Error("Not implemented.");
   };
 }

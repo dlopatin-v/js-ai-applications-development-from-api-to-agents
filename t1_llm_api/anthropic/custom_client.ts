@@ -11,12 +11,6 @@ import AIClient from "../base_client";
  */
 export class CustomAnthropicAIClient extends AIClient {
 
-  private headers = {
-    "Content-Type": "application/json",
-    "x-api-key": this.apiKey,
-    "anthropic-version": "2023-06-01"
-  }
-
   /**
    * Get a synchronous response using a raw HTTP POST request.
    *
@@ -28,32 +22,26 @@ export class CustomAnthropicAIClient extends AIClient {
    * The response is printed to stdout before being returned.
    */
   response = async (messages: Array<Message>): Promise<Message> => {
-    const requestData = {
-      model: this.modelName,
-      system: this.systemPrompt,
-      max_tokens: 1024,
-      messages
-    };
-
-    const response = await fetch(this.endpoint, {
-      headers: this.headers,
-      method: "POST",
-      body: JSON.stringify(requestData)
-    });
-
-    if (response.status === 200) {
-      const result = await response.json() as Anthropic.Message;
-      const message = result.content
-        .filter(block => block.type === "text")
-        .map(block => block.text || "")
-        .join("");
-
-      console.log(message);
-
-      return new Message(Role.ASSISTANT, message);
-    } else {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-    }
+    //TODO:
+    // https://platform.claude.com/docs/en/build-with-claude/working-with-messages
+    // 0. Make a request in Postman to see the request and response
+    // 1. Prepare headers object with:
+    //   - "x-api-key" (this.apiKey)
+    //   - "Content-Type" ("application/json")
+    //   - "anthropic-version" ("2023-06-01")
+    // 2. Prepare request data object:
+    //   - "model" (this.modelName)
+    //   - "system" (this.systemPrompt)
+    //   - "max_tokens" (1024)
+    //   - "messages" (messages)
+    // 3. Execute fetch POST to this.endpoint with headers, method "POST", body JSON.stringify(requestData)
+    // 4.1. If response.status === 200 then:
+    //   - get response json as Anthropic.Message
+    //   - get content blocks: filter for type "text" and map to text, join with ""
+    //   - console.log(message)
+    //   - return new Message(Role.ASSISTANT, message)
+    // 4.2. Otherwise throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+    throw new Error("Not implemented.");
   }
 
   /**
@@ -67,56 +55,42 @@ export class CustomAnthropicAIClient extends AIClient {
    *
    * Note: Uses Server-Sent Events (SSE) format where each line starts with "data: ".
    * Listens for 'content_block_delta' events with 'text_delta' type.
+   * Stops processing when 'message_stop' event is received.
    * Each delta is printed to stdout as it arrives.
    */
   streamResponse = async (messages: Array<Message>): Promise<Message> => {
-    const requestData = {
-      model: this.modelName,
-      system: this.systemPrompt,
-      max_tokens: 1024,
-      stream: true,
-      messages
-    };
-
-    const response = await fetch(this.endpoint, {
-      headers: this.headers,
-      method: "POST",
-      body: JSON.stringify(requestData)
-    });
-    const contents: Array<string> = [];
-
-    if (response.status === 200) {
-      if (!response.body) {
-        throw new Error("Missing body");
-      }
-
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      let buffer = '';
-      while (true) {
-        const {done, value} = await reader.read();
-        if (done) {
-          return new Message(Role.ASSISTANT, contents.join(''));
-        }
-
-        buffer += decoder.decode(value, {stream: true});
-        const lines = buffer.split('\n');
-        buffer = lines.pop() || '';
-
-        for (const line of lines) {
-          if (line.startsWith('data: ')) {
-            const data = line.slice(6).trim();
-            const parsed = JSON.parse(data);
-            if (parsed.type === 'content_block_delta' && parsed.delta?.type === 'text_delta') {
-              const text = parsed.delta.text || '';
-              process.stdout.write(text);
-              contents.push(text);
-            }
-          }
-        }
-      }
-    } else {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-    }
+    //TODO:
+    // https://platform.claude.com/docs/en/build-with-claude/streaming
+    // 0. Make a request in Postman to see the request and response
+    // 1. Prepare headers object with:
+    //   - "x-api-key" (this.apiKey)
+    //   - "Content-Type" ("application/json")
+    //   - "anthropic-version" ("2023-06-01")
+    // 2. Prepare request data object:
+    //   - "model" (this.modelName)
+    //   - "system" (this.systemPrompt)
+    //   - "max_tokens" (1024)
+    //   - "stream" (true)
+    //   - "messages" (messages)
+    // 3. Initialize empty contents array to collect streamed text chunks
+    // 4. Execute fetch POST to this.endpoint with headers, method "POST", body JSON.stringify(requestData)
+    // 5.1. If response.status === 200:
+    //   - get reader from response.body (response.body.getReader())
+    //   - create TextDecoder
+    //   - initialize buffer = ''
+    //   - loop: read chunks from reader until done
+    //       - if done: return new Message(Role.ASSISTANT, contents.join(''))
+    //       - decode value and append to buffer
+    //       - split buffer by '\n', keep last incomplete line in buffer
+    //       - for each line:
+    //           - if line starts with 'data: ':
+    //               - parse JSON data from line.slice(6).trim()
+    //               - if parsed.type === 'content_block_delta' and parsed.delta?.type === 'text_delta':
+    //                   - get text = parsed.delta.text || ''
+    //                   - process.stdout.write(text) and push to contents
+    //               - if parsed.type === 'message_stop': break out of reader loop
+    // 5.2. Otherwise throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+    // 6. Return new Message(Role.ASSISTANT, contents.join(''))
+    throw new Error("Not implemented.");
   }
 }

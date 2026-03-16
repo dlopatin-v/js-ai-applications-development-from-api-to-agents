@@ -19,9 +19,10 @@ export class AnthropicAIClient extends AIClient {
    */
   constructor(...args: ConstructorParameters<typeof AIClient>) {
     super(...args);
-    this.client = new Anthropic({
-      apiKey: this.apiKey
-    });
+    //TODO:
+    // https://github.com/anthropics/anthropic-sdk-typescript (In readme you can find samples with Anthropic client)
+    // 1. Initialize Anthropic client: `this.client = new Anthropic({ apiKey: this.apiKey })`
+    throw new Error("Not implemented.");
   }
 
   client: Anthropic;
@@ -37,20 +38,17 @@ export class AnthropicAIClient extends AIClient {
    * The response is printed to stdout before being returned.
    */
   response = async (messages: Array<Message>): Promise<Message> => {
-    const {content} = await this.client.messages.create({
-      max_tokens: 1024,
-      model: this.modelName,
-      messages: messages as MessageParam[],
-    });
-
-    let message = "";
-
-    if (content[0].type === "text") {
-      message = content[0].text;
-    }
-    console.log(message);
-
-    return new Message(Role.ASSISTANT, message);
+    //TODO:
+    // 0. Make a request in Postman to see the request and response
+    // 1. Call client, use `await this.client.messages.create()` with such params:
+    //   - system: this.systemPrompt
+    //   - max_tokens: 1024
+    //   - model: this.modelName
+    //   - messages: messages as MessageParam[]
+    // 2. Iterate through response content and if content block type is "text" then concat it
+    // 3. console.log(message)
+    // 4. Return new Message(Role.ASSISTANT, message)
+    throw new Error("Not implemented.");
   };
 
   /**
@@ -66,21 +64,17 @@ export class AnthropicAIClient extends AIClient {
    * Each delta is printed to stdout as it arrives for real-time display.
    */
   streamResponse = async (messages: Array<Message>): Promise<Message> => {
-    const stream = this.client.messages.stream({
-      max_tokens: 1024,
-      model: this.modelName,
-      messages: messages as MessageParam[],
-    }).on("text", (text) => {
-      process.stdout.write(text);
-    })
-
-    const {content} = await stream.finalMessage();
-    let message = "";
-
-    if (content[0].type === "text") {
-      message = content[0].text;
-    }
-
-    return new Message(Role.ASSISTANT, message);
+    //TODO:
+    // 0. Make a request in Postman to see the request and response
+    // 1. Call client, use `this.client.messages.stream()` with such params:
+    //   - system: this.systemPrompt
+    //   - max_tokens: 1024
+    //   - model: this.modelName
+    //   - messages: messages as MessageParam[]
+    //   Chain `.on("text", (text) => { process.stdout.write(text) })` to print each delta
+    // 2. Await `stream.finalMessage()` to get the complete message
+    // 3. Iterate through content blocks, extract text from type "text" blocks
+    // 4. Return new Message(Role.ASSISTANT, message)
+    throw new Error("Not implemented.");
   };
 }

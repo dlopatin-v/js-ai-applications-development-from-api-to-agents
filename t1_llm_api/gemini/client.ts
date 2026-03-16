@@ -18,9 +18,10 @@ export class GeminiAICLient extends AIClient {
    */
   constructor(...args: ConstructorParameters<typeof AIClient>) {
     super(...args);
-    this.client = new GoogleGenAI({
-      apiKey: this.apiKey
-    });
+    //TODO:
+    // https://ai.google.dev/gemini-api/docs/text-generation
+    // 1. Initialize GoogleGenAI client: `this.client = new GoogleGenAI({ apiKey: this.apiKey })`
+    throw new Error("Not implemented.");
   }
 
   client: GoogleGenAI;
@@ -32,10 +33,13 @@ export class GeminiAICLient extends AIClient {
    * @returns Messages in Gemini's Content format.
    */
   private convertToGeminiContent = (messages: Array<Message>): Content[] => {
-    return messages.map((message): Content => ({
-      role: message.role,
-      parts: [{text: message.content}],
-    }))
+    //TODO:
+    // 1. Initialize empty contents array
+    // 2. Iterate through messages:
+    //   - get role from message: `const role = message.role`
+    //   - push to contents: `{ role, parts: [{ text: message.content }] }`
+    // 3. Return contents array
+    throw new Error("Not implemented.");
   }
 
   /**
@@ -48,18 +52,17 @@ export class GeminiAICLient extends AIClient {
    * The response is printed to stdout before being returned.
    */
   response = async (messages: Array<Message>): Promise<Message> => {
-    const response = await this.client.models.generateContent({
-      model: this.modelName,
-      contents: this.convertToGeminiContent(messages),
-      config: {
-        systemInstruction: this.systemPrompt,
-        maxOutputTokens: 1024
-      }
-    });
-
-    console.log(response.text);
-
-    return new Message(Role.ASSISTANT, response.text || "");
+    //TODO:
+    // https://ai.google.dev/gemini-api/docs/text-generation
+    // 0. Make a request in Postman to see the request and response
+    // 1. Call client, use `await this.client.models.generateContent()` with such params:
+    //   - model: this.modelName
+    //   - contents: this.convertToGeminiContent(messages)
+    //   - config: { systemInstruction: this.systemPrompt, maxOutputTokens: 1024 }
+    // 2. Get content from response: `const content = response.text`
+    // 3. console.log(content)
+    // 4. Return new Message(Role.ASSISTANT, content || "")
+    throw new Error("Not implemented.");
   };
 
   /**
@@ -75,20 +78,20 @@ export class GeminiAICLient extends AIClient {
    * Each chunk's text is printed to stdout as it arrives.
    */
   streamResponse = async (messages: Array<Message>): Promise<Message> => {
-    const response = await this.client.models.generateContentStream({
-      model: this.modelName,
-      contents: this.convertToGeminiContent(messages),
-      config: {
-        systemInstruction: this.systemPrompt,
-        maxOutputTokens: 1024
-      }
-    });
-    let responseText = "";
-    for await (const chunk of response) {
-      process.stdout.write(chunk.text || "");
-      responseText += chunk.text || "";
-    }
-
-    return new Message(Role.ASSISTANT, responseText);
+    //TODO:
+    // https://ai.google.dev/gemini-api/docs/text-generation
+    // 0. Make a request in Postman to see the request and response
+    // 1. Initialize empty responseText string to collect streamed chunks
+    // 2. Call client, use `await this.client.models.generateContentStream()` with such params:
+    //   - model: this.modelName
+    //   - contents: this.convertToGeminiContent(messages)
+    //   - config: { systemInstruction: this.systemPrompt, maxOutputTokens: 1024 }
+    // 3. Iterate through chunks in generated stream (for await (const chunk of response)):
+    //   - if chunk.text is not empty:
+    //       - process.stdout.write(chunk.text || "")
+    //       - append chunk.text to responseText
+    // 4. Print empty line (console.log())
+    // 5. Return new Message(Role.ASSISTANT, responseText)
+    throw new Error("Not implemented.");
   };
 }

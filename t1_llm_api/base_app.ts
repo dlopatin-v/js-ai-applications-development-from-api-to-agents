@@ -19,35 +19,18 @@ import AIClient from "./base_client";
  * @param client The AI client instance to use for generating responses.
  */
 export async function start(stream: boolean, client: AIClient) {
-  const conversation = new Conversation();
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-  });
-
-  console.log("Type your question or 'exit' to quit.")
-
-  while (true) {
-
-    const input = await rl.question(`➡️. `);
-
-    if (input === "exit") {
-      console.log("Exiting the chat. Goodbye!");
-      rl.close();
-      process.exit(0);
-    }
-
-    conversation.addMessage(new Message(Role.USER, input));
-
-    console.log("🤖: ");
-
-    let aiMessage;
-    if (stream) {
-      aiMessage = await client.streamResponse(conversation.messages);
-    } else {
-      aiMessage = await client.response(conversation.messages);
-    }
-
-    conversation.addMessage(aiMessage);
-  }
+  //TODO:
+  // Main chat loop that handles user interaction with AI clients.
+  // 1. Create a new Conversation object to maintain chat history
+  // 2. Create readline interface:
+  //   const rl = readline.createInterface({ input: process.stdin, output: process.stdout })
+  // 3. Print to console: "Type your question or 'exit' to quit."
+  // 4. Create infinite `while` loop
+  // 5. Get user input from console using `await rl.question('➡️. ')`
+  // 6. If user_input is `exit` then print "Exiting the chat. Goodbye!", close rl and call `process.exit(0)`
+  // 7. Add user message to conversation (role is Role.USER, content is user_input)
+  // 8.1. If `stream` is true then call `client.stream_completion` with messages (it's async, don't forget to await)
+  // 8.2. Otherwise call `client.get_completion` with messages
+  // 8.3. Get Assistant message and add it to the conversation
+  throw new Error("Not implemented.");
 }

@@ -17,4 +17,4 @@ const openAICustomClient = new CustomOpenAIResponsesClient(
   DEFAULT_SYSTEM_PROMPT,
 );
 
-start(true, openAICustomClient);
+start(true, openAIClient);

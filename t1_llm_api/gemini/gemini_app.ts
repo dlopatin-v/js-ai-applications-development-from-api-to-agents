@@ -17,4 +17,4 @@ const geminiCustomClient = new CustomGeminiAIClient(
   DEFAULT_SYSTEM_PROMPT,
 );
 
-start(true, geminiCustomClient);
+start(false, geminiClient);

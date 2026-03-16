@@ -49,6 +49,7 @@ end, when you do use frameworks, you'll understand exactly what's happening unde
 
 ## Prerequisites
 
+- **Node.js 22+**
 - **IDE** (VS Code, or any preferred editor)
 - **Postman** (for testing API calls)
 - **Docker** with Docker Compose
@@ -64,6 +65,12 @@ end, when you do use frameworks, you'll understand exactly what's happening unde
 ### 0. ⭐️ **Star the repository** - it will help us grow ⭐️
 
 ### 1. ⑃ Fork and clone the repository
+
+### 2. Install dependencies
+
+```bash
+npm install
+```
 
 ---
 

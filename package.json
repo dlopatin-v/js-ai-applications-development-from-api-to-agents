@@ -1,0 +1,30 @@
+{
+  "name": "js-ai-applications-development-from-api-to-agents",
+  "version": "1.0.0",
+  "description": "AI Applications Development Course: From API To Agents",
+  "main": "index.js",
+  "scripts": {
+    "run:ts": "tsx",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/epam/js-ai-applications-development-from-api-to-agents.git"
+  },
+  "author": "Gyula Szakacs",
+  "bugs": {
+    "url": "https://github.com/epam/js-ai-applications-development-from-api-to-agents/issues"
+  },
+  "homepage": "https://github.com/epam/js-ai-applications-development-from-api-to-agents#readme",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.78.0",
+    "@google/genai": "^1.45.0",
+    "openai": "^6.27.0",
+    "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.4.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5.8.2"
+  }
+}

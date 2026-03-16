@@ -28,9 +28,13 @@ export class OpenAIClient extends BaseOpenAiClient {
    * @returns The AI response as a single message.
    */
   response = async (messages: Array<Message>): Promise<Message> => {
+    const messagesDicts = [
+      { role: "system", content: this.systemPrompt },
+      ...messages
+    ];
     const completion = await this.client.chat.completions.create({
       model: this.modelName,
-      messages: messages as ChatCompletionMessageParam[],
+      messages: messagesDicts as ChatCompletionMessageParam[],
     });
 
     console.log(completion.choices[0].message.content);
@@ -48,9 +52,13 @@ export class OpenAIClient extends BaseOpenAiClient {
    * @returns The final aggregated AI message after the stream completes.
    */
   streamResponse = async (messages: Array<Message>): Promise<Message> => {
+    const messagesDicts = [
+      { role: "system", content: this.systemPrompt },
+      ...messages
+    ];
     const stream = await this.client.chat.completions.create({
       model: this.modelName,
-      messages: messages as ChatCompletionMessageParam[],
+      messages: messagesDicts as ChatCompletionMessageParam[],
       stream: true
     });
 
@@ -64,6 +72,7 @@ export class OpenAIClient extends BaseOpenAiClient {
       }
     }
 
+    console.log();
     return new Message(Role.ASSISTANT, contents.join(''));
   };
 }

@@ -40,6 +40,7 @@ export class AnthropicAIClient extends AIClient {
     const {content} = await this.client.messages.create({
       max_tokens: 1024,
       model: this.modelName,
+      system: this.systemPrompt,
       messages: messages as MessageParam[],
     });
 
@@ -69,6 +70,7 @@ export class AnthropicAIClient extends AIClient {
     const stream = this.client.messages.stream({
       max_tokens: 1024,
       model: this.modelName,
+      system: this.systemPrompt,
       messages: messages as MessageParam[],
     }).on("text", (text) => {
       process.stdout.write(text);

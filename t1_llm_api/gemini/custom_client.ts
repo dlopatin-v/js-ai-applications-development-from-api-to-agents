@@ -1,4 +1,3 @@
-import { Content, GenerateContentResponse } from "@google/genai";
 import { Message, Role } from "../../commons";
 import AIClient from "../base_client";
 
@@ -11,22 +10,17 @@ import AIClient from "../base_client";
  */
 export class CustomGeminiAIClient extends AIClient {
 
-  private headers = {
-    "Content-Type": "application/json",
-    "x-goog-api-key": this.apiKey,
-  }
-
   /**
    * Converts Message objects to Gemini's content dictionary format.
    *
    * @param messages Conversation messages to convert.
-   * @returns Messages formatted as Gemini Content objects.
+   * @returns Messages formatted as Gemini content objects.
    */
-  private convertToGeminiContent = (messages: Array<Message>): Content[] => {
-    return messages.map((message): Content => ({
+  private _toGeminiContents = (messages: Array<Message>): Array<{role: string, parts: Array<{text: string}> }> => {
+    return messages.map(message => ({
       role: message.role,
       parts: [{text: message.content}],
-    }))
+    }));
   }
 
   /**
@@ -39,25 +33,30 @@ export class CustomGeminiAIClient extends AIClient {
    * @returns The AI response as a single message.
    */
   response = async (messages: Array<Message>): Promise<Message> => {
+    const headers = {
+      "Content-Type": "application/json",
+      "x-goog-api-key": this.apiKey,
+    };
+
     const url = `${this.endpoint}/${this.modelName}:generateContent`;
     const requestData = {
       system_instruction: {"parts": [{"text": this.systemPrompt}]},
-      contents: this.convertToGeminiContent(messages),
+      contents: this._toGeminiContents(messages),
       generationConfig: {
         maxOutputTokens: 1024
       }
     };
 
     const response = await fetch(url, {
-      headers: this.headers,
+      headers,
       method: "POST",
       body: JSON.stringify(requestData)
     });
 
     if (response.status === 200) {
-      const result = await response.json() as GenerateContentResponse;
+      const result = await response.json();
       const message = result.candidates[0].content.parts
-        .map(part => part.text || "")
+        .map((part: { text: string }) => part.text || "")
         .join("");
 
       console.log(message);
@@ -79,17 +78,22 @@ export class CustomGeminiAIClient extends AIClient {
    * @returns The final aggregated AI message after the stream completes.
    */
   streamResponse = async (messages: Array<Message>): Promise<Message> => {
+    const headers = {
+      "Content-Type": "application/json",
+      "x-goog-api-key": this.apiKey,
+    };
+
     const url = `${this.endpoint}/${this.modelName}:streamGenerateContent?alt=sse`;
     const requestData = {
       system_instruction: {"parts": [{"text": this.systemPrompt}]},
-      contents: this.convertToGeminiContent(messages),
+      contents: this._toGeminiContents(messages),
       generationConfig: {
         maxOutputTokens: 1024
       }
     };
 
     const response = await fetch(url, {
-      headers: this.headers,
+      headers,
       method: "POST",
       body: JSON.stringify(requestData)
     });
@@ -127,6 +131,7 @@ export class CustomGeminiAIClient extends AIClient {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
 
+    console.log();
     return new Message(Role.ASSISTANT, contents.join(''));
   }
 }

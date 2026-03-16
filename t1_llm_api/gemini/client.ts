@@ -89,6 +89,7 @@ export class GeminiAICLient extends AIClient {
       responseText += chunk.text || "";
     }
 
+    console.log();
     return new Message(Role.ASSISTANT, responseText);
   };
 }

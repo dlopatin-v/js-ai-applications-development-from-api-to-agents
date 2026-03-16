@@ -10,11 +10,6 @@ import { BaseOpenAiClient } from "../base";
  */
 export class CustomOpenAIResponsesClient extends BaseOpenAiClient {
 
-  private headers = {
-    "Content-Type": "application/json",
-    "Authorization": this.apiKey,
-  }
-
   /**
    * Sends a non-streaming request using a raw HTTP POST to the Responses API.
    *
@@ -22,25 +17,32 @@ export class CustomOpenAIResponsesClient extends BaseOpenAiClient {
    * @returns The AI response as a single message.
    */
   response = async (messages: Array<Message>): Promise<Message> => {
+    const headers = {
+      "Content-Type": "application/json",
+      "Authorization": this.apiKey,
+    };
+
+    const inputMessages = messages;
+
     const requestData = {
       model: this.modelName,
       instructions: this.systemPrompt,
-      input: messages
+      input: inputMessages
     };
 
     const response = await fetch(this.endpoint, {
-      headers: this.headers,
+      headers,
       method: "POST",
       body: JSON.stringify(requestData)
     });
 
     if (response.status === 200) {
       const result = await response.json();
-      const message = result.output[0].content[0].text;
+      const content = this._extractOutputText(result);
 
-      console.log(message);
+      console.log(content);
 
-      return new Message(Role.ASSISTANT, message);
+      return new Message(Role.ASSISTANT, content);
     } else {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
@@ -56,19 +58,27 @@ export class CustomOpenAIResponsesClient extends BaseOpenAiClient {
    * @returns The final aggregated AI message after the stream completes.
    */
   streamResponse = async (messages: Array<Message>): Promise<Message> => {
+    const headers = {
+      "Content-Type": "application/json",
+      "Authorization": this.apiKey,
+    };
+
+    const inputMessages = messages;
+
     const requestData = {
       model: this.modelName,
       instructions: this.systemPrompt,
-      input: messages,
+      input: inputMessages,
       stream: true,
     };
 
+    const contents: Array<string> = [];
+
     const response = await fetch(this.endpoint, {
-      headers: this.headers,
+      headers,
       method: "POST",
       body: JSON.stringify(requestData)
     });
-    const contents: Array<string> = [];
 
     if (response.status === 200) {
       if (!response.body) {
@@ -94,10 +104,10 @@ export class CustomOpenAIResponsesClient extends BaseOpenAiClient {
           } else if (line.startsWith('data: ') && eventType === 'response.output_text.delta') {
             const data = line.slice(6).trim();
             const parsed = JSON.parse(data);
-            const chunk = parsed.delta;
-            if (chunk) {
-              process.stdout.write(chunk);
-              contents.push(chunk);
+            const delta = parsed.delta;
+            if (delta) {
+              process.stdout.write(delta);
+              contents.push(delta);
             }
           } else if (line === "") {
             eventType = "";
@@ -108,6 +118,29 @@ export class CustomOpenAIResponsesClient extends BaseOpenAiClient {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
 
+    console.log();
     return new Message(Role.ASSISTANT, contents.join(''));
+  };
+
+  /**
+   * Extract text content from the Responses API output.
+   *
+   * The Responses API returns structured output with nested objects.
+   * This method navigates the structure to find the output_text content.
+   *
+   * @param data The JSON response data from the API.
+   * @returns The extracted text content.
+   */
+  private _extractOutputText = (data: Record<string, unknown>): string => {
+    const output = (data.output ?? []) as Array<Record<string, unknown>>;
+    for (const item of output) {
+      const content = (item.content ?? []) as Array<Record<string, unknown>>;
+      for (const contentPart of content) {
+        if (contentPart.type === "output_text") {
+          return contentPart.text as string;
+        }
+      }
+    }
+    throw new Error("No output text found in the response");
   };
 }

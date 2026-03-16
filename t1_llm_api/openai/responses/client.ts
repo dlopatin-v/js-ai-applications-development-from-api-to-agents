@@ -65,6 +65,7 @@ export class OpenAIResponsesClient extends BaseOpenAiClient {
       }
     }
 
+    console.log();
     return new Message(Role.ASSISTANT, contents.join(""));
   };
 }

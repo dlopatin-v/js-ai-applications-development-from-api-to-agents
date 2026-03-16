@@ -17,4 +17,4 @@ const openAICustomClient = new CustomOpenAIClient(
   DEFAULT_SYSTEM_PROMPT,
 );
 
-start(true, openAICustomClient);
+start(true, openAIClient);

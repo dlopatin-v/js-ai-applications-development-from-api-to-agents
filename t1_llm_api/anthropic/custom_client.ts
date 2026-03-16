@@ -93,11 +93,9 @@ export class CustomAnthropicAIClient extends AIClient {
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
       let buffer = '';
-      while (true) {
+      outer: while (true) {
         const {done, value} = await reader.read();
-        if (done) {
-          return new Message(Role.ASSISTANT, contents.join(''));
-        }
+        if (done) break;
 
         buffer += decoder.decode(value, {stream: true});
         const lines = buffer.split('\n');
@@ -111,6 +109,8 @@ export class CustomAnthropicAIClient extends AIClient {
               const text = parsed.delta.text || '';
               process.stdout.write(text);
               contents.push(text);
+            } else if (parsed.type === 'message_stop') {
+              break outer;
             }
           }
         }
@@ -118,5 +118,8 @@ export class CustomAnthropicAIClient extends AIClient {
     } else {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
+
+    console.log();
+    return new Message(Role.ASSISTANT, contents.join(''));
   }
 }

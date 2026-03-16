@@ -1,4 +1,4 @@
-import { Message } from "../../commons";
+import { Message, Role } from "../../commons";
 import AIClient from "../base_client";
 
 /**
@@ -23,6 +23,7 @@ export class CustomGeminiAIClient extends AIClient {
     //TODO:
     // https://ai.google.dev/gemini-api/docs/text-generation
     // - Prepare headers with api key and content type
+    // - Convert messages using this._toGeminiContents(messages)
     // - Add System prompt
     // - Execute post request to AI API (use `fetch`)
     // - Parse response
@@ -45,12 +46,25 @@ export class CustomGeminiAIClient extends AIClient {
     //TODO:
     // https://ai.google.dev/gemini-api/docs/text-generation
     // - Prepare headers with api key and content type
+    // - Convert messages using this._toGeminiContents(messages)
     // - Add System prompt
     // - Execute post request to AI API (use `fetch`)
     // - Handle stream with chunks
     // - Parse response
     // - Print chunks to console
     // - Return ASSISTANT message
+    throw new Error("Not implemented.");
+  }
+
+  /**
+   * Converts Message objects to Gemini's content dictionary format.
+   *
+   * @param messages Conversation messages to convert.
+   * @returns Messages formatted as Gemini content objects.
+   */
+  private _toGeminiContents = (messages: Array<Message>): Array<{role: string, parts: Array<{text: string}> }> => {
+    //TODO:
+    // - Map each message to an object with role and parts: [{text: message.content}]
     throw new Error("Not implemented.");
   }
 }

@@ -1,4 +1,4 @@
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenAI, Content } from "@google/genai";
 import { Message, Role } from "../../commons";
 import AIClient from "../base_client";
 
@@ -36,7 +36,7 @@ export class GeminiAICLient extends AIClient {
    */
   response = async (messages: Array<Message>): Promise<Message> => {
     //TODO:
-    // - Convert messages to Gemini Content format
+    // - Convert messages to Gemini Content format using this.convertToGeminiContent(messages)
     // - Call the SDK client (use systemInstruction for system prompt)
     // - Print the response to console
     // - Return an ASSISTANT Message
@@ -57,10 +57,22 @@ export class GeminiAICLient extends AIClient {
    */
   streamResponse = async (messages: Array<Message>): Promise<Message> => {
     //TODO:
-    // - Convert messages to Gemini Content format
+    // - Convert messages to Gemini Content format using this.convertToGeminiContent(messages)
     // - Call the SDK client with streaming (use systemInstruction for system prompt)
     // - Iterate over stream chunks and write to stdout
     // - Return the assembled ASSISTANT Message
+    throw new Error("Not implemented.");
+  };
+
+  /**
+   * Convert Message objects to Gemini Content format.
+   *
+   * @param messages The conversation messages to convert.
+   * @returns Messages in Gemini's Content format.
+   */
+  private convertToGeminiContent = (messages: Array<Message>): Content[] => {
+    //TODO:
+    // - Map each message to a Content object with role and parts
     throw new Error("Not implemented.");
   };
 }

@@ -22,7 +22,7 @@ export class CustomOpenAIResponsesClient extends BaseOpenAiClient {
     // - Prepare headers with authorization and content type
     // - Prepare input messages (use instructions for system prompt)
     // - Execute POST request to the API
-    // - Parse the response (output[0].content[0].text)
+    // - Parse the response using this._extractOutputText(result)
     // - Print the response to console
     // - Return an ASSISTANT Message
     throw new Error("Not implemented.");
@@ -46,6 +46,21 @@ export class CustomOpenAIResponsesClient extends BaseOpenAiClient {
     // - Read the SSE stream: track "event: " lines, parse "data: " for 'response.output_text.delta'
     // - Write delta chunks to stdout
     // - Return the assembled ASSISTANT Message
+    throw new Error("Not implemented.");
+  };
+
+  /**
+   * Extract text content from the Responses API output.
+   *
+   * @param data The JSON response data from the API.
+   * @returns The extracted text content.
+   */
+  private _extractOutputText = (data: Record<string, unknown>): string => {
+    //TODO:
+    // - Iterate through data.output items
+    // - For each item, check its content array
+    // - Return the text of the first content part with type "output_text"
+    // - Throw an error if not found
     throw new Error("Not implemented.");
   };
 }

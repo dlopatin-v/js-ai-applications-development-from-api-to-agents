@@ -44,8 +44,22 @@ export class CustomOpenAIClient extends BaseOpenAiClient {
     // - Prepare message history with the system prompt
     // - Execute POST request with stream: true
     // - Read the SSE stream (each line starts with "data: ", ends with "[DONE]")
-    // - Parse chunks and write to stdout
+    // - Parse chunks and write to stdout using this._getContentSnippet(data)
     // - Return the assembled ASSISTANT Message
+    throw new Error("Not implemented.");
+  };
+
+  /**
+   * Extract content from a streaming data chunk.
+   *
+   * @param data The JSON string from the SSE data field.
+   * @returns The content text from the chunk, or empty string if no content.
+   */
+  private _getContentSnippet = (data: string): string => {
+    //TODO:
+    // - Parse data as JSON
+    // - Extract choices[0].delta.content
+    // - Return it, or '' if not present
     throw new Error("Not implemented.");
   };
 }

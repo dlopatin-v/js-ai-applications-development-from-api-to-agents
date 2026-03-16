@@ -43,6 +43,7 @@ export class CustomAnthropicAIClient extends AIClient {
    *
    * Note: Uses Server-Sent Events (SSE) format where each line starts with "data: ".
    * Listens for 'content_block_delta' events with 'text_delta' type.
+   * Stops processing when 'message_stop' event is received.
    * Each delta is printed to stdout as it arrives.
    */
   streamResponse = async (messages: Array<Message>): Promise<Message> => {
@@ -53,6 +54,7 @@ export class CustomAnthropicAIClient extends AIClient {
     // - Execute POST request to the API (use fetch)
     // - Read the SSE stream: parse "data: " lines for 'content_block_delta' events
     // - Write text deltas to stdout
+    // - Break out of the loop on 'message_stop' event
     // - Return the assembled ASSISTANT Message
     throw new Error("Not implemented.");
   }

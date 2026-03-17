@@ -4,7 +4,7 @@
   "description": "AI Applications Development Course: From API To Agents",
   "main": "index.js",
   "scripts": {
-    "run:ts": "tsx",
+    "ts": "tsx",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

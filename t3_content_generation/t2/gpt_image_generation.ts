@@ -1,0 +1,32 @@
+import { OpenAIClientT3 } from "../_openai_client";
+import { OPENAI_HOST } from "../../commons";
+
+// https://platform.openai.com/docs/guides/image-generation?image-generation-model=gpt-image-1&api=image&multi-turn=imageid
+// ---
+// Request:
+// curl -X POST "https://api.openai.com/v1/images/generations" \
+//     -H "Authorization: Bearer $OPENAI_API_KEY" \
+//     -H "Content-type: application/json" \
+//     -d '{
+//          "model": "gpt-image-1",
+//          "prompt": "smiling catdog."
+//     }'
+// Response:
+// {
+//   "created": 1699900000,
+//   "data": [
+//   {
+//     "b64_json": Qt0n6ArYAEABGOhEoYgVAJFdt8jM79uW2DO...,
+//   }
+// ]
+// }
+
+// @TODO:
+// You need to create some images with `gpt-image-1` model:
+//   - Generate an image with 'Smiling catdog'
+//   - Decode and save it locally
+// ---
+// Hints:
+//   - Use OpenAIClientT3 to connect to OpenAI API
+//   - Use /v1/images/generations endpoint
+//   - The image will be returned in base64 format

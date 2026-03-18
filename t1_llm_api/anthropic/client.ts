@@ -22,7 +22,7 @@ export class AnthropicAIClient extends AIClient {
   constructor(...args: ConstructorParameters<typeof AIClient>) {
     super(...args);
     //TODO:
-    // - Initialize the Anthropic SDK client https://github.com/anthropics/anthropic-sdk-python?tab=readme-ov-file#usage
+    // - Initialize the Anthropic SDK client https://github.com/anthropics/anthropic-sdk-typescript?tab=readme-ov-file#getting-started
     // Useful links with request/response samples:
     //   - https://docs.anthropic.com/en/api/overview
     //   - https://docs.anthropic.com/en/api/messages

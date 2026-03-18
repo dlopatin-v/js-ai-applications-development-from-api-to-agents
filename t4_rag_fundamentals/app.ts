@@ -1,6 +1,6 @@
 import * as fs from "node:fs";
-import path from "node:path";
-import readline from "node:readline/promises";
+import * as path from "node:path";
+import * as readline from "node:readline/promises";
 import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";
 import { HumanMessage, SystemMessage } from "@langchain/core/messages";
 import { FaissStore } from "@langchain/community/vectorstores/faiss";

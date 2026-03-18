@@ -1,6 +1,6 @@
 import { OPENAI_API_KEY, OPENAI_HOST } from "../../commons";
-import fs from "node:fs";
-import path from "node:path";
+import * as fs from "node:fs";
+import * as path from "node:path";
 
 class OpenAIClient {
   constructor(

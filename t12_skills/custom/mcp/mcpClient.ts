@@ -1,0 +1,44 @@
+import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
+import { MCPToolModel } from "./mcpToolModel.js";
+
+export class T12MCPClient {
+  private client: Client;
+  private transport: StreamableHTTPClientTransport | null = null;
+
+  constructor(private readonly mcpServerUrl: string) {
+    this.client = new Client({ name: "t12-mcp-client", version: "1.0.0" });
+  }
+
+  static async create(mcpServerUrl: string): Promise<T12MCPClient> {
+    const instance = new T12MCPClient(mcpServerUrl);
+    await instance.connect();
+    return instance;
+  }
+
+  async connect(): Promise<void> {
+    this.transport = new StreamableHTTPClientTransport(new URL(this.mcpServerUrl));
+    await this.client.connect(this.transport);
+  }
+
+  async getTools(): Promise<MCPToolModel[]> {
+    const result = await this.client.listTools();
+    return result.tools.map((tool) => ({
+      name: tool.name,
+      description: tool.description ?? "",
+      parameters: tool.inputSchema as Record<string, unknown>,
+    }));
+  }
+
+  async callTool(name: string, args: Record<string, unknown>): Promise<string> {
+    const result = await this.client.callTool({ name, arguments: args });
+    if (!result.content || result.content.length === 0) return "";
+    const content = result.content[0];
+    if (content.type === "text") return content.text;
+    return JSON.stringify(content);
+  }
+
+  async close(): Promise<void> {
+    await this.client.close();
+  }
+}

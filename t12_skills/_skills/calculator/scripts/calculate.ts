@@ -1,0 +1,173 @@
+#!/usr/bin/env npx tsx
+/**
+ * Safe math expression evaluator.
+ * No eval() on raw strings — only whitelisted operations are allowed.
+ * Usage: npx tsx calculate.ts "<expression>"
+ */
+
+const SAFE_NAMES: Record<string, number | ((...args: number[]) => number)> = {
+  sqrt: Math.sqrt,
+  abs: Math.abs,
+  round: Math.round,
+  floor: Math.floor,
+  ceil: Math.ceil,
+  log: Math.log,
+  log10: Math.log10,
+  sin: Math.sin,
+  cos: Math.cos,
+  tan: Math.tan,
+  pi: Math.PI,
+  e: Math.E,
+};
+
+/**
+ * Tokenises and evaluates a math expression using a recursive-descent parser.
+ * Supports: +, -, *, /, ** (and ^ as alias), unary minus, parentheses,
+ * and the functions/constants listed in SAFE_NAMES.
+ */
+function safeEval(raw: string): number {
+  const expr = raw.replace(/\^/g, "**");
+  let pos = 0;
+
+  function peek(): string {
+    while (pos < expr.length && expr[pos] === " ") pos++;
+    return expr[pos] ?? "";
+  }
+
+  function consume(ch: string): void {
+    while (pos < expr.length && expr[pos] === " ") pos++;
+    if (expr[pos] !== ch) throw new Error(`Expected '${ch}' at position ${pos}`);
+    pos++;
+  }
+
+  function parseExpr(): number {
+    return parseAddSub();
+  }
+
+  function parseAddSub(): number {
+    let left = parseMulDiv();
+    while (true) {
+      const ch = peek();
+      if (ch === "+") { pos++; left += parseMulDiv(); }
+      else if (ch === "-") { pos++; left -= parseMulDiv(); }
+      else break;
+    }
+    return left;
+  }
+
+  function parseMulDiv(): number {
+    let left = parsePow();
+    while (true) {
+      const ch = peek();
+      if (ch === "*" && expr[pos + 1] !== "*") { pos++; left *= parsePow(); }
+      else if (ch === "/") {
+        pos++;
+        const right = parsePow();
+        if (right === 0) throw new ZeroDivisionError("Division by zero");
+        left /= right;
+      } else if (ch === "%") { pos++; left %= parsePow(); }
+      else break;
+    }
+    return left;
+  }
+
+  function parsePow(): number {
+    const base = parseUnary();
+    if (peek() === "*" && expr[pos + 1] === "*") {
+      pos += 2;
+      const exp = parseUnary();
+      return Math.pow(base, exp);
+    }
+    return base;
+  }
+
+  function parseUnary(): number {
+    const ch = peek();
+    if (ch === "-") { pos++; return -parseUnary(); }
+    if (ch === "+") { pos++; return parseUnary(); }
+    return parseAtom();
+  }
+
+  function parseAtom(): number {
+    const ch = peek();
+
+    // Parenthesised expression
+    if (ch === "(") {
+      consume("(");
+      const val = parseExpr();
+      consume(")");
+      return val;
+    }
+
+    // Number literal
+    if (ch >= "0" && ch <= "9" || ch === ".") {
+      let s = "";
+      while (pos < expr.length && (expr[pos] >= "0" && expr[pos] <= "9" || expr[pos] === "." || expr[pos] === "e" || expr[pos] === "E" || (expr[pos] === "-" && (expr[pos - 1] === "e" || expr[pos - 1] === "E")))) {
+        s += expr[pos++];
+      }
+      const n = Number(s);
+      if (isNaN(n)) throw new Error(`Invalid number: ${s}`);
+      return n;
+    }
+
+    // Identifier (function or constant)
+    if (/[a-zA-Z_]/.test(ch)) {
+      let name = "";
+      while (pos < expr.length && /[a-zA-Z_0-9]/.test(expr[pos])) {
+        name += expr[pos++];
+      }
+      const lower = name.toLowerCase();
+      if (!(lower in SAFE_NAMES)) throw new Error(`Unknown name '${name}'`);
+      const entry = SAFE_NAMES[lower];
+      if (typeof entry === "number") return entry;
+      // It's a function — expect parentheses
+      consume("(");
+      const arg = parseExpr();
+      consume(")");
+      return (entry as (...args: number[]) => number)(arg);
+    }
+
+    throw new Error(`Unexpected character '${ch}' at position ${pos}`);
+  }
+
+  while (pos < expr.length && expr[pos] === " ") pos++;
+  const result = parseExpr();
+  while (pos < expr.length && expr[pos] === " ") pos++;
+  if (pos < expr.length) throw new Error(`Unexpected characters after expression: '${expr.slice(pos)}'`);
+  return result;
+}
+
+class ZeroDivisionError extends Error {
+  constructor(msg: string) { super(msg); this.name = "ZeroDivisionError"; }
+}
+
+function fmtResult(result: number): string {
+  if (Number.isInteger(result)) return String(result);
+  // Up to 10 significant digits, strip trailing zeros
+  const s = result.toPrecision(10).replace(/\.?0+$/, "");
+  return s;
+}
+
+function main(): void {
+  const args = process.argv.slice(2);
+  if (args.length === 0) {
+    console.log('Usage: npx tsx calculate.ts "<expression>"');
+    process.exit(1);
+  }
+
+  const expression = args.join(" ");
+  try {
+    const result = safeEval(expression);
+    console.log(`Expression: ${expression}`);
+    console.log(`Result: ${fmtResult(result)}`);
+  } catch (e: unknown) {
+    if (e instanceof ZeroDivisionError) {
+      console.log(`Error: Division by zero in: ${expression}`);
+    } else {
+      console.log(`Error: ${(e as Error).message}`);
+    }
+    process.exit(1);
+  }
+}
+
+main();

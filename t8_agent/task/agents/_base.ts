@@ -12,7 +12,7 @@ export abstract class BaseAgent {
   protected readonly _model: string;
   protected readonly _apiKey: string;
   protected readonly _systemPrompt: string | undefined;
-  protected readonly _toolsDict: Map<string, BaseTool>;
+  protected readonly _toolsDict: Record<string, BaseTool>;
 
   /**
    * @param model      Provider-specific model identifier (e.g. 'gpt-5.2', 'claude-sonnet-4-5').
@@ -34,7 +34,7 @@ export abstract class BaseAgent {
     this._model = model;
     this._apiKey = apiKey;
     this._systemPrompt = systemPrompt;
-    this._toolsDict = new Map(tools.map((t) => [t.name, t]));
+    this._toolsDict = Object.fromEntries(tools.map((t) => [t.name, t]));
   }
 
   /**

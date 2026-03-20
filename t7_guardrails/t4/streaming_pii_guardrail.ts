@@ -28,22 +28,6 @@ const PROFILE = `
 **Annual Income:** $112,800
 `;
 
-// ─── PII pattern reference ────────────────────────────────────────────────────
-//
-// Pattern name   | Regex shape                                     | Replacement
-// ─────────────────────────────────────────────────────────────────────────────
-// ssn            | \b(\d{3}[-\s]?\d{2}[-\s]?\d{4})\b             | [REDACTED-SSN]
-// credit_card    | \b(?:\d{4}[-\s]?){3}\d{4}\b|\b\d{13,19}\b     | [REDACTED-CREDIT-CARD]
-// license        | \b[A-Z]{2}-DL-[A-Z0-9]+\b                     | [REDACTED-LICENSE]
-// bank_account   | \b(?:Bank\s+of\s+\w+\s*[-\s]*)?(?<!\d)(\d{10,12})(?!\d)\b | [REDACTED-ACCOUNT]
-// date           | month-name date / MM/DD/YYYY / YYYY-MM-DD       | [REDACTED-DATE]
-// cvv            | (?:CVV:?\s*)(\d{3,4})                          | CVV: [REDACTED]
-// card_exp       | (?:Exp(?:iry)?:?\s*)(\d{2}/\d{2})              | Exp: [REDACTED]
-// address        | street number + street type suffix              | [REDACTED-ADDRESS]
-// currency       | \$[\d,]+\.?\d*                                  | [REDACTED-AMOUNT]
-
-// ─── StreamingPIIGuardrail ────────────────────────────────────────────────────
-
 /**
  * Regex-based streaming PII guardrail.
  *
@@ -67,15 +51,15 @@ export class StreamingPIIGuardrail {
    */
   private get piiPatterns(): Record<string, [RegExp, string]> {
     return {
-      ssn:          [/\b(\d{3}[-\s]?\d{2}[-\s]?\d{4})\b/gim,                                                                                                                                           "[REDACTED-SSN]"],
-      credit_card:  [/\b(?:\d{4}[-\s]?){3}\d{4}\b|\b\d{13,19}\b/gim,                                                                                                                                   "[REDACTED-CREDIT-CARD]"],
-      license:      [/\b[A-Z]{2}-DL-[A-Z0-9]+\b/gim,                                                                                                                                                   "[REDACTED-LICENSE]"],
-      bank_account: [/\b(?:Bank\s+of\s+\w+\s*[-\s]*)?(?<!\d)(\d{10,12})(?!\d)\b/gim,                                                                                                                   "[REDACTED-ACCOUNT]"],
-      date:         [/\b(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},?\s+\d{4}\b|\b\d{1,2}\/\d{1,2}\/\d{4}\b|\b\d{4}-\d{2}-\d{2}\b/gim,       "[REDACTED-DATE]"],
-      cvv:          [/(?:CVV:?\s*|CVV["']\s*:\s*["']\s*)(\d{3,4})/gim,                                                                                                                                 "CVV: [REDACTED]"],
-      card_exp:     [/(?:Exp(?:iry)?:?\s*|Expiry["']\s*:\s*["']\s*)(\d{2}\/\d{2})/gim,                                                                                                                 "Exp: [REDACTED]"],
-      address:      [/\b(\d+\s+[A-Za-z\s]+(?:Street|St\.?|Avenue|Ave\.?|Boulevard|Blvd\.?|Road|Rd\.?|Drive|Dr\.?|Lane|Ln\.?|Way|Circle|Cir\.?|Court|Ct\.?|Place|Pl\.?))\b/gim,                       "[REDACTED-ADDRESS]"],
-      currency:     [/\$[\d,]+\.?\d*/gim,                                                                                                                                                               "[REDACTED-AMOUNT]"],
+      ssn: [/\b(\d{3}[-\s]?\d{2}[-\s]?\d{4})\b/gim, "[REDACTED-SSN]"],
+      credit_card: [/\b(?:\d{4}[-\s]?){3}\d{4}\b|\b\d{13,19}\b/gim, "[REDACTED-CREDIT-CARD]"],
+      license: [/\b[A-Z]{2}-DL-[A-Z0-9]+\b/gim, "[REDACTED-LICENSE]"],
+      bank_account: [/\b(?:Bank\s+of\s+\w+\s*[-\s]*)?(?<!\d)(\d{10,12})(?!\d)\b/gim, "[REDACTED-ACCOUNT]"],
+      date: [/\b(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},?\s+\d{4}\b|\b\d{1,2}\/\d{1,2}\/\d{4}\b|\b\d{4}-\d{2}-\d{2}\b/gim, "[REDACTED-DATE]"],
+      cvv: [/(?:CVV:?\s*|CVV["']\s*:\s*["']\s*)(\d{3,4})/gim, "CVV: [REDACTED]"],
+      card_exp: [/(?:Exp(?:iry)?:?\s*|Expiry["']\s*:\s*["']\s*)(\d{2}\/\d{2})/gim, "Exp: [REDACTED]"],
+      address: [/\b(\d+\s+[A-Za-z\s]+(?:Street|St\.?|Avenue|Ave\.?|Boulevard|Blvd\.?|Road|Rd\.?|Drive|Dr\.?|Lane|Ln\.?|Way|Circle|Cir\.?|Court|Ct\.?|Place|Pl\.?))\b/gim, "[REDACTED-ADDRESS]"],
+      currency: [/\$[\d,]+\.?\d*/gim, "[REDACTED-AMOUNT]"],
     };
   }
 

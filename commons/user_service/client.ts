@@ -6,7 +6,7 @@ const DEFAULT_HEADERS = {
   "Content-Type": "application/json"
 };
 
-class UserServiceClient {
+export class UserServiceClient {
 
   private userToString = (user: any): string => {
     const lines = Object.keys(user).map((key) => `  ${key}: ${user[key]}`);
@@ -18,7 +18,7 @@ class UserServiceClient {
   }
 
   getUser = async (userId: string): Promise<string> => {
-    const response = await fetch(`${USER_SERVICE_PATH}/${userId}`, {headers: DEFAULT_HEADERS})
+    const response = await fetch(`${USER_SERVICE_PATH}/${userId}`, { headers: DEFAULT_HEADERS })
 
     if (response.status === 200) {
       const result = await response.json();
@@ -31,7 +31,7 @@ class UserServiceClient {
 
   searchUsers = async (partialUser: UserSearchRequest): Promise<string> => {
     const params = new URLSearchParams(partialUser as Record<string, string>);
-    const response = await fetch(`${USER_SERVICE_PATH}/search?${params.toString()}`, {headers: DEFAULT_HEADERS})
+    const response = await fetch(`${USER_SERVICE_PATH}/search?${params.toString()}`, { headers: DEFAULT_HEADERS })
 
     if (response.status === 200) {
       const result = await response.json();
@@ -73,7 +73,7 @@ class UserServiceClient {
     throw new Error(`HTTP ${response.status}: ${response.statusText}}`);
   }
   deleteUser = async (userId: string): Promise<string> => {
-    const response = await fetch(`${USER_SERVICE_PATH}/${userId}`, {headers: DEFAULT_HEADERS, method: "DELETE"});
+    const response = await fetch(`${USER_SERVICE_PATH}/${userId}`, { headers: DEFAULT_HEADERS, method: "DELETE" });
 
     if (response.status === 200) {
       await response.json();

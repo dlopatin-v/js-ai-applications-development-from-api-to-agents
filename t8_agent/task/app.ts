@@ -1,11 +1,7 @@
 import * as readline from "readline";
-import { ANTHROPIC_API_KEY, OPENAI_API_KEY } from "../../commons/constants";
-import { Conversation } from "../../commons/models/conversation";
-import { Message } from "../../commons/models/message";
-import { Role } from "../../commons/models/role";
+import { ANTHROPIC_API_KEY, OPENAI_API_KEY, Conversation, Message, Role } from "../../commons";
 import userClient from "../../commons/user_service/client";
 import { AnthropicBasedAgent } from "./agents/anthropic";
-import { OpenAIBasedAgent } from "./agents/openai";
 import { SYSTEM_PROMPT } from "./prompts";
 import { CreateUserTool } from "./tools/users/create_user_tool";
 import { DeleteUserTool } from "./tools/users/delete_user_tool";

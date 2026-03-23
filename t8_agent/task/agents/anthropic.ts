@@ -115,11 +115,11 @@ export class AnthropicBasedAgent extends BaseAgent {
    *
    *   if `messages[i].role === Role.TOOL`:
    *     Collect all consecutive TOOL messages into tool_results:
-   *       `[{ type: "tool_result", tool_use_id: msg.toolCallId, content: msg.content }, ...]`
+   *       `[{ type: "tool_result", tool_use_id: msg.tool_call_id, content: msg.content }, ...]`
    *     Push `{ role: "user", content: tool_results }` to result.
    *
    *   else if `messages[i].role === Role.ASSISTANT`:
-   *     `content = msg.toolCalls ?? msg.content`
+   *     `content = msg.tool_calls ?? msg.content`
    *     Push `{ role: "assistant", content }` to result.
    *
    *   else (USER / SYSTEM):
@@ -140,11 +140,11 @@ export class AnthropicBasedAgent extends BaseAgent {
     //
     //   if messages[i].role === Role.TOOL:
     //     Collect all consecutive TOOL messages into tool_results:
-    //       [{ type: "tool_result", tool_use_id: msg.toolCallId, content: msg.content }, ...]
+    //       [{ type: "tool_result", tool_use_id: msg.tool_call_id, content: msg.content }, ...]
     //     Push { role: "user", content: tool_results } to result.
     //
     //   else if messages[i].role === Role.ASSISTANT:
-    //     content = msg.toolCalls if msg.toolCalls else msg.content
+    //     content = msg.tool_calls if msg.tool_calls else msg.content
     //     Push { role: "assistant", content } to result.
     //
     //   else (USER / SYSTEM):

@@ -1,0 +1,54 @@
+{
+  "info": {
+    "_postman_id": "8c512591-b693-4991-b5d5-e74cb29fe785",
+    "name": "DialX",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "32832870"
+  },
+  "item": [
+    {
+      "name": "https://ai-proxy.lab.epam.com/openai/deployments/gpt-4/chat/completions",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "Api-Key",
+            "value": "{{api_key}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"Hello!\"\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://ai-proxy.lab.epam.com/openai/deployments/gpt-4/chat/completions",
+          "protocol": "https",
+          "host": [
+            "ai-proxy",
+            "lab",
+            "epam",
+            "com"
+          ],
+          "path": [
+            "openai",
+            "deployments",
+            "gpt-4",
+            "chat",
+            "completions"
+          ]
+        },
+        "description": "Example for Dial API USage"
+      },
+      "response": []
+    }
+  ]
+}

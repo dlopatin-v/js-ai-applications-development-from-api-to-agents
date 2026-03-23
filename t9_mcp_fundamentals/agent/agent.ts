@@ -30,6 +30,7 @@ export class AgentMCPFundamentals {
 
   private _collectToolCalls(toolDeltas: ToolCallDelta[]): OpenAI.Chat.Completions.ChatCompletionMessageToolCall[] {
     const toolMap: Record<number, { id: string; type: string; function: { name: string; arguments: string } }> = {};
+    //@TODO Revisit this
 
     for (const delta of toolDeltas) {
       const idx = delta.index;
@@ -48,7 +49,7 @@ export class AgentMCPFundamentals {
   private async _streamResponse(messages: Message[]): Promise<Message> {
     const stream = await this.openai.chat.completions.create({
       model: this.model,
-      messages: messages.map((m) => m.toDict()) as OpenAI.Chat.Completions.ChatCompletionMessageParam[],
+      messages: messages as any,
       tools: this.tools as OpenAI.Chat.Completions.ChatCompletionTool[],
       temperature: 0.0,
       stream: true,
@@ -75,14 +76,12 @@ export class AgentMCPFundamentals {
       }
     }
 
-    console.log();
-
     return new Message(
       Role.ASSISTANT,
       content,
       undefined,
       undefined,
-      toolDeltas.length > 0 ? this._collectToolCalls(toolDeltas) : []
+      toolDeltas.length > 0 ? this._collectToolCalls(toolDeltas) : [] as any
     );
   }
 

@@ -3,95 +3,90 @@ import { z } from "zod";
 import * as fs from "fs";
 import * as path from "path";
 import { UserServiceClient } from "../../commons/user_service/client.js";
-
-export const server = new McpServer({
-  name: "users-management-mcp-server",
-  version: "1.0.0",
-});
+import { userSearchSchema } from "../../commons/user_service/user_info.js";
 
 const userClient = new UserServiceClient();
 
+export function createServer(): McpServer {
+  const server = new McpServer({
+    name: "users-management-mcp-server",
+    version: "1.0.0",
+  });
+
 // ==================== EXISTING TOOLS ====================
 
-server.tool(
+server.registerTool(
   "get_user_by_id",
-  "Provides full user information by user_id",
-  { user_id: z.number().int().describe("The user ID to look up") },
+  {
+    description: "Provides full user information by user_id",
+    inputSchema:
+      { user_id: z.number().int().describe("The user ID to look up") },
+  },
   async ({ user_id }) => {
     const result = await userClient.getUser(user_id);
     return { content: [{ type: "text", text: String(result) }] };
   }
 );
 
-server.tool(
+server.registerTool(
   "delete_user",
-  "Deletes user by user_id",
-  { user_id: z.number().int().describe("The user ID to delete") },
+  {
+    description: "Deletes user by user_id",
+    inputSchema:
+      { user_id: z.number().int().describe("The user ID to delete") },
+  },
   async ({ user_id }) => {
     const result = await userClient.deleteUser(user_id);
     return { content: [{ type: "text", text: String(result) }] };
   }
 );
 
-server.tool(
-  "search_user",
-  "Searches for users by name, surname, email and gender",
-  {
-    name: z.string().optional().describe("First name (partial match)"),
-    surname: z.string().optional().describe("Last name (partial match)"),
-    email: z.string().optional().describe("Email (partial match)"),
-    gender: z.string().optional().describe("Gender (male, female, other, prefer_not_to_say)"),
-  },
-  async (args) => {
-    const result = await userClient.searchUsers(args);
-    return { content: [{ type: "text", text: String(result) }] };
-  }
-);
+// ==================== TODO: Implement the remaining tools ====================
 
-server.tool(
-  "add_user",
-  "Adds new user into the system",
-  {
-    name: z.string().describe("First name"),
-    surname: z.string().describe("Last name"),
-    email: z.string().email().describe("Email address"),
-    about_me: z.string().optional().describe("Biography"),
-    phone: z.string().optional().describe("Phone number"),
-    date_of_birth: z.string().optional().describe("Date of birth (YYYY-MM-DD)"),
-    gender: z.string().optional().describe("Gender"),
-    company: z.string().optional().describe("Company name"),
-    salary: z.number().optional().describe("Salary"),
-  },
-  async (args) => {
-    const result = await userClient.addUser(args);
-    return { content: [{ type: "text", text: String(result) }] };
-  }
-);
+// TODO 1: Register the "search_user" tool using server.registerTool()
+//   Step 1: Call server.registerTool() with three arguments:
+//           - tool name: "search_user"
+//           - config object: { description: "Searches for users by name, surname, email and gender",
+//                              inputSchema: userSearchSchema.shape }
+//             Note: userSearchSchema is already imported above — use .shape to pass its
+//             fields directly as Zod schemas to the MCP SDK
+//           - async handler: async (args) => { ... }
+//   Step 2: Inside the handler:
+//           - Call userClient.searchUsers(args)
+//           - Return { content: [{ type: "text", text: String(result) }] }
 
-server.tool(
-  "update_user",
-  "Updates user by user_id",
-  {
-    user_id: z.number().int().describe("The user ID to update"),
-    name: z.string().optional().describe("First name"),
-    surname: z.string().optional().describe("Last name"),
-    email: z.string().email().optional().describe("Email address"),
-    about_me: z.string().optional().describe("Biography"),
-    phone: z.string().optional().describe("Phone number"),
-    date_of_birth: z.string().optional().describe("Date of birth (YYYY-MM-DD)"),
-    gender: z.string().optional().describe("Gender"),
-    company: z.string().optional().describe("Company name"),
-    salary: z.number().optional().describe("Salary"),
-  },
-  async ({ user_id, ...updateData }) => {
-    const result = await userClient.updateUser(user_id, updateData);
-    return { content: [{ type: "text", text: String(result) }] };
-  }
-);
+// TODO 2: Register the "add_user" tool using server.registerTool()
+//   Step 1: Call server.registerTool() with:
+//           - tool name: "add_user"
+//           - config object with description: "Adds new user into the system"
+//           - inputSchema with the following Zod fields:
+//               name: z.string().describe("First name")                               — required
+//               surname: z.string().describe("Last name")                             — required
+//               email: z.string().email().describe("Email address")                   — required
+//               about_me: z.string().optional().describe("Biography")
+//               phone: z.string().optional().describe("Phone number")
+//               date_of_birth: z.string().optional().describe("Date of birth (YYYY-MM-DD)")
+//               gender: z.string().optional().describe("Gender")
+//               company: z.string().optional().describe("Company name")
+//               salary: z.number().optional().describe("Salary")
+//   Step 2: Inside the handler:
+//           - Call userClient.addUser(args)
+//           - Return { content: [{ type: "text", text: String(result) }] }
+
+// TODO 3: Register the "update_user" tool using server.registerTool()
+//   Step 1: Call server.registerTool() with:
+//           - tool name: "update_user"
+//           - config object with description: "Updates user by user_id"
+//           - inputSchema: user_id as z.number().int() plus all the same optional
+//             fields as add_user above
+//   Step 2: Inside the handler:
+//           - Destructure user_id from args: async ({ user_id, ...updateData }) => { ... }
+//           - Call userClient.updateUser(user_id, updateData)
+//           - Return { content: [{ type: "text", text: String(result) }] }
 
 // ==================== MCP RESOURCES ====================
 
-server.resource(
+server.registerResource(
   "flow-diagram",
   "users-management://flow-diagram",
   { mimeType: "image/png", description: "The Users Management Service flow diagram as PNG image" },
@@ -117,9 +112,11 @@ server.resource(
 
 // ==================== MCP PROMPTS ====================
 
-server.prompt(
+server.registerPrompt(
   "user_search_assistant_prompt",
-  "Helps users formulate effective search queries",
+  {
+    description: "Helps users formulate effective search queries",
+  },
   async () => ({
     messages: [
       {
@@ -181,9 +178,11 @@ why certain approaches might be more effective for their goals.
   })
 );
 
-server.prompt(
+server.registerPrompt(
   "user_profile_creation_prompt",
-  "Guides creation of realistic user profiles",
+  {
+    description: "Guides creation of realistic user profiles",
+  },
   async () => ({
     messages: [
       {
@@ -265,3 +264,6 @@ When creating profiles, aim for diversity in:
     ],
   })
 );
+
+  return server;
+}

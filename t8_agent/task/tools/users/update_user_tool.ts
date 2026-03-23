@@ -1,4 +1,4 @@
-import { UserUpdate } from "../../../../commons/user_service/user_info";
+import { UserUpdate } from "../../../../commons";
 import { BaseUserServiceTool } from "./base";
 
 export class UpdateUserTool extends BaseUserServiceTool {
@@ -30,7 +30,7 @@ export class UpdateUserTool extends BaseUserServiceTool {
 
   async execute(args: Record<string, unknown>): Promise<string> {
     try {
-      const userId = String(args["id"]);
+      const userId = Number(args["id"]);
       const newInfo = args["new_info"] as unknown as UserUpdate;
       return await this.userClient.updateUser(userId, newInfo);
     } catch (e: any) {

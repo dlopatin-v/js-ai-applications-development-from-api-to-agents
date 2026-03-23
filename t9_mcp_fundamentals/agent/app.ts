@@ -1,7 +1,6 @@
 import * as readline from "readline";
-import { OPENAI_API_KEY } from "../../commons/constants.js";
-import { Message } from "../../commons/models/message.js";
-import { Role } from "../../commons/models/role.js";
+import * as path from "path";
+import { OPENAI_API_KEY, Message, Role } from "../../commons";
 import { AgentMCPFundamentals } from "./agent.js";
 import { StdioMCPClient } from "./mcp_clients/stdio.js";
 import { HttpMCPClient } from "./mcp_clients/http.js";
@@ -12,8 +11,36 @@ import { MCPClient, ToolSchema } from "./mcp_clients/base.js";
 // Pay attention that `fetch` doesn't have resources and prompts
 
 async function main() {
-  const mcpClient: MCPClient = new StdioMCPClient({ dockerImage: "mcp/duckduckgo:latest" });
+  // TODO: Create an mcpClient and connect to an MCP server.
+  // Choose ONE of the three options below (uncomment and adjust the chosen one):
+
+  // Option 1 — Local STDIO: spawns your own stdioServer.ts as a child process.
+  //   Step 1: Import * as path from "path" (already done above)
+  //   Step 2: Create a StdioMCPClient with:
+  //           command: "npm"
+  //           args: ["run", "ts", path.join(__dirname, "..", "mcp_server", "stdioServer.ts")]
+  //           env: { ...process.env } as Record<string, string>
+  //   This runs `npm run ts <path-to-stdioServer>` as a subprocess and communicates
+  //   with it over stdin/stdout using the MCP STDIO transport.
+  // const mcpClient: MCPClient = new StdioMCPClient({
+  //   command: "npm",
+  //   args: ["run", "ts", path.join(__dirname, "..", "mcp_server", "stdioServer.ts")],
+  //   env: { ...process.env } as Record<string, string>,
+  // });
+
+  // Option 2 — Docker STDIO: runs a containerised MCP server.
+  //   Step 1: Pull the image: docker pull mcp/duckduckgo:latest
+  //   Step 2: Create a StdioMCPClient with: { dockerImage: "mcp/duckduckgo:latest" }
+  //   The StdioMCPClient handles running `docker run --rm -i <image>` internally.
+  //   Note: this server only exposes tools — getResources() and getPrompts() will throw.
+  // const mcpClient: MCPClient = new StdioMCPClient({ dockerImage: "mcp/duckduckgo:latest" });
+
+  // Option 3 — HTTP: connects to a running HTTP MCP server.
+  //   Step 1: Start the server in another terminal: npm run ts t9_mcp_fundamentals/mcp_server/httpServer.ts
+  //   Step 2: Create an HttpMCPClient with the server URL: "http://localhost:8005/mcp"
   // const mcpClient: MCPClient = new HttpMCPClient("http://localhost:8005/mcp");
+
+  const mcpClient: MCPClient = new StdioMCPClient({ dockerImage: "mcp/duckduckgo:latest" });
 
   await mcpClient.connect();
 

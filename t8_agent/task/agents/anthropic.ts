@@ -97,7 +97,7 @@ export class AnthropicBasedAgent extends BaseAgent {
           role: Role.USER,
           content: toolGroup.map((toolMsg) => ({
             type: "tool_result",
-            tool_use_id: toolMsg.toolCallId,
+            tool_use_id: toolMsg.tool_call_id,
             content: toolMsg.content,
           })),
         });
@@ -105,7 +105,7 @@ export class AnthropicBasedAgent extends BaseAgent {
       }
 
       if (msg.role === Role.ASSISTANT) {
-        const content = msg.toolCalls?.length ? msg.toolCalls : msg.content;
+        const content = msg.tool_calls?.length ? msg.tool_calls : msg.content;
         result.push({ role: Role.ASSISTANT, content });
         i += 1;
         continue;

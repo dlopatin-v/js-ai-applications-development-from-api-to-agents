@@ -3,7 +3,7 @@ import { Message } from "../../commons/models/message.js";
 import { Role } from "../../commons/models/role.js";
 import { MCPClient, ToolSchema } from "./mcp_clients/base.js";
 
-interface ToolCallDelta {
+type ToolCallDelta = {
   index: number;
   id?: string | null;
   type?: string | null;
@@ -30,7 +30,6 @@ export class AgentMCPFundamentals {
 
   private _collectToolCalls(toolDeltas: ToolCallDelta[]): OpenAI.Chat.Completions.ChatCompletionMessageToolCall[] {
     const toolMap: Record<number, { id: string; type: string; function: { name: string; arguments: string } }> = {};
-    //@TODO Revisit this
 
     for (const delta of toolDeltas) {
       const idx = delta.index;
@@ -88,7 +87,7 @@ export class AgentMCPFundamentals {
   async getCompletion(messages: Message[]): Promise<Message> {
     const aiMessage = await this._streamResponse(messages);
 
-    if (aiMessage.toolCalls && aiMessage.toolCalls.length > 0) {
+    if (aiMessage.tool_calls && aiMessage.tool_calls.length > 0) {
       messages.push(aiMessage);
       await this._callTools(aiMessage, messages);
       return await this.getCompletion(messages);
@@ -98,7 +97,7 @@ export class AgentMCPFundamentals {
   }
 
   private async _callTools(aiMessage: Message, messages: Message[]): Promise<void> {
-    for (const toolCall of aiMessage.toolCalls ?? []) {
+    for (const toolCall of (aiMessage.tool_calls ?? []) as any) {
       const toolName = toolCall.function.name;
       const toolArgs = JSON.parse(toolCall.function.arguments);
 

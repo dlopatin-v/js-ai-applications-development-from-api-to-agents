@@ -20,7 +20,7 @@ export class T12Agent {
   async chatCompletion(messages: Message[], logMessages = false): Promise<Message> {
     if (logMessages) {
       console.log("\n--- REQUEST ---");
-      console.log(JSON.stringify(messages.map((m) => m.toDict()), null, 2));
+      console.log(JSON.stringify(messages, null, 2));
     }
     return this._chatCompletion(messages, logMessages);
   }
@@ -29,7 +29,7 @@ export class T12Agent {
     const response = await this.client.chat.completions.create({
       model: this.model,
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      messages: messages.map((m) => m.toDict()) as any,
+      messages: messages as any,
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       tools: this.toolsSchemas as any,
     });
@@ -41,7 +41,7 @@ export class T12Agent {
       assistantMsg.content = choice.message.content;
     }
     if (choice.message.tool_calls && choice.message.tool_calls.length > 0) {
-      assistantMsg.toolCalls = choice.message.tool_calls.map((tc) => ({
+      assistantMsg.tool_calls = choice.message.tool_calls.map((tc) => ({
         id: tc.id,
         type: tc.type,
         function: { name: tc.function.name, arguments: tc.function.arguments },
@@ -54,8 +54,8 @@ export class T12Agent {
       messages.push(...toolMessages);
 
       if (logMessages) {
-        console.log(JSON.stringify(assistantMsg.toDict(), null, 2));
-        console.log(JSON.stringify(toolMessages.map((m) => m.toDict()), null, 2));
+        console.log(JSON.stringify(assistantMsg, null, 2));
+        console.log(JSON.stringify(toolMessages, null, 2));
       }
       return this._chatCompletion(messages, logMessages);
     }

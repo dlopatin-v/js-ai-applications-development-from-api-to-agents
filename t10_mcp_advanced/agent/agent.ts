@@ -57,9 +57,7 @@ export class CustomAgentMCP {
   private async _streamResponse(messages: Message[]): Promise<Message> {
     const stream = await this.openai.chat.completions.create({
       model: this.model,
-      messages: messages.map(
-        (m) => m.toDict()
-      ) as OpenAI.Chat.Completions.ChatCompletionMessageParam[],
+      messages: messages as any,
       tools: this.tools as OpenAI.Chat.Completions.ChatCompletionTool[],
       temperature: 0.0,
       stream: true,
@@ -100,7 +98,7 @@ export class CustomAgentMCP {
   async getCompletion(messages: Message[]): Promise<Message> {
     const aiMessage = await this._streamResponse(messages);
 
-    if (aiMessage.toolCalls && aiMessage.toolCalls.length > 0) {
+    if (aiMessage.tool_calls && aiMessage.tool_calls.length > 0) {
       messages.push(aiMessage);
       await this._callTools(aiMessage, messages);
       return await this.getCompletion(messages);
@@ -110,7 +108,7 @@ export class CustomAgentMCP {
   }
 
   private async _callTools(aiMessage: Message, messages: Message[]): Promise<void> {
-    for (const toolCall of aiMessage.toolCalls ?? []) {
+    for (const toolCall of aiMessage.tool_calls ?? []) {
       const toolName = toolCall.function.name;
       const toolArgs = JSON.parse(toolCall.function.arguments);
 

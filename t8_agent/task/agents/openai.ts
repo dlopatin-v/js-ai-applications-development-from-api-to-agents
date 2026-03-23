@@ -36,11 +36,11 @@ export class OpenAIBasedAgent extends BaseAgent {
     const serializedMessages = requestMessages.map((msg) => {
       const base: Record<string, unknown> = { role: msg.role, content: msg.content };
       if (msg.role === Role.TOOL) {
-        base.tool_call_id = msg.toolCallId;
+        base.tool_call_id = msg.tool_call_id;
         base.name = msg.name;
       }
-      if (msg.role === Role.ASSISTANT && msg.toolCalls) {
-        base.tool_calls = msg.toolCalls;
+      if (msg.role === Role.ASSISTANT && msg.tool_calls) {
+        base.tool_calls = msg.tool_calls;
       }
       return base;
     });

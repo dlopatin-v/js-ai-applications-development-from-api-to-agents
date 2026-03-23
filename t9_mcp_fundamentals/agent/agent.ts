@@ -10,6 +10,9 @@ interface ToolCallDelta {
   function?: { name?: string | null; arguments?: string };
 }
 
+type OpenAIToolCall = OpenAI.Chat.Completions.ChatCompletionMessageToolCall;
+type OpenAIFunctionToolCall = Extract<OpenAIToolCall, { type: "function" }>;
+
 export class AgentMCPFundamentals {
   private readonly openai: OpenAI;
   private readonly model: string;
@@ -28,27 +31,33 @@ export class AgentMCPFundamentals {
     this.mcpClient = options.mcpClient;
   }
 
-  private _collectToolCalls(toolDeltas: ToolCallDelta[]): OpenAI.Chat.Completions.ChatCompletionMessageToolCall[] {
-    const toolMap: Record<number, { id: string; type: string; function: { name: string; arguments: string } }> = {};
+  private _collectToolCalls(toolDeltas: ToolCallDelta[]): OpenAIFunctionToolCall[] {
+    return Object.values(
+      toolDeltas.reduce<Record<number, { id: string; type: string; function: { name: string; arguments: string } }>>(
+        (toolMap, delta) => {
+          const currentToolCall = toolMap[delta.index] ?? {
+            id: "",
+            type: "function",
+            function: { name: "", arguments: "" },
+          };
 
-    for (const delta of toolDeltas) {
-      const idx = delta.index;
-      if (!toolMap[idx]) {
-        toolMap[idx] = { id: "", type: "function", function: { name: "", arguments: "" } };
-      }
-      if (delta.id) toolMap[idx].id = delta.id;
-      if (delta.type) toolMap[idx].type = delta.type;
-      if (delta.function?.name) toolMap[idx].function.name = delta.function.name;
-      if (delta.function?.arguments) toolMap[idx].function.arguments += delta.function.arguments;
-    }
+          if (delta.id) currentToolCall.id = delta.id;
+          if (delta.type) currentToolCall.type = delta.type;
+          if (delta.function?.name) currentToolCall.function.name = delta.function.name;
+          if (delta.function?.arguments) currentToolCall.function.arguments += delta.function.arguments;
 
-    return Object.values(toolMap) as OpenAI.Chat.Completions.ChatCompletionMessageToolCall[];
+          toolMap[delta.index] = currentToolCall;
+          return toolMap;
+        },
+        {}
+      )
+    ) as OpenAIFunctionToolCall[];
   }
 
   private async _streamResponse(messages: Message[]): Promise<Message> {
     const stream = await this.openai.chat.completions.create({
       model: this.model,
-      messages: messages.map((m) => m.toDict()) as OpenAI.Chat.Completions.ChatCompletionMessageParam[],
+      messages: messages as any,
       tools: this.tools as OpenAI.Chat.Completions.ChatCompletionTool[],
       temperature: 0.0,
       stream: true,
@@ -75,14 +84,12 @@ export class AgentMCPFundamentals {
       }
     }
 
-    console.log();
-
     return new Message(
       Role.ASSISTANT,
       content,
       undefined,
       undefined,
-      toolDeltas.length > 0 ? this._collectToolCalls(toolDeltas) : []
+      toolDeltas.length > 0 ? this._collectToolCalls(toolDeltas) : [] as any
     );
   }
 
@@ -99,7 +106,7 @@ export class AgentMCPFundamentals {
   }
 
   private async _callTools(aiMessage: Message, messages: Message[]): Promise<void> {
-    for (const toolCall of aiMessage.toolCalls ?? []) {
+    for (const toolCall of (aiMessage.toolCalls ?? []) as unknown as OpenAIFunctionToolCall[]) {
       const toolName = toolCall.function.name;
       const toolArgs = JSON.parse(toolCall.function.arguments);
 

@@ -1,4 +1,4 @@
-import { UserUpdate } from "../../../../commons/user_service/user_info";
+import { UserUpdate } from "../../../../commons";
 import { BaseUserServiceTool } from "./base";
 
 export class UpdateUserTool extends BaseUserServiceTool {

@@ -17,7 +17,7 @@ export class UserServiceClient {
     return users.map(this.userToString).join("") + "\n";
   }
 
-  getUser = async (userId: string): Promise<string> => {
+  getUser = async (userId: number): Promise<string> => {
     const response = await fetch(`${USER_SERVICE_PATH}/${userId}`, { headers: DEFAULT_HEADERS })
 
     if (response.status === 200) {
@@ -39,7 +39,7 @@ export class UserServiceClient {
       return this.usersToString(result);
     }
 
-    throw new Error(`HTTP ${response.status}: ${response.statusText}}`);
+    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
   }
 
   addUser = async (user: UserCreate): Promise<string> => {
@@ -57,7 +57,7 @@ export class UserServiceClient {
 
     throw new Error(`HTTP ${response.status}: ${response.statusText}}`);
   }
-  updateUser = async (userId: string, user: UserUpdate): Promise<string> => {
+  updateUser = async (userId: number, user: UserUpdate): Promise<string> => {
     const response = await fetch(`${USER_SERVICE_PATH}/${userId}`, {
       headers: DEFAULT_HEADERS,
       method: "PUT",
@@ -70,9 +70,9 @@ export class UserServiceClient {
       return `User successfully updated: ${response.text}`;
     }
 
-    throw new Error(`HTTP ${response.status}: ${response.statusText}}`);
+    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
   }
-  deleteUser = async (userId: string): Promise<string> => {
+  deleteUser = async (userId: number): Promise<string> => {
     const response = await fetch(`${USER_SERVICE_PATH}/${userId}`, { headers: DEFAULT_HEADERS, method: "DELETE" });
 
     if (response.status === 200) {
@@ -83,7 +83,7 @@ export class UserServiceClient {
       return "User successfully deleted";
     }
 
-    throw new Error(`HTTP ${response.status}: ${response.statusText}}`);
+    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
   }
 
 }

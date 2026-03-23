@@ -1,7 +1,7 @@
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { Resource, Prompt } from "@modelcontextprotocol/sdk/types.js";
 
-export interface ToolSchema {
+export type ToolSchema = {
   type: "function";
   function: {
     name: string;
@@ -32,39 +32,51 @@ export abstract class MCPClient {
     }));
   }
 
-  async callTool(toolName: string, toolArgs: Record<string, unknown>): Promise<unknown> {
-    console.log(`    Calling \`${toolName}\` with`, toolArgs);
+  async callTool(toolName: string, toolArgs: Record<string, unknown>): Promise<string> {
+    console.log(`    🔧 Calling ${toolName} with ${toolArgs}`);
     const result = await this.client.callTool({ name: toolName, arguments: toolArgs });
-    const content = result.content[0];
+    const content = result.content[0] as any;
+
     console.log(`    ⚙️:`, content, "\n");
-    if (content && "text" in content) return content.text;
+
+    if (content.text) return content.text;
     return content;
   }
 
   async getResources(): Promise<Resource[]> {
-    const result = await this.client.listResources();
-    return result.resources;
+    try {
+      const result = await this.client.listResources();
+      return result.resources;
+    } catch (error) {
+      throw new Error(`Server doesn't support list_resources:  ${error}`);
+    }
   }
 
   async getResource(uri: string): Promise<string | Uint8Array> {
     const result = await this.client.readResource({ uri });
     const content = result.contents[0];
+
     if ("text" in content) return content.text;
     if ("blob" in content) return Buffer.from(content.blob, "base64");
-    throw new Error(`Unexpected resource content type`);
+    throw new Error(`Unknown resource type for ${uri}`);
   }
 
   async getPrompts(): Promise<Prompt[]> {
-    const result = await this.client.listPrompts();
-    return result.prompts;
+    try {
+      const result = await this.client.listPrompts();
+      return result.prompts;
+    } catch (error) {
+      throw new Error(`Server doesn't support list_prompts: ${error}`);
+    }
   }
 
   async getPrompt(name: string): Promise<string> {
     const result = await this.client.getPrompt({ name });
-    const msg = result.messages[0];
-    if (msg && typeof msg.content === "object" && "text" in msg.content) {
-      return msg.content.text;
+
+    if (result.messages[0].content.type == "text") {
+      return result.messages[0].content.text;
     }
-    return String(msg?.content ?? "");
+
+    return result.messages[0].content.toString();
   }
 }

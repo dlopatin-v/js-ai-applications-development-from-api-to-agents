@@ -18,8 +18,4 @@ export class HttpMCPClient extends MCPClient {
   async disconnect(): Promise<void> {
     await this.client.close();
   }
-
-  async [Symbol.asyncDispose]() {
-    await this.disconnect();
-  }
 }

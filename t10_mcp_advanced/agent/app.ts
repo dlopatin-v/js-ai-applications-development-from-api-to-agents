@@ -8,26 +8,26 @@ import { CustomAgentMCP } from "./agent.js";
 
 async function collectTools(
   client: MCPClient | CustomMCPClient,
-  tools: ToolSchema[],
   toolNameClientMap: Map<string, MCPClient | CustomMCPClient>
-): Promise<void> {
+): Promise<ToolSchema[]> {
+  const tools: ToolSchema[] = [];
   const clientTools = await client.getTools();
   for (const tool of clientTools) {
     tools.push(tool);
     toolNameClientMap.set(tool.function.name, client);
     console.log(JSON.stringify(tool, null, 2));
   }
+  return tools;
 }
 
 async function main(): Promise<void> {
-  const tools: ToolSchema[] = [];
   const toolNameClientMap = new Map<string, MCPClient | CustomMCPClient>();
 
-  const umsMcpClient = await MCPClient.create("http://localhost:8006/mcp");
-  await collectTools(umsMcpClient, tools, toolNameClientMap);
+  const umsMcpClient = await CustomMCPClient.create("http://localhost:8006/mcp");
+  const tools = await collectTools(umsMcpClient, toolNameClientMap);
 
-  const fetchMcpClient = await CustomMCPClient.create("https://remote.mcpservers.org/fetch/mcp");
-  await collectTools(fetchMcpClient, tools, toolNameClientMap);
+  // const fetchMcpClient = await CustomMCPClient.create("https://remote.mcpservers.org/fetch/mcp");
+  // const tools = await collectTools(fetchMcpClient, toolNameClientMap);
 
   const agent = new CustomAgentMCP({
     apiKey: OPENAI_API_KEY,

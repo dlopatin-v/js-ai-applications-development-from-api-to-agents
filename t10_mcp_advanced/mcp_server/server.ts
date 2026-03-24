@@ -1,4 +1,4 @@
-import http from "http";
+import express, { Request, Response } from "express";
 import { MCPRequest } from "./models/request.js";
 import { MCPResponse } from "./models/response.js";
 import { UmsMCPServer } from "./umsMcpServer.js";
@@ -17,7 +17,7 @@ function validateAcceptHeader(accept: string | undefined): boolean {
 }
 
 function sendSseResponse(
-  res: http.ServerResponse,
+  res: Response,
   sessionId: string | undefined,
   response: MCPResponse
 ): void {
@@ -35,18 +35,14 @@ function sendSseResponse(
   res.end();
 }
 
-function sendError(res: http.ServerResponse, status: number, body: string): void {
-  res.writeHead(status, { "Content-Type": "application/json" });
-  res.end(body);
+function sendError(res: Response, status: number, body: string): void {
+  res.status(status).type("application/json").send(body);
 }
 
-const server = http.createServer(async (req, res) => {
-  if (req.method !== "POST" || req.url !== "/mcp") {
-    res.writeHead(404);
-    res.end("Not found");
-    return;
-  }
+const app = express();
+app.use(express.json());
 
+app.post("/mcp", async (req: Request, res: Response) => {
   const accept = req.headers["accept"] as string | undefined;
   const sessionId = req.headers[MCP_SESSION_ID_HEADER] as string | undefined;
 
@@ -65,18 +61,7 @@ const server = http.createServer(async (req, res) => {
     );
   }
 
-  // Read request body
-  let body = "";
-  for await (const chunk of req) {
-    body += chunk;
-  }
-
-  let request: MCPRequest;
-  try {
-    request = JSON.parse(body) as MCPRequest;
-  } catch {
-    return sendError(res, 400, JSON.stringify({ error: "Invalid JSON" }));
-  }
+  const request = req.body as MCPRequest;
 
   // Handle initialize (no session required)
   if (request.method === "initialize") {
@@ -105,9 +90,7 @@ const server = http.createServer(async (req, res) => {
   // Handle notifications/initialized
   if (request.method === "notifications/initialized") {
     session.readyForOperation = true;
-    console.log("Client initialization complete");
-    res.writeHead(202, { [MCP_SESSION_ID_HEADER]: session.sessionId });
-    res.end();
+    res.status(202).set(MCP_SESSION_ID_HEADER, session.sessionId).end();
     return;
   }
 
@@ -140,6 +123,6 @@ const server = http.createServer(async (req, res) => {
   sendSseResponse(res, sessionId, response);
 });
 
-server.listen(PORT, () => {
+app.listen(PORT, () => {
   console.log(`Custom MCP server running on http://localhost:${PORT}/mcp`);
 });

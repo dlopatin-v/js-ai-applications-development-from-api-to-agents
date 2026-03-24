@@ -20,7 +20,7 @@ export class DeleteUserTool extends BaseUserServiceTool {
   }
 
   async execute(arguments_: Record<string, any>): Promise<string> {
-    const userId = String(arguments_["id"]);
+    const userId = Number(arguments_["id"]);
     return this.userClient.deleteUser(userId);
   }
 }

@@ -36,7 +36,7 @@ export class UpdateUserTool extends BaseUserServiceTool {
   }
 
   async execute(arguments_: Record<string, any>): Promise<string> {
-    const userId = String(arguments_["id"]);
+    const userId = Number(arguments_["id"]);
     const newInfo = arguments_["new_info"] as UserUpdate;
     return this.userClient.updateUser(userId, newInfo);
   }

@@ -1,34 +1,21 @@
-import * as http from "http";
+import express from "express";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
-import { server } from "./_server.js";
+import { createServer } from "./_server.js";
 import { checkApiKey } from "./auth/apiKeyAuth.js";
 
 const PORT = 8007;
 
-const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined });
+const app = express();
+app.use(express.json());
 
-const httpServer = http.createServer(async (req, res) => {
+app.all("/mcp", async (req, res) => {
   if (!checkApiKey(req, res)) return;
-  await transport.handleRequest(req, res, await readBody(req));
+  const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined });
+  res.on("finish", () => transport.close());
+  await createServer().connect(transport);
+  await transport.handleRequest(req, res, req.body);
 });
 
-server.connect(transport);
-
-httpServer.listen(PORT, "0.0.0.0", () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`API Key MCP HTTP server running on http://0.0.0.0:${PORT}/mcp`);
 });
-
-function readBody(req: http.IncomingMessage): Promise<unknown> {
-  return new Promise((resolve, reject) => {
-    let data = "";
-    req.on("data", (chunk) => (data += chunk));
-    req.on("end", () => {
-      try {
-        resolve(data ? JSON.parse(data) : undefined);
-      } catch {
-        resolve(undefined);
-      }
-    });
-    req.on("error", reject);
-  });
-}

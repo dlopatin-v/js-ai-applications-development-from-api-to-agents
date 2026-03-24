@@ -1,4 +1,4 @@
-import * as http from "http";
+import { Request, Response } from "express";
 import { createRemoteJWKSet, jwtVerify, JWTPayload } from "jose";
 
 // ==================== CONFIGURATION ====================
@@ -36,13 +36,12 @@ function getJwks() {
  * Returns true if authenticated and authorised.
  * Sends a 401/403 JSON response and returns false otherwise.
  */
-export async function checkOAuth(req: http.IncomingMessage, res: http.ServerResponse): Promise<boolean> {
+export async function checkOAuth(req: Request, res: Response): Promise<boolean> {
   const authHeader = req.headers["authorization"] ?? "";
 
   // ── Step 1: Check header presence ──────────────────────────────
   if (!authHeader.startsWith("Bearer ")) {
-    res.writeHead(401, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ error: "Unauthorized", detail: "Missing or malformed Authorization header" }));
+    res.status(401).json({ error: "Unauthorized", detail: "Missing or malformed Authorization header" });
     return false;
   }
 
@@ -57,8 +56,7 @@ export async function checkOAuth(req: http.IncomingMessage, res: http.ServerResp
     });
     payload = result.payload;
   } catch (err) {
-    res.writeHead(401, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ error: "Unauthorized", detail: `Invalid token: ${err}` }));
+    res.status(401).json({ error: "Unauthorized", detail: `Invalid token: ${err}` });
     return false;
   }
 
@@ -68,13 +66,10 @@ export async function checkOAuth(req: http.IncomingMessage, res: http.ServerResp
   const realmRoles: string[] = realmAccess?.roles ?? [];
 
   if (!realmRoles.includes(REQUIRED_ROLE)) {
-    res.writeHead(403, { "Content-Type": "application/json" });
-    res.end(
-      JSON.stringify({
-        error: "Forbidden",
-        detail: `Role '${REQUIRED_ROLE}' is required. User has roles: ${JSON.stringify(realmRoles)}`,
-      })
-    );
+    res.status(403).json({
+      error: "Forbidden",
+      detail: `Role '${REQUIRED_ROLE}' is required. User has roles: ${JSON.stringify(realmRoles)}`,
+    });
     return false;
   }
 

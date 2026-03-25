@@ -28,6 +28,6 @@ npx tsx /skills/calculator/scripts/calculate.ts "<expression>"
 ## Workflow
 
 1. Parse the expression from the user's question
-2. Run: `python /skills/calculator/scripts/calculate.py "<expression>"`
+2. Run: `npx tsx /skills/calculator/scripts/calculate.ts "<expression>"`
 3. Return the script output as-is
 4. On error (division by zero, bad syntax), explain what went wrong clearly

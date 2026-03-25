@@ -37,11 +37,11 @@ You will get `session_id` in the response and must reuse it for every subsequent
 
 Pass as `code` the conversion call for the user's request:
 
-```python
-result, category = convert_units(<value>, "<from_unit>", "<to_unit>")
-print(f"Category: {category}")
-print(f"Input:    {fmt(<value>)} <from_unit>")
-print(f"Result:   {fmt(result)} <to_unit>")
+```typescript
+const [result, category] = convertUnits(<value>, "<from_unit>", "<to_unit>");
+console.log(`Category: ${category}`);
+console.log(`Input:    ${fmt(<value>)} <from_unit>`);
+console.log(`Result:   ${fmt(result)} <to_unit>`);
 ```
 
 Replace `<value>`, `<from_unit>`, `<to_unit>` with the parsed values from the user's request.

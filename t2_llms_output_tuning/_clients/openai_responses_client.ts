@@ -1,4 +1,4 @@
-import { Message, Role, OPENAI_API_KEY, OPENAI_CHAT_COMPLETIONS_ENDPOINT } from "../../commons";
+import { Message, Role, OPENAI_API_KEY, OPENAI_RESPONSES_ENDPOINT } from "../../commons";
 import AIClient from "./base_client";
 import { OpenAI } from "openai";
 
@@ -13,7 +13,7 @@ const API_KEY_HEADER_NAME = "Authorization";
  */
 export class OpenAIResponsesClient extends AIClient {
   constructor(modelName: string) {
-    super(OPENAI_CHAT_COMPLETIONS_ENDPOINT, modelName, OPENAI_API_KEY, API_KEY_HEADER_NAME);
+    super(OPENAI_RESPONSES_ENDPOINT, modelName, OPENAI_API_KEY, API_KEY_HEADER_NAME);
     this.client = new OpenAI({
       apiKey: this.apiKey
     });

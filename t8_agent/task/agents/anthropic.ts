@@ -58,10 +58,10 @@ export class AnthropicBasedAgent extends BaseAgent {
       console.log(`RESPONSE: ${JSON.stringify({ data }, null, 2)}`);
       console.log("-".repeat(100));
 
-      const textContent = contentBlocks.filter(({ type }: { type: string }) => (type === "text"));
+      const textContent = (contentBlocks.find(({ type }: { type: string }) => type === "text") as any)?.text ?? '';
       const toolUseBlocks = contentBlocks.filter(({ type }: { type: string }) => (type === "tool_use"));
 
-      const aiResponse = new Message(Role.ASSISTANT, textContent, toolUseBlocks ? contentBlocks : null);
+      const aiResponse = new Message(Role.ASSISTANT, textContent, undefined, undefined, toolUseBlocks.length ? contentBlocks : undefined);
 
       if (stopReason === "tool_use") {
         messages.push(aiResponse);

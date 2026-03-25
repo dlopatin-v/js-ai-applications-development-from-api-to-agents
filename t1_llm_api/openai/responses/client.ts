@@ -15,7 +15,7 @@ export class OpenAIResponsesClient extends BaseOpenAiClient {
   constructor(...args: ConstructorParameters<typeof BaseOpenAiClient>) {
     super(...args);
     this.client = new OpenAI({
-      apiKey: this.apiKey
+      apiKey: this.apiKey.replace(/^Bearer /, '')
     });
   }
 

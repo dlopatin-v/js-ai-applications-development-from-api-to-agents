@@ -23,8 +23,9 @@ function zipSkill(skillDir: string): Buffer {
  * @param skillDir - Directory containing the skill files to zip and upload.
  * @param client - Authenticated OpenAI client.
  * @returns The skill_id string of the created or existing skill.
- * Hint: list existing skills with client.beta.skills.list();
- * match by name; if not found, upload the zip via client.beta.skills.upload().
+ * Hint: list existing skills with client.skills.list();
+ * match by name; if not found, zip the skill dir and upload via (client.skills as any).create()
+ * passing files as [[filename, buffer, "application/zip"]].
  */
 async function getOrCreateSkill(skillName: string, skillDir: string, client: OpenAI): Promise<string> {
   // TODO
@@ -36,8 +37,10 @@ async function getOrCreateSkill(skillName: string, skillDir: string, client: Ope
  * @param skillId - The skill_id to attach to every message request.
  * @param logRequest - Whether to log the request payload.
  * @param logResponse - Whether to log the response payload.
- * Hint: use readline for user input; call client.responses.create with
- * { model, input, skills: [{ type: "skill", id: skillId }] }.
+ * Hint: use readline for user input; call (client.responses as any).create with
+ * { model: "gpt-5.2", input: [{ role: "user", content }],
+ *   tools: [{ type: "shell", environment: { type: "container_auto", skills: [...] } }],
+ *   previous_response_id } to chain turns server-side.
  */
 function chat(client: OpenAI, skillId: string, logRequest = true, logResponse = true): void {
   // TODO
@@ -46,7 +49,7 @@ function chat(client: OpenAI, skillId: string, logRequest = true, logResponse = 
 /**
  * Deletes all uploaded OpenAI skills.
  * @param client - Authenticated OpenAI client.
- * Hint: list all skills via client.beta.skills.list(); delete each with client.beta.skills.delete(id).
+ * Hint: list all skills via client.skills.list(); delete each with client.skills.delete(id).
  */
 async function deleteSkills(client: OpenAI): Promise<void> {
   // TODO

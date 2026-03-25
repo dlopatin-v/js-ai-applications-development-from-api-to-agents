@@ -55,7 +55,7 @@ async function main(): Promise<void> {
 
   const agent = new T12Agent(
     new OpenAI({ apiKey: OPENAI_API_KEY }),
-    "gpt-4o",
+    "gpt-5.2",
     tools,
   );
 

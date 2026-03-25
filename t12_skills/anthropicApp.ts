@@ -23,8 +23,9 @@ function filesFromDir(skillDir: string): Array<[string, Buffer, string]> {
  * @param skillDir - Directory containing the skill files to upload.
  * @param client - Authenticated Anthropic client.
  * @returns The skill_id string of the created or existing skill.
- * Hint: list existing skills with client.beta.files.list({ betas: [SKILLS_VERSION] });
- * match by name; if not found, upload files then create skill via client.beta.skills.create().
+ * Hint: list existing skills with (client.beta as any).skills.list({ source: "custom", betas: [SKILLS_VERSION] });
+ * match by display_title; if not found, gather files with filesFromDir() and create via
+ * (client.beta as any).skills.create({ display_title, files, betas: [SKILLS_VERSION] }).
  */
 async function getOrCreateSkill(skillTitle: string, skillDir: string, client: Anthropic): Promise<string> {
   // TODO
@@ -45,8 +46,11 @@ async function deleteSkills(client: Anthropic): Promise<void> {
  * @param skillId - The skill_id to attach to every message request.
  * @param logRequest - Whether to log the request payload.
  * @param logResponse - Whether to log the response payload.
- * Hint: use readline for user input; call client.beta.messages.create with
- * { betas: [SKILLS_VERSION], model, messages, skills: [{ type: "skill", id: skillId }] }.
+ * Hint: use readline for user input; call (client.beta as any).messages.create with
+ * { model: "claude-sonnet-4-6", max_tokens: 4096, messages, betas: ["code-execution-2025-08-25", SKILLS_VERSION],
+ *   tools: [{ type: "code_execution_20250825", name: "code_execution" }],
+ *   container: { skills: [{ type: "custom", skill_id, version: "latest" }], id? } };
+ * reuse container.id across turns for session continuity.
  */
 function chat(client: Anthropic, skillId: string, logRequest = true, logResponse = true): void {
   // TODO

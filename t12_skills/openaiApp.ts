@@ -25,7 +25,7 @@ function zipSkill(skillDir: string): Buffer {
  * @returns The skill_id string of the created or existing skill.
  * Hint: list existing skills with client.skills.list();
  * match by name; if not found, zip the skill dir and upload via (client.skills as any).create()
- * passing files as [[filename, buffer, "application/zip"]].
+ * passing files as [new File([buffer], filename, { type: "application/zip" })].
  */
 async function getOrCreateSkill(skillName: string, skillDir: string, client: OpenAI): Promise<string> {
   // TODO

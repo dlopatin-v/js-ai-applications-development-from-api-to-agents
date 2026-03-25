@@ -17,15 +17,15 @@ allowed-tools: execute_code
 
 For usage examples see [examples.md](examples.md).
 For details on how `execute_code` works see [references/how-code-execution-works.md](references/how-code-execution-works.md).
-Script with convertor see [scripts/convert.ts](scripts/convert.ts).
+Script with convertor see [scripts/convert.py](scripts/convert.py).
 
 
 ## Workflow
 
 ### Step 1: Load the script (first call only, session_id = "")
 
-Use `read_skill` to get the content of `scripts/convert.ts`, then call `execute_code` with:
-- `script_path = "unit-converter/scripts/convert.ts"` — the tool will read the file and prepend its content before your `code` (combined as `<script content>` + `\n\n` + `code`)
+Use `read_skill` to get the content of `scripts/convert.py`, then call `execute_code` with:
+- `script_path = "unit-converter/scripts/convert.py"` — the tool will read the file and prepend its content before your `code` (combined as `<script content>` + `\n\n` + `code`)
 - `code` — the conversion call you want to run (see Step 2)
 - `session_id = ""` — empty string to create a new session
 
@@ -37,11 +37,11 @@ You will get `session_id` in the response and must reuse it for every subsequent
 
 Pass as `code` the conversion call for the user's request:
 
-```typescript
-const [result, category] = convertUnits(<value>, "<from_unit>", "<to_unit>");
-console.log(`Category: ${category}`);
-console.log(`Input:    ${fmt(<value>)} <from_unit>`);
-console.log(`Result:   ${fmt(result)} <to_unit>`);
+```python
+result, category = convert_units(<value>, "<from_unit>", "<to_unit>")
+print(f"Category: {category}")
+print(f"Input:    {fmt(<value>)} <from_unit>")
+print(f"Result:   {fmt(result)} <to_unit>")
 ```
 
 Replace `<value>`, `<from_unit>`, `<to_unit>` with the parsed values from the user's request.

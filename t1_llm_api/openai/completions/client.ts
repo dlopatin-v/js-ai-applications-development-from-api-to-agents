@@ -20,6 +20,9 @@ export class OpenAIClient extends BaseOpenAiClient {
     // - Initialize the OpenAI SDK client https://github.com/openai/openai-node
     // Useful link with request/response samples:
     //   https://platform.openai.com/docs/api-reference/chat/create
+    // Note: `this.apiKey` already contains the 'Bearer ' prefix (added by BaseOpenAiClient).
+    //       The OpenAI SDK adds its own 'Bearer ' prefix, so strip it first:
+    //       `this.client = new OpenAI({ apiKey: this.apiKey.replace(/^Bearer /, '') })`
     throw new Error("Not implemented.");
   }
 

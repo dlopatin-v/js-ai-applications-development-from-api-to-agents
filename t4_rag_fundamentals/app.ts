@@ -64,7 +64,10 @@ class MicrowaveRAG {
   //   - Return all matching chunks joined with "\n\n"
   // ---
   // Hint: try different values of `k` and `scoreThreshold` to see how they
-  //       affect retrieval quality and LLM answer accuracy
+  //       affect retrieval quality and LLM answer accuracy.
+  //       Note: scoreThreshold is a maximum L2 distance (lower = more similar).
+  //       FAISS does NOT return 0–1 relevance scores — a value of 1.0 may be
+  //       too strict for some queries and return no results at all. Try 0.5–2.0.
   async retrieveContext(query: string, k = 4, scoreThreshold = 1.0): Promise<string> {
     throw new Error("Not implemented");
   }

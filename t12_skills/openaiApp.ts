@@ -29,9 +29,10 @@ async function getOrCreateSkill(skillName: string, skillDir: string, client: Ope
   const zipBytes = zipSkill(skillDir);
   const dirName = path.basename(skillDir);
 
+  const zipFile = new File([zipBytes], `${dirName}.zip`, { type: "application/zip" });
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const skill = await (client.skills as any).create({
-    files: [[`${dirName}.zip`, zipBytes, "application/zip"]],
+    files: [zipFile],
   });
 
   console.log(`Skill uploaded: ${skill.id}`);

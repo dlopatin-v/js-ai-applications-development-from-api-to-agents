@@ -6,8 +6,11 @@ import { ANTHROPIC_API_KEY } from "../commons/constants.js";
 
 const SKILLS_VERSION = "skills-2025-10-02";
 
-function filesFromDir(skillDir: string): Array<[string, Buffer, string]> {
-  const results: Array<[string, Buffer, string]> = [];
+function filesFromDir(skillDir: string): Array<File> {
+  const results: Array<File> = [];
+  // Use parent of skillDir as the base for relative paths,
+  // so files are named "style-guide/SKILL.md" (matching Python's anthropic.lib.files_from_dir)
+  const parentDir = path.dirname(skillDir);
 
   function walk(dir: string): void {
     for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -15,7 +18,7 @@ function filesFromDir(skillDir: string): Array<[string, Buffer, string]> {
       if (entry.isDirectory()) {
         walk(fullPath);
       } else {
-        const relativePath = path.relative(skillDir, fullPath);
+        const relativePath = path.relative(parentDir, fullPath);
         const buf = fs.readFileSync(fullPath);
         const mimeType = entry.name.endsWith(".ts")
           ? "text/plain"
@@ -24,7 +27,7 @@ function filesFromDir(skillDir: string): Array<[string, Buffer, string]> {
             : entry.name.endsWith(".json")
               ? "application/json"
               : "application/octet-stream";
-        results.push([relativePath, buf, mimeType]);
+        results.push(new File([buf], relativePath, { type: mimeType }));
       }
     }
   }

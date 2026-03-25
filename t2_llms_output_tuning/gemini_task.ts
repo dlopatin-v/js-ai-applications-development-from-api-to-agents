@@ -29,7 +29,7 @@ import { GeminiAICLient } from "./_clients/gemini_client";
  //  Try: "responseMimeType": "application/json",
  //       "responseSchema": {"type": "array", "items": {"type": "object", "properties": {"name": {"type": "string"}, "year": {"type": "integer"}}}}
 
- // TODO 7: thinkingConfig — enables extended thinking (chain-of-thought). Requires thinkBudget param
+ // TODO 6: thinkingConfig — enables extended thinking (chain-of-thought). Requires thinkBudget param
  //  Model reasons step-by-step before answering
  //  Query: "How many r's are in the word strawberry?"
  //  Try: "thinkingConfig": {"thinkMode": "THINKING_MODE_ENABLED", "thinkBudget": 5000}

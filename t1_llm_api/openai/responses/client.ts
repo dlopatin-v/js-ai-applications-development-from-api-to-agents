@@ -16,7 +16,9 @@ export class OpenAIResponsesClient extends BaseOpenAiClient {
     super(...args);
     //TODO:
     // https://github.com/openai/openai-node?tab=readme-ov-file#usage
-    // 1. Initialize OpenAI client: `this.client = new OpenAI({ apiKey: this.apiKey })`
+    // 1. Initialize OpenAI client: `this.client = new OpenAI({ apiKey: this.apiKey.replace(/^Bearer /, '') })`
+    //    Note: `this.apiKey` already contains the 'Bearer ' prefix (added by BaseOpenAiClient).
+    //          The OpenAI SDK adds its own 'Bearer ' prefix, so you must strip it first.
     throw new Error("Not implemented.");
   }
 

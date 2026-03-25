@@ -7,13 +7,16 @@ import { ANTHROPIC_API_KEY } from "../commons/constants.js";
 const SKILLS_VERSION = "skills-2025-10-02";
 
 /**
- * Reads all files in a skill directory and returns them as tuples for upload.
+ * Reads all files in a skill directory and returns them as File objects for upload.
  * @param skillDir - Absolute path to the skill directory.
- * @returns Array of [filename, fileBuffer, mimeType] tuples for each file.
+ * @returns Array of File objects, each named relative to skillDir's parent
+ *          (e.g. "style-guide/SKILL.md"), to match Anthropic's expected path structure.
  * Hint: use fs.readdirSync + fs.readFileSync; infer MIME from extension
- * (e.g. ".md" → "text/markdown", ".ts" → "text/plain").
+ * (e.g. ".md" → "text/markdown", ".ts" → "text/plain");
+ * use path.relative(path.dirname(skillDir), fullPath) as the File name;
+ * create each entry as new File([buf], relativePath, { type: mimeType }).
  */
-function filesFromDir(skillDir: string): Array<[string, Buffer, string]> {
+function filesFromDir(skillDir: string): Array<File> {
   // TODO
 }
 

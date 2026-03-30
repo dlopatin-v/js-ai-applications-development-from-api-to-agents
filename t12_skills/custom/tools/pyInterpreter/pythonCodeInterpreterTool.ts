@@ -5,7 +5,7 @@ import { MCPToolModel } from "../../mcp/mcpToolModel.js";
 import { ExecutionResult } from "./_response.js";
 import { getFileContent } from "../../fileUtils.js";
 
-export class TsCodeInterpreterTool extends BaseTool {
+export class PythonCodeInterpreterTool extends BaseTool {
   private constructor(
     private readonly mcpClient: T12MCPClient,
     private readonly codeExecuteTool: MCPToolModel,
@@ -18,7 +18,7 @@ export class TsCodeInterpreterTool extends BaseTool {
     mcpUrl: string,
     toolName: string,
     skillsDir: string,
-  ): Promise<TsCodeInterpreterTool> {
+  ): Promise<PythonCodeInterpreterTool> {
     // TODO
   }
 

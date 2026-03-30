@@ -5,7 +5,7 @@ import { MCPToolModel } from "../../mcp/mcpToolModel.js";
 import { ExecutionResult } from "./_response.js";
 import { getFileContent } from "../../fileUtils.js";
 
-export class TsCodeInterpreterTool extends BaseTool {
+export class PythonCodeInterpreterTool extends BaseTool {
   private constructor(
     private readonly mcpClient: T12MCPClient,
     private readonly codeExecuteTool: MCPToolModel,
@@ -18,7 +18,7 @@ export class TsCodeInterpreterTool extends BaseTool {
     mcpUrl: string,
     toolName: string,
     skillsDir: string,
-  ): Promise<TsCodeInterpreterTool> {
+  ): Promise<PythonCodeInterpreterTool> {
     const mcpClient = await T12MCPClient.create(mcpUrl);
     const tools = await mcpClient.getTools();
     const found = tools.find((t) => t.name === toolName);
@@ -26,7 +26,7 @@ export class TsCodeInterpreterTool extends BaseTool {
       const available = tools.map((t) => t.name).join(", ");
       throw new Error(`MCP server doesn't have \`${toolName}\` tool. Available: ${available}`);
     }
-    return new TsCodeInterpreterTool(mcpClient, found, skillsDir);
+    return new PythonCodeInterpreterTool(mcpClient, found, skillsDir);
   }
 
   get name(): string {

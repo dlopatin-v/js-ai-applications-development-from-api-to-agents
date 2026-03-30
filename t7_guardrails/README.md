@@ -24,28 +24,28 @@ break it — and then protect it.
 
 ---
 
-## Task 1: System Prompt Hardening [`t1/prompt_injection.ts`]
+## Task 1: System Prompt Hardening [t1/prompt_injection.ts](t1/prompt_injection.ts)
 
 A system prompt is the **first and most fundamental guardrail** in any AI application. Before adding any
 technical layer (validators, filters, firewalls), you need a well-crafted system prompt that clearly defines
 what the model is and is not allowed to do. Everything else builds on top of this foundation.
 
-Open `t1/prompt_injection.ts`. The file contains a `SYSTEM_PROMPT` and a `PROFILE` with Amanda Grace Johnson's
+Open [t1/prompt_injection.ts](t1/prompt_injection.ts). The file contains a `SYSTEM_PROMPT` and a `PROFILE` with Amanda Grace Johnson's
 sensitive data. Run the assistant.
 
 **Part A — Attack.** Try to steal PII (credit card, SSN, address, bank account, etc.) from the profile.
-Use the attacks from `prompt_injections.md` as a starting point, then invent your own variants. Note which
+Use the attacks from [prompt_injections.md](prompt_injections.md) as a starting point, then invent your own variants. Note which
 attacks succeed and which fail.
 
 **Part B — Defend.** Edit `SYSTEM_PROMPT` to make it harder to steal PII. Then go back to attacking your
-own prompt. Iterate until you reach a point where most attacks from `prompt_injections.md` and your own
+own prompt. Iterate until you reach a point where most attacks from [prompt_injections.md](prompt_injections.md) and your own
 variants consistently fail to extract sensitive data.
 
 > A strong system prompt is necessary but not sufficient, which is exactly why the next tasks exist.
 
 ---
 
-## Task 2: Input Validation Guardrail [`t2/input_llm_based_validation.ts`]
+## Task 2: Input Validation Guardrail [t2/input_llm_based_validation.ts](t2/input_llm_based_validation.ts)
 
 An LLM-based guardrail that inspects every user message **before** it reaches the assistant. Suspicious
 inputs are blocked and never processed.
@@ -62,7 +62,7 @@ input validator while still tricking the assistant.
 
 ---
 
-## Task 3: Output Validation Guardrail [`t3/output_llm_based_validation.ts`]
+## Task 3: Output Validation Guardrail [t3/output_llm_based_validation.ts](t3/output_llm_based_validation.ts)
 
 A guardrail that inspects the **assistant's response** for PII leaks after the LLM has already replied.
 Operates in two modes controlled by the `softResponse` flag.
@@ -76,7 +76,7 @@ Operates in two modes controlled by the `softResponse` flag.
 
 ---
 
-## Task 4: Streaming PII Guardrail [`t4/streaming_pii_guardrail.ts`]
+## Task 4: Streaming PII Guardrail [t4/streaming_pii_guardrail.ts](t4/streaming_pii_guardrail.ts)
 
 A real-time filter that redacts PII **as tokens stream in**, without waiting for the full response.
 

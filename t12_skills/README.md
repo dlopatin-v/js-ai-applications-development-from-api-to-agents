@@ -29,8 +29,8 @@ Open [_skills](_skills) and implement all `TODO` items:
 > **Important:** Anthropic Skills are currently in **beta** and may sometimes produce unexpected results or behave
 > inconsistently. This is expected — the feature is still evolving.
 
-1. Open [anthropic_app.py](anthropic_app.py) and implement all `TODO` items
-2. Run `anthropic_app.py` and test it using the **Style Guide** and **Calculator** sample requests below.
+1. Open [anthropicApp.ts](anthropicApp.ts) and implement all `TODO` items
+2. Run [anthropicApp.ts](anthropicApp.ts) and test it using the **Style Guide** and **Calculator** sample requests below.
 3. To switch between skills, change `skill_id` in `main()` to use either `STYLE_SKILL_DIR`/`STYLE_SKILL_TITLE` or
    `CALCULATOR_SKILL_DIR`/`CALCULATOR_SKILL_TITLE`.
 4. Test it with samples below
@@ -75,8 +75,8 @@ What is 2^10 + sqrt(144)?
 
 ### OpenAI Skills
 
-1. Open [openai_app.py](openai_app.py) and implement all `TODO` items
-2. Run `openai_app.py` and test it using the **Style Guide** and **Calculator** sample requests below.
+1. Open [openaiApp.ts](openaiApp.ts) and implement all `TODO` items
+2. Run [openaiApp.ts](openaiApp.ts) and test it using the **Style Guide** and **Calculator** sample requests below.
 3. To switch between skills, change the skill name and directory in `main()`.
 4. Test it with samples above
 
@@ -136,11 +136,11 @@ Python Code Interpreter will provide only one tool:
 **[Request flow](custom_request_flow.html)**
 
 1. Implement all TODO in [custom/_skills/SKILL.md](custom/_skills/unit-converter/SKILL.md)
-2. Open [custom/tools/skills/read_skill_tool.py](custom/tools/skills/read_skill_tool.py) and implement all `TODO`
-3. Open [custom/tools/py_interpreter/python_code_interpreter_tool.py](custom/tools/py_interpreter/python_code_interpreter_tool.py) and implement all `TODO` 
-4. Open [custom/agent.py](custom/agent.py) and implement all `TODO`
-5. Open [custom/custom_app.py](custom/custom_app.py) and implement all `TODO`
-6. Make sure the MCP server is running, then run [custom/custom_app.py](custom/custom_app.py) and test it using the **Convertor** sample
+2. Open [custom/tools/skills/readSkillTool.ts](custom/tools/skills/readSkillTool.ts) and implement all `TODO`
+3. Open [custom/tools/pyInterpreter/pythonCodeInterpreterTool.ts](custom/tools/pyInterpreter/pythonCodeInterpreterTool.ts) and implement all `TODO` 
+4. Open [custom/agent.ts](custom/agent.ts) and implement all `TODO`
+5. Open [custom/customApp.ts](custom/customApp.ts) and implement all `TODO`
+6. Make sure the MCP server is running, then run [custom/customApp.ts](custom/customApp.ts) and test it using the **Convertor** sample
    requests below.
 
 ### Sample Requests: Convertor

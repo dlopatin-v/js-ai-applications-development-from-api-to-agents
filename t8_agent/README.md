@@ -1,5 +1,5 @@
 # AI Simple Agent Task
-Python implementation for building AI-powered chat applications using the OpenAI and Anthropic API with advanced tool integration.
+TypeScript implementation for building AI-powered chat applications using the OpenAI and Anthropic API with advanced tool integration.
 
 ## App Architecture
 
@@ -31,21 +31,21 @@ The mock user service runs on `localhost:8041` and provides several REST endpoin
 
 ### 1. Implement the tools — [task/tools/](task/tools/)
 
-Each tool extends `BaseTool` ([task/tools/base.py](task/tools/base.py)) and must implement three properties (`name`, `description`, `input_schema`) and one method (`execute`). The `input_schema` follows JSON Schema and is shared by both the OpenAI and Anthropic schema builders already provided in `BaseTool`.
+Each tool extends `BaseTool` ([task/tools/base.ts](task/tools/base.ts)) and must implement three properties (`name`, `description`, `input_schema`) and one method (`execute`). The `input_schema` follows JSON Schema and is shared by both the OpenAI and Anthropic schema builders already provided in `BaseTool`.
 
 Start with the User Service tools in [task/tools/users/](task/tools/users/). Each one wraps a single User Service endpoint:
 
-- **[get_user_by_id_tool.py](task/tools/users/get_user_by_id_tool.py)** — fetch a user by numeric ID
-- **[search_users_tool.py](task/tools/users/search_users_tool.py)** — search users by name / surname / email / gender
-- **[create_user_tool.py](task/tools/users/create_user_tool.py)** — create a new user record
-- **[update_user_tool.py](task/tools/users/update_user_tool.py)** — update an existing user record
-- **[delete_user_tool.py](task/tools/users/delete_user_tool.py)** — delete a user by ID
+- **[get_user_by_id_tool.ts](task/tools/users/get_user_by_id_tool.ts)** — fetch a user by numeric ID
+- **[search_users_tool.ts](task/tools/users/search_users_tool.ts)** — search users by name / surname / email / gender
+- **[create_user_tool.ts](task/tools/users/create_user_tool.ts)** — create a new user record
+- **[update_user_tool.ts](task/tools/users/update_user_tool.ts)** — update an existing user record
+- **[delete_user_tool.ts](task/tools/users/delete_user_tool.ts)** — delete a user by ID
 
-Then implement the web search tool in **[task/tools/web_search.py](task/tools/web_search.py)** — it calls the OpenAI Responses API (`gpt-5.2` with `tools: [{"type": "web_search"}]`) and extracts the result from the `output_text` block in the response.
+Then implement the web search tool in **[task/tools/web_search.ts](task/tools/web_search.ts)** — it calls the OpenAI Responses API (`gpt-5.2` with `tools: [{"type": "web_search"}]`) and extracts the result from the `output_text` block in the response.
 
 ---
 
-### 2. Implement `BaseAgent` — [task/agents/_base.py](task/agents/_base.py)
+### 2. Implement `BaseAgent` — [task/agents/_base.ts](task/agents/_base.ts)
 
 Implement `__init__`:
 - Validate `api_key` (raise `ValueError` if empty or blank)
@@ -56,7 +56,7 @@ Implement `__init__`:
 
 ---
 
-### 3. Implement the OpenAI agent — [task/agents/openai.py](task/agents/openai.py)
+### 3. Implement the OpenAI agent — [task/agents/openai.ts](task/agents/openai.ts)
 
 Extend `BaseAgent` to call the **OpenAI Chat Completions API**. Implement four methods:
 
@@ -69,13 +69,13 @@ See the **OpenAI API Reference** section at the bottom for the exact request/res
 
 ---
 
-### 4. Write the system prompt — [task/prompts.py](task/prompts.py)
+### 4. Write the system prompt — [task/prompts.ts](task/prompts.ts)
 
 Define a `SYSTEM_PROMPT` that tells the agent its role, which tools it has, and how it should behave (e.g. confirm before deleting, use web search when creating users).
 
 ---
 
-### 5. Wire everything up — [task/app.py](task/app.py)
+### 5. Wire everything up — [task/app.ts](task/app.ts)
 
 Implement `main()`:
 - Create `UserServiceClient` and all tools
@@ -89,7 +89,7 @@ Try the following sample inputs:
 
 ---
 
-### 6. Implement the Anthropic agent — [task/agents/anthropic.py](task/agents/anthropic.py)
+### 6. Implement the Anthropic agent — [task/agents/anthropic.ts](task/agents/anthropic.ts)
 
 Extend `BaseAgent` for the **Anthropic Messages API**. Implement five methods:
 
@@ -110,7 +110,7 @@ Key differences from OpenAI summarised:
 | Tool input | JSON string → `json.loads` | dict directly (`block["input"]`) |
 | Tool results | separate `tool` messages | grouped into one `user` message |
 
-Switch `app.py` to `AnthropicBasedAgent` and run the same queries.
+Switch in [task/app.ts](task/app.ts) to `AnthropicBasedAgent` and run the same queries.
 
 See the **Anthropic API Reference** section below for the exact request/response shapes.
 

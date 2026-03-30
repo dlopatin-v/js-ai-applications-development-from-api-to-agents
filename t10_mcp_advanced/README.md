@@ -24,9 +24,9 @@ By completing this task, you will learn:
 1. Run User Service [root docker-compose](docker-compose.yml) (Optional step in case if you have it from previous tasks)
 2. Open [mcp_server](mcp_server) and review mcp server structure:
    - in [models](mcp_server/models) persist implemented request and response models, details about request and response [official documentation](https://modelcontextprotocol.io/specification/2025-06-18/basic)
-   - in [ums_mcp_server.py](mcp_server/ums_mcp_server.py) you need to implement parts described in `TODO` sections
+   - in [umsMcpServer.ts](mcp_server/umsMcpServer.ts) you need to implement parts described in `TODO` sections
    - in [tools](mcp_server/tools) you will find simple tools, you need to implement parts described in `TODO` sections
-   - lastly, in [server.py](mcp_server/server.py) provide implementations described in `TODO` sections
+   - lastly, in [server.ts](mcp_server/server.ts) provide implementations described in `TODO` sections
 3. Run MCP server locally
 4. Test it with Postman. Import [mcp_custom.postman_collection.json](mcp_custom.postman_collection.json) into postman. (`init` -> `init-notification` -> `tools/list` -> `tools/call`)
 
@@ -38,9 +38,9 @@ By completing this task, you will learn:
 </details>
 
 ## 2. Create Agent
-1. Provide implementation for the [app.py](agent/app.py) and run it locally with MCPClient
+1. Provide implementation for the [app.ts](agent/app.ts) and run it locally with MCPClient
 2. Test agent with queries below 👇
-3. Provide implementations described in `TODO` sections for [custom_mcp_client.py](agent/clients/custom_mcp_client.py)
+3. Provide implementations described in `TODO` sections for [customMcpClient.ts](agent/clients/customMcpClient.ts)
 4. Test again agent with queries below 👇
 ```text
 Check if Arkadiy Dobkin present as a user, if not then search info about him in the web and add him

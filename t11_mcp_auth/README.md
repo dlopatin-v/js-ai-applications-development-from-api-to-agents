@@ -49,7 +49,7 @@ validates it in middleware before the request reaches the MCP logic.
 
 ### 1. Implement API Key middleware
 
-Open [`mcp_server/auth/api_key_auth.py`](mcp_server/auth/api_key_auth.py) and implement all **TODO**.
+Open [`mcp_server/auth/apiKeyAuth.ts`](mcp_server/auth/apiKeyAuth.ts) and implement all **TODO**.
 
 The middleware should:
 
@@ -61,7 +61,7 @@ Valid key: `dev-secret-key`
 
 ### 2. Run the API Key MCP Server
 
-Open [`mcp_server/api_key_mcp_server.py`](mcp_server/api_key_mcp_server.py) and implement all **TODO**, then run it.
+Open [`mcp_server/apiKeyMcpServer.ts`](mcp_server/apiKeyMcpServer.ts) and implement all **TODO**, then run it.
 
 The server listens on **`http://localhost:8007/mcp`**.
 
@@ -93,19 +93,16 @@ or omit the header entirely.
 
 ### 4. Implement API Key MCP Client and run the Agent
 
-1. Open [`agent/mcp_clients/api_key_mcp_client.py`](agent/mcp_clients/api_key_mcp_client.py) and implement all **TODO**
+1. Open [`agent/mcp_clients/apiKeyMcpClient.ts`](agent/mcp_clients/apiKeyMcpClient.ts) and implement all **TODO**
 
    The client must attach the `X-API-Key` header to every HTTP request sent to the MCP server.
 
-2. Open [`agent/app.py`](agent/app.py), use `ApiKeyMCPClient`:
-    ```python
-    async with ApiKeyMCPClient(
-        mcp_server_url="http://localhost:8007/mcp",
-        api_key=MCP_API_KEY
-    ) as mcp_client:
+2. Open [`agent/app.ts`](agent/app.ts), use `ApiKeyMCPClient`:
+    ```ts
+    new ApiKeyMCPClient("http://localhost:8007/mcp", MCP_API_KEY);
     ```
 
-3. Run [`agent/app.py`](agent/app.py) and verify the agent works correctly.
+3. Run [`agent/app.ts`](agent/app.ts) and verify the agent works correctly.
 
 ---
 
@@ -172,7 +169,7 @@ open:
 
 ### 1. Implement JWT Auth middleware
 
-Open [`mcp_server/auth/oauth.py`](mcp_server/auth/oauth.py) and implement all **TODO**.
+Open [`mcp_server/auth/oauth.ts`](mcp_server/auth/oauth.ts) and implement all **TODO**.
 
 The middleware should:
 
@@ -184,7 +181,7 @@ The middleware should:
 
 ### 2. Run the OAuth MCP Server
 
-Open [`mcp_server/oauth_mcp_server.py`](mcp_server/oauth_mcp_server.py) and implement all **TODO**, then run it.
+Open [`mcp_server/oauthMcpServer.ts`](mcp_server/oauthMcpServer.ts) and implement all **TODO**, then run it.
 
 The server listens on **`http://localhost:8008/mcp`**.
 
@@ -216,7 +213,7 @@ The server listens on **`http://localhost:8008/mcp`**.
 
 ### 3. Implement OAuth MCP Client
 
-Open [`agent/mcp_clients/oauth_mcp_client.py`](agent/mcp_clients/oauth_mcp_client.py) and implement all **TODO**.
+Open [`agent/mcp_clients/oauthMcpClient.ts`](agent/mcp_clients/oauthMcpClient.ts) and implement all **TODO**.
 
 The client should:
 
@@ -230,13 +227,13 @@ The client should:
 
 ### 4. Run the Agent with OAuth
 
-Open [`agent/app.py`](agent/app.py), switch to `OauthHttpMCPClient`:
+Open [`agent/app.ts`](agent/app.ts), switch to `OauthHttpMCPClient`:
 
-```python
-async with OauthHttpMCPClient(mcp_server_url="http://localhost:8008/mcp") as mcp_client:
+```ts
+new OauthMCPClient("http://localhost:8008/mcp");
 ```
 
-Run [`agent/app.py`](agent/app.py). A browser window will open for Keycloak login.
+Run [`agent/app.ts`](agent/app.ts). A browser window will open for Keycloak login.
 
 **Test with both users:**
 

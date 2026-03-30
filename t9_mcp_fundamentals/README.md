@@ -1,6 +1,6 @@
 # MCP Fundamentals (Server & Client)
 
-Python implementation for building Users Management Agent with MCP tools and MCP server
+TypeScript implementation for building Users Management Agent with MCP tools and MCP server
 
 ## Learning Goals
 
@@ -27,8 +27,8 @@ Service.
 ### 1. Create and run HTTP MCP server:
 
 1. Run User Service [root docker-compose](docker-compose.yml) (Optional step in case if you have it from previous tasks)
-2. Open [_server.py](mcp_server/_server.py) and implement all ***TODO***
-3. Open [http_server.py](mcp_server/http_server.py) and **Run** it
+2. Open [_server.ts](mcp_server/_server.ts) and implement all ***TODO***
+3. Open [httpServer.ts](mcp_server/httpServer.ts) and **Run** it
 
 <details> 
 <summary><b>OPTIONAL: Work with HTTP MCP server in Postman</b></summary>
@@ -39,12 +39,12 @@ Service.
 
 ### 2. Create and run Agent:
 
-1. Open [base mcp_client](agent/mcp_clients/base.py) and implement all ***TODO***
-2. Open [HTTP mcp_client](agent/mcp_clients/http.py) and implement all ***TODO***
-3. Open [agent.py](agent/agent.py) and implement all ***TODO***
-4. Open [prompts](agent/prompts.py) and write System prompt
-5. Open [app](agent/app.py) and implement all ***TODO***
-6. Run application [app.py](agent/app.py) and test that it is connecting to MCP Server and works properly
+1. Open [base mcp_client](agent/mcp_clients/base.ts) and implement all ***TODO***
+2. Open [HTTP mcp_client](agent/mcp_clients/http.ts) and implement all ***TODO***
+3. Open [agent.ts](agent/agent.ts) and implement all ***TODO***
+4. Open [prompts](agent/prompts.ts) and write System prompt
+5. Open [app](agent/app.ts) and implement all ***TODO***
+6. Run application [app.ts](agent/app.ts) and test that it is connecting to MCP Server and works properly
 7. Try with your solution with `fetch MCP` `https://remote.mcpservers.org/fetch/mcp` instead of http://localhost:8005/mcp
 
 ### OPTIONAL: Support both (users-management and fetch) MCP servers:
@@ -53,7 +53,7 @@ Service.
 2. You need to think of the way how to change current flow to support tools from different MCP servers and implement it
 3. In the end you should have the Agent that is able to fetch the info from the WEB about some people and save it to
    Users Service
-4. Hint: the problem place is [openai_client](agent/openai_client.py)
+4. Hint: the problem place is [agent](agent/agent.ts)
 
 ---
 
@@ -61,8 +61,8 @@ Service.
 
 ### 1. Create and run Agent with STDIO MCP Client:
 
-1. Open [STDIO mcp_client](agent/mcp_clients/http.py) and implement all ***TODO***
-2. Open [app](agent/app.py) and instead of HttpMCPClient client use this one:
+1. Open [STDIO mcp_client](agent/mcp_clients/stdio.ts) and implement all ***TODO***
+2. Open [app](agent/app.ts) and instead of HttpMCPClient client use this one:
     ```python
         async with StdioMCPClient(
                 command=sys.executable,          # use the same venv Python, not bare "python"
@@ -70,12 +70,12 @@ Service.
                 env={**os.environ, "PYTHONPATH": str(PROJECT_ROOT)}  # inherit env + add project root
         ) as mcp_client:
     ```
-3. Run application [app.py](agent/app.py) and test that it is connecting to STDIO MCP Server and works properly
+3. Run application [app.py](agent/app.ts) and test that it is connecting to STDIO MCP Server and works properly
 
 <details> 
 <summary><b>Connecting Your STDIO MCP Server to Claude Desktop</b></summary>
 
-This uses your `stdio_server.py` entry point — simplest and most reliable for local development.
+This uses your `stdio_server.ts` entry point — simplest and most reliable for local development.
 
 ### Step 1: Find Claude Desktop config file
 
@@ -94,7 +94,7 @@ Open the file (create it if it doesn't exist) and add your server:
     "users-management": {
       "command": "{ABSOLUTE_PATH}/ai-applications-development-from-api-to-agents/.venv/bin/python",
       "args": [
-        "{ABSOLUTE_PATH}/ai-applications-development-from-api-to-agents/t9_mcp_fundamentals/mcp_server/stdio_server.py"
+        "{ABSOLUTE_PATH}/ai-applications-development-from-api-to-agents/t9_mcp_fundamentals/mcp_server/stdio_server.ts"
       ],
       "env": {
         "PYTHONPATH": "{ABSOLUTE_PATH}/ai-applications-development-from-api-to-agents"

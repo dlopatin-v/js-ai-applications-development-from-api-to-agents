@@ -1,11 +1,11 @@
 import { v4 as uuidV4 } from "uuid";
 import { Message } from "./message";
 
-export class Conversation {
+export class Conversation<T> {
   id: string = uuidV4();
-  messages: Array<Message> = []
+  messages: Message<T>[] = []
 
-  addMessage = (message: Message) => {
+  addMessage = (message: Message<T>) => {
     this.messages.push(message);
   }
 }

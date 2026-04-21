@@ -1,6 +1,7 @@
-import { ANTHROPIC_API_KEY, ANTHROPIC_ENDPOINT, Message, Role } from "../../commons";
-import AIClient from "./base_client";
 import Anthropic from "@anthropic-ai/sdk";
+
+import { ANTHROPIC_API_KEY, ANTHROPIC_ENDPOINT, Message, Role } from "commons";
+import AIClient from "./base_client";
 
 const API_KEY_HEADER_NAME = "x-api-key";
 
@@ -34,7 +35,7 @@ export class AnthropicAIClient extends AIClient {
    * Note: Claude's API uses a separate 'system' parameter for system instructions.
    * Response content blocks are concatenated into a single text response.
    */
-  response = async (messages: Array<Message>, printRequest: boolean, printOnlyContent: boolean, args?: any): Promise<Message> => {
+  response = async (messages: Message[], printRequest: boolean, printOnlyContent: boolean, args?: Record<string, unknown>): Promise<Message> => {
     const headers = {
       "Content-Type": "application/json",
       "anthropic-version": "2023-06-01",
@@ -60,9 +61,14 @@ export class AnthropicAIClient extends AIClient {
 
     if (response.status === 200) {
       const result = await response.json() as Anthropic.Message;
+
+      if (!result.content || result.content.length === 0) {
+        throw new Error("No choice has been present in the response");
+      }
+
       const message = result.content
         .filter(block => block.type === "text")
-        .map(block => block.text || "")
+        .map(block => (block as Anthropic.TextBlock).text || "")
         .join("");
 
       if (printOnlyContent) {
@@ -70,7 +76,6 @@ export class AnthropicAIClient extends AIClient {
       } else {
         this._printResponse(JSON.stringify(result, null, 2));
       }
-    // @TODO Add error handling for no Value "No Choice has been present in the response"
       return new Message(Role.ASSISTANT, message);
     } else {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);

@@ -1,8 +1,10 @@
+import { exec } from "child_process";
 import * as crypto from "crypto";
 import * as http from "http";
-import { exec } from "child_process";
-import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
+
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
+
 import { T11MCPClient } from "./_base.js";
 
 // ==================== KEYCLOAK CONFIGURATION ====================
@@ -239,7 +241,7 @@ export class OauthMCPClient extends T11MCPClient {
       requestInit: { headers },
     });
     // Replace the client instance to get a clean connection
-    (this as unknown as { client: Client }).client = new Client({
+    this.client = new Client({
       name: "oauth-mcp-client",
       version: "1.0.0",
     });
@@ -265,7 +267,7 @@ export class OauthMCPClient extends T11MCPClient {
   }
 
   private async _doCallTool(toolName: string, toolArgs: Record<string, unknown>): Promise<unknown> {
-    const result = await this.client.callTool({ name: toolName, arguments: toolArgs });
+    const result = await this.client.callTool({ name: toolName, arguments: toolArgs }) as { content: { type: string; text?: string }[] };
     const content = result.content[0];
     console.log(`    ⚙️:`, content, "\n");
     if (content && "text" in content) return content.text;

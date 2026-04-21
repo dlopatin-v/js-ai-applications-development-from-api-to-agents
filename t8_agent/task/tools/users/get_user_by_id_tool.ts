@@ -15,9 +15,9 @@ export class GetUserByIdTool extends BaseUserServiceTool {
 
   async execute(args: Record<string, unknown>): Promise<string> {
     try {
-      return await this.userClient.getUser(String(args["id"]));
-    } catch (e: any) {
-      return `Error while retrieving user by id: ${e.message}`;
+      return await this.userClient.getUser(Number(args["id"]));
+    } catch (e: unknown) {
+      return `Error while retrieving user by id: ${e instanceof Error ? e.message : String(e)}`;
     }
   }
 }

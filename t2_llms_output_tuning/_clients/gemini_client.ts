@@ -1,4 +1,4 @@
-import { GEMINI_API_KEY, GEMINI_ENDPOINT, Message, Role } from "../../commons";
+import { GEMINI_API_KEY, GEMINI_ENDPOINT, Message, Role } from "commons";
 import AIClient from "./base_client";
 
 const API_KEY_HEADER_NAME = "x-goog-api-key";
@@ -27,7 +27,7 @@ export class GeminiAICLient extends AIClient {
    * @param messages The conversation messages to convert.
    * @returns Messages in Gemini's Content format.
    */
-  private _toGeminiContents = (messages: Array<Message>): Array<{role: string, parts: Array<{text: string}> }> => {
+  private _toGeminiContents = (messages: Message[]): {role: string, parts: {text: string}[] }[] => {
     return messages.map(message => ({
       role: message.role,
       parts: [{text: message.content}],
@@ -45,14 +45,14 @@ export class GeminiAICLient extends AIClient {
    *
    * Note: Gemini requires a model-specific URL and wraps generation settings in a generationConfig object.
    */
-  response = async (messages: Array<Message>, printRequest: boolean, printOnlyContent: boolean, args?: any): Promise<Message> => {
+  response = async (messages: Message[], printRequest: boolean, printOnlyContent: boolean, args?: Record<string, unknown>): Promise<Message> => {
     const headers = {
       "Content-Type": "application/json",
       [API_KEY_HEADER_NAME]: this.apiKey,
     };
 
     const url = `${this.endpoint}/${this.modelName}:generateContent`;
-    const requestData = {
+    const requestData: Record<string, unknown> = {
       contents: this._toGeminiContents(messages),
       generationConfig: args?.["generationConfig"] || { maxOutputTokens: 1024 }
     };
@@ -73,7 +73,15 @@ export class GeminiAICLient extends AIClient {
 
 
     if (response.status === 200) {
-      const result = await response.json();
+      interface GeminiResponse {
+        candidates: { content: { parts: { text: string }[] } }[];
+      }
+      const result = await response.json() as GeminiResponse;
+
+      if (!result.candidates || result.candidates.length === 0) {
+        throw new Error("No choice has been present in the response");
+      }
+
       const message = result.candidates[0].content.parts
         .map((part: { text: string }) => part.text || "")
         .join("");
@@ -83,7 +91,6 @@ export class GeminiAICLient extends AIClient {
       } else {
         this._printResponse(JSON.stringify(result, null, 2));
       }
-    // @TODO Add error handling for no Value "No Choice has been present in the response"
       return new Message(Role.ASSISTANT, message);
     } else {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);

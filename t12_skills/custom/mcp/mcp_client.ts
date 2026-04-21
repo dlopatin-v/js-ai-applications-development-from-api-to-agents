@@ -1,6 +1,6 @@
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
-import { MCPToolModel } from "./mcpToolModel.js";
+import { MCPToolModel } from "./mcp_tool_model.js";
 
 export class T12MCPClient {
   private client: Client;
@@ -31,10 +31,10 @@ export class T12MCPClient {
   }
 
   async callTool(name: string, args: Record<string, unknown>): Promise<string> {
-    const result = await this.client.callTool({ name, arguments: args });
+    const result = await this.client.callTool({ name, arguments: args }) as { content: { type: string; text?: string }[] };
     if (!result.content || result.content.length === 0) return "";
     const content = result.content[0];
-    if (content.type === "text") return content.text;
+    if (content.type === "text") return content.text ?? "";
     return JSON.stringify(content);
   }
 

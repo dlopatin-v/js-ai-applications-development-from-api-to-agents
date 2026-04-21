@@ -1,4 +1,4 @@
-import { UserSearchRequest } from "../../../../commons";
+import { UserSearchRequest } from "commons";
 import { BaseUserServiceTool } from "./base";
 
 export class SearchUsersTool extends BaseUserServiceTool {
@@ -20,8 +20,8 @@ export class SearchUsersTool extends BaseUserServiceTool {
   async execute(args: Record<string, unknown>): Promise<string> {
     try {
       return await this.userClient.searchUsers(args as unknown as UserSearchRequest);
-    } catch (e: any) {
-      return `Error while searching users: ${e.message}`;
+    } catch (e: unknown) {
+      return `Error while searching users: ${e instanceof Error ? e.message : String(e)}`;
     }
   }
 }

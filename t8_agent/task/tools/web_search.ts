@@ -1,4 +1,4 @@
-import { OPENAI_API_KEY, OPENAI_RESPONSES_ENDPOINT } from "../../../commons/constants";
+import { OPENAI_API_KEY, OPENAI_RESPONSES_ENDPOINT } from "commons/constants";
 import { BaseTool } from "./base";
 
 export class WebSearchTool extends BaseTool {
@@ -43,11 +43,11 @@ export class WebSearchTool extends BaseTool {
 
     if (response.ok) {
       const data = await response.json() as Record<string, unknown>;
-      const output = data["output"] as Array<Record<string, unknown>> | undefined;
+      const output = data["output"] as Record<string, unknown>[] | undefined;
       if (output) {
         for (const item of output) {
           if (item["type"] === "message") {
-            const content = item["content"] as Array<Record<string, unknown>> | undefined;
+            const content = item["content"] as Record<string, unknown>[] | undefined;
             if (content) {
               for (const block of content) {
                 if (block["type"] === "output_text") {

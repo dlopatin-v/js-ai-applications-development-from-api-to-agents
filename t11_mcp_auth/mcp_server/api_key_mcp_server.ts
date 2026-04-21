@@ -1,7 +1,7 @@
 import express from "express";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { createServer } from "./_server.js";
-import { checkApiKey } from "./auth/apiKeyAuth.js";
+import { checkApiKey } from "./auth/api_key_auth.js";
 
 const PORT = 8007;
 

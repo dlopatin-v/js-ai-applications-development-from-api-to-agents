@@ -1,3 +1,4 @@
+import { UserSearchRequest } from "commons/user_service/user_info";
 import { BaseUserServiceTool } from "./base.js";
 
 export class SearchUsersTool extends BaseUserServiceTool {
@@ -9,7 +10,7 @@ export class SearchUsersTool extends BaseUserServiceTool {
     return "Searches users by name, surname, email, and gender";
   }
 
-  get inputSchema(): Record<string, any> {
+  get inputSchema(): Record<string, unknown> {
     return {
       type: "object",
       properties: {
@@ -26,7 +27,7 @@ export class SearchUsersTool extends BaseUserServiceTool {
     };
   }
 
-  async execute(arguments_: Record<string, any>): Promise<string> {
-    return this.userClient.searchUsers(arguments_ as any);
+  async execute(arguments_: Record<string, unknown>): Promise<string> {
+    return this.userClient.searchUsers(arguments_ as unknown as UserSearchRequest);
   }
 }

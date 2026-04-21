@@ -1,4 +1,4 @@
-import { Message, Role, OPENAI_API_KEY, OPENAI_CHAT_COMPLETIONS_ENDPOINT } from "../../commons";
+import { Message, Role, OPENAI_API_KEY, OPENAI_CHAT_COMPLETIONS_ENDPOINT } from "commons";
 import AIClient from "./base_client";
 
 const API_KEY_HEADER_NAME = "Authorization";
@@ -23,7 +23,7 @@ export class OpenAIClient extends AIClient {
    * @param args Optional provider-specific parameters to include in the request body (e.g. `{ temperature: 0.5 }`).
    * @returns The AI response as a single message.
    */
-  response = async (messages: Array<Message>, printRequest: boolean, printOnlyContent: boolean, args?: any): Promise<Message> => {
+  response = async (messages: Message[], printRequest: boolean, printOnlyContent: boolean, args?: Record<string, unknown>): Promise<Message> => {
     const headers = {
       "Content-Type": "application/json",
       [API_KEY_HEADER_NAME]: this.apiKey,
@@ -46,7 +46,15 @@ export class OpenAIClient extends AIClient {
     }
 
     if (response.status === 200) {
-      const result = await response.json();
+      interface ChatCompletionResponse {
+        choices: { message: { content: string } }[];
+      }
+      const result = await response.json() as ChatCompletionResponse;
+
+      if (!result.choices || result.choices.length === 0) {
+        throw new Error("No choice has been present in the response");
+      }
+
       const message = result.choices[0].message.content;
 
       if (printOnlyContent) {
@@ -54,7 +62,6 @@ export class OpenAIClient extends AIClient {
       } else {
         this._printResponse(JSON.stringify(result, null, 2));
       }
-  // @TODO Add error handling for no Value "No Choice has been present in the response"
       return new Message(Role.ASSISTANT, message);
     } else {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);

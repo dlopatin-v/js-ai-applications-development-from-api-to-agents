@@ -7,6 +7,14 @@ and then build a **custom agent** that loads and executes skills entirely on you
 
 [Agent skills specification](https://agentskills.io/specification)
 
+**Run from the repository root:**
+
+| Agent | Command |
+|---|---|
+| Anthropic | `npm run t12:anthropic` |
+| OpenAI | `npm run t12:openai` |
+| Custom (self-hosted) | `npm run t12:custom` |
+
 ---
 
 ## Tasks

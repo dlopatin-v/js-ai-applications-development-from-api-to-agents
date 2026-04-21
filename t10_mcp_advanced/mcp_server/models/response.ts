@@ -1,7 +1,7 @@
 export interface ErrorResponse {
   code: number;
   message: string;
-  data?: Record<string, any> | null;
+  data?: Record<string, unknown> | null;
 }
 
 export interface ContentItem {
@@ -12,13 +12,13 @@ export interface ContentItem {
 export interface MCPResponse {
   jsonrpc: string;
   id: string | number | null;
-  result?: Record<string, any> | null;
+  result?: Record<string, unknown> | null;
   error?: ErrorResponse | null;
 }
 
 export function createResponse(
   id: string | number | null,
-  result?: Record<string, any>,
+  result?: Record<string, unknown>,
   error?: ErrorResponse
 ): MCPResponse {
   return { jsonrpc: "2.0", id, result: result ?? null, error: error ?? null };

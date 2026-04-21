@@ -12,7 +12,7 @@
  * @param overlap - Number of characters from the end of each chunk carried over to the start of the next.
  * @returns An array of text chunks; an empty array if `text` is falsy.
  */
-export function chunkText(text: string, chunkSize: number, overlap: number): Array<string> {
+export function chunkText(text: string, chunkSize: number, overlap: number): string[] {
   if(!text) {
     return [];
   }

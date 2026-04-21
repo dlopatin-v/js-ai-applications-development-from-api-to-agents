@@ -1,4 +1,4 @@
-import { Message } from "../../commons";
+import { Message } from "commons";
 
 /**
  * Abstract base class for AI service clients.
@@ -39,7 +39,7 @@ class AIClient {
    * @param args Optional provider-specific parameters to include in the request body (e.g. `{ temperature: 0.5 }`).
    * @returns The AI response as a single message.
    */
-  response = async (messages: Array<Message>, printRequest: boolean, printOnlyContent: boolean, args?: any): Promise<Message> => {
+  response = async (messages: Message[], printRequest: boolean, printOnlyContent: boolean, args?: Record<string, unknown>): Promise<Message> => {
     throw new Error("Method not implemented.");
   };
 

@@ -2,12 +2,12 @@ import * as fs from "fs";
 import * as path from "path";
 import * as readline from "readline";
 import Anthropic from "@anthropic-ai/sdk";
-import { ANTHROPIC_API_KEY } from "../commons/constants.js";
+import { ANTHROPIC_API_KEY } from "commons/constants";
 
 const SKILLS_VERSION = "skills-2025-10-02";
 
-function filesFromDir(skillDir: string): Array<File> {
-  const results: Array<File> = [];
+function filesFromDir(skillDir: string): File[] {
+  const results: File[] = [];
   // Use parent of skillDir as the base for relative paths,
   // so files are named "style-guide/SKILL.md" (matching Python's anthropic.lib.files_from_dir)
   const parentDir = path.dirname(skillDir);
@@ -37,8 +37,8 @@ function filesFromDir(skillDir: string): Array<File> {
 }
 
 async function getOrCreateSkill(skillTitle: string, skillDir: string, client: Anthropic): Promise<string> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const skills = await (client.beta as any).skills.list({ source: "custom", betas: [SKILLS_VERSION] });
+  const betaClient = client.beta;
+  const skills = await betaClient.skills.list({ source: "custom", betas: [SKILLS_VERSION] });
   console.log(skills);
   for (const skill of skills.data) {
     console.log(skill.display_title);
@@ -50,8 +50,7 @@ async function getOrCreateSkill(skillTitle: string, skillDir: string, client: An
 
   const files = filesFromDir(skillDir);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const skill = await (client.beta as any).skills.create({
+  const skill = await betaClient.skills.create({
     display_title: skillTitle,
     files,
     betas: [SKILLS_VERSION],
@@ -62,26 +61,22 @@ async function getOrCreateSkill(skillTitle: string, skillDir: string, client: An
 }
 
 async function deleteSkills(client: Anthropic): Promise<void> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const skills = await (client.beta as any).skills.list({ source: "custom", betas: [SKILLS_VERSION] });
+  const betaClient = client.beta;
+  const skills = await betaClient.skills.list({ source: "custom", betas: [SKILLS_VERSION] });
   for (const skill of skills.data) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const versions = await (client.beta as any).skills.versions.list(skill.id, { betas: [SKILLS_VERSION] });
+    const versions = await betaClient.skills.versions.list(skill.id, { betas: [SKILLS_VERSION] });
     for (const v of versions.data) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      await (client.beta as any).skills.versions.delete(v.version, { skill_id: skill.id, betas: [SKILLS_VERSION] });
+      await betaClient.skills.versions.delete(v.version, { skill_id: skill.id, betas: [SKILLS_VERSION] });
       console.log(`Deleted version ${v.version} of ${skill.display_title}`);
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    await (client.beta as any).skills.delete({ skill_id: skill.id, betas: [SKILLS_VERSION] });
+    await betaClient.skills.delete(skill.id, { betas: [SKILLS_VERSION] });
     console.log(`Deleted skill ${skill.display_title}`);
   }
 }
 
 function chat(client: Anthropic, skillId: string, logRequest = true, logResponse = true): void {
   const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const messages: any[] = [];
+  const messages: Anthropic.MessageParam[] = [];
   let containerId: string | undefined;
 
   console.log("\nStyle Guide Agent is ready. Ask it to write, rewrite, or review any text.");
@@ -97,16 +92,14 @@ function chat(client: Anthropic, skillId: string, logRequest = true, logResponse
 
       messages.push({ role: "user", content: userInput });
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const container: any = {
+      const container: { skills: { type: "custom"; skill_id: string; version: string }[]; id?: string } = {
         skills: [{ type: "custom", skill_id: skillId, version: "latest" }],
       };
       if (containerId) {
         container.id = containerId;
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const requestPayload: any = {
+      const requestPayload = {
         model: "claude-sonnet-4-6",
         max_tokens: 4096,
         messages,
@@ -121,16 +114,15 @@ function chat(client: Anthropic, skillId: string, logRequest = true, logResponse
         console.log("---------------\n");
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const response = await (client.beta as any).messages.create(requestPayload);
+      const betaClient = client.beta;
+      const response = await betaClient.messages.create(requestPayload as any);
 
       if (logResponse) {
         console.log("\n--- RESPONSE ---");
         console.log(JSON.stringify(response, null, 2));
         console.log("----------------\n");
       } else {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const reply = (response.content as any[])
+        const reply = (response.content as { type: string; text?: string }[])
           .filter((b) => b.text !== undefined)
           .map((b) => b.text)
           .join(" ");
@@ -141,7 +133,7 @@ function chat(client: Anthropic, skillId: string, logRequest = true, logResponse
         containerId = response.container.id;
       }
 
-      messages.push({ role: "assistant", content: response.content });
+      messages.push({ role: "assistant", content: response.content as Anthropic.ContentBlockParam[] });
 
       prompt();
     });
@@ -150,17 +142,15 @@ function chat(client: Anthropic, skillId: string, logRequest = true, logResponse
   prompt();
 }
 
-const __dirname = path.dirname(new URL(import.meta.url).pathname);
+// const STYLE_SKILL_TITLE = "style-guide";
+// const STYLE_SKILL_DIR = path.join(__dirname, "_skills", STYLE_SKILL_TITLE);
 
-const STYLE_SKILL_TITLE = "style-guide";
-const STYLE_SKILL_DIR = path.join(__dirname, "_skills", STYLE_SKILL_TITLE);
-
-// const CALCULATOR_SKILL_TITLE = "calculator";
-// const CALCULATOR_SKILL_DIR = path.join(__dirname, "_skills", CALCULATOR_SKILL_TITLE);
+const CALCULATOR_SKILL_TITLE = "calculator";
+const CALCULATOR_SKILL_DIR = path.join(__dirname, "_skills", CALCULATOR_SKILL_TITLE);
 
 async function main(): Promise<void> {
   const client = new Anthropic({ apiKey: ANTHROPIC_API_KEY });
-  const skillId = await getOrCreateSkill(STYLE_SKILL_TITLE, STYLE_SKILL_DIR, client);
+  const skillId = await getOrCreateSkill(CALCULATOR_SKILL_TITLE, CALCULATOR_SKILL_DIR, client);
   chat(client, skillId);
   // Note: deleteSkills is called after chat() exits (on readline close)
   // For cleanup after session, uncomment:

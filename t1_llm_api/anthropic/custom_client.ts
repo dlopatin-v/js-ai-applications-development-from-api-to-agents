@@ -1,5 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
-import { Message, Role } from "../../commons";
+import { Message, Role } from "commons";
 import AIClient from "../base_client";
 
 /**
@@ -27,7 +27,7 @@ export class CustomAnthropicAIClient extends AIClient {
    * Claude's API returns content as an array of content blocks.
    * The response is printed to stdout before being returned.
    */
-  response = async (messages: Array<Message>): Promise<Message> => {
+  response = async (messages: Message[]): Promise<Message> => {
     const requestData = {
       model: this.modelName,
       system: this.systemPrompt,
@@ -45,7 +45,7 @@ export class CustomAnthropicAIClient extends AIClient {
       const result = await response.json() as Anthropic.Message;
       const message = result.content
         .filter(block => block.type === "text")
-        .map(block => block.text || "")
+        .map(block => (block as Anthropic.TextBlock).text || "")
         .join("");
 
       console.log(message);
@@ -69,7 +69,7 @@ export class CustomAnthropicAIClient extends AIClient {
    * Listens for 'content_block_delta' events with 'text_delta' type.
    * Each delta is printed to stdout as it arrives.
    */
-  streamResponse = async (messages: Array<Message>): Promise<Message> => {
+  streamResponse = async (messages: Message[]): Promise<Message> => {
     const requestData = {
       model: this.modelName,
       system: this.systemPrompt,
@@ -83,7 +83,7 @@ export class CustomAnthropicAIClient extends AIClient {
       method: "POST",
       body: JSON.stringify(requestData)
     });
-    const contents: Array<string> = [];
+    const contents: string[] = [];
 
     if (response.status === 200) {
       if (!response.body) {
@@ -104,7 +104,11 @@ export class CustomAnthropicAIClient extends AIClient {
         for (const line of lines) {
           if (line.startsWith('data: ')) {
             const data = line.slice(6).trim();
-            const parsed = JSON.parse(data);
+            interface AnthropicStreamChunk {
+              type: string;
+              delta?: { type: string; text?: string };
+            }
+            const parsed = JSON.parse(data) as AnthropicStreamChunk;
             if (parsed.type === 'content_block_delta' && parsed.delta?.type === 'text_delta') {
               const text = parsed.delta.text || '';
               process.stdout.write(text);

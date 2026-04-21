@@ -1,5 +1,5 @@
 import { OpenAI } from "openai";
-import { OPENAI_API_KEY, Role } from "../../commons";
+import { OPENAI_API_KEY, Role } from "commons";
 import * as readline from "node:readline/promises";
 
 const SYSTEM_PROMPT = `You are a secure colleague directory assistant designed to help users find contact information for business purposes.
@@ -50,7 +50,7 @@ const PROFILE = `
 const client = new OpenAI({ apiKey: OPENAI_API_KEY });
 
 async function main(): Promise<void> {
-  const messages: { role: string; content: string }[] = [
+  const messages: OpenAI.ChatCompletionMessageParam[] = [
     { role: Role.SYSTEM, content: SYSTEM_PROMPT },
     { role: Role.USER, content: PROFILE },
   ];
@@ -74,7 +74,7 @@ async function main(): Promise<void> {
     const response = await client.chat.completions.create({
       model: "gpt-4.1-nano",
       temperature: 0.0,
-      messages: messages as any,
+      messages: messages,
     });
 
     const aiContent = response.choices[0].message.content ?? "";

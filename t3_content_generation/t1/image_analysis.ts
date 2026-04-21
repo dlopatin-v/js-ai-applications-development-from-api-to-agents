@@ -1,9 +1,8 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { OpenAIClientT3 } from "../_openai_client";
-import { OPENAI_HOST } from "../../commons";
 
-const __dirname = path.dirname(__filename);
+import { OPENAI_HOST } from "commons";
+import { OpenAIClientT3 } from "../_openai_client";
 
 const encodeImage = (path: string): string => {
   const image = fs.readFileSync(path);
@@ -13,8 +12,8 @@ const encodeImage = (path: string): string => {
 const main = (model: string, imageUrls: string[], request = "What's in this image/s?") => {
   const client = new OpenAIClientT3(OPENAI_HOST + "/v1/chat/completions");
 
-  const imgContent = imageUrls.map((imageUrl) => ({
-    "type": "image_url",
+const imgContent: { type: "image_url"; image_url: { url: string } }[] = imageUrls.map((imageUrl) => ({
+    "type": "image_url" as const,
     "image_url": {
       "url": imageUrl
     }

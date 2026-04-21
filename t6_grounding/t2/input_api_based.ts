@@ -1,9 +1,11 @@
+import * as readline from "node:readline/promises";
+
 import { OpenAI } from "openai";
 import { zodResponseFormat } from 'openai/helpers/zod';
-import { OPENAI_API_KEY, Role, UserSearchRequest } from "../../commons";
-import { UserServiceClient } from "../user_service_client";
 import { z } from "zod";
-import * as readline from "node:readline/promises";
+
+import { OPENAI_API_KEY, Role, UserInfo, UserSearchRequest } from "commons";
+import { UserServiceClient } from "../user_service_client";
 
 const QUERY_ANALYSIS_PROMPT = `You are a query analysis system that extracts search parameters from user questions about users.
 
@@ -59,7 +61,7 @@ const llmClient = new OpenAI({ apiKey: OPENAI_API_KEY });
 const userService = new UserServiceClient();
 
 
-async function retrieveContext(userRequest: string): Promise<any> {
+async function retrieveContext(userRequest: string): Promise<UserInfo[]> {
   const messages = [
     { role: Role.SYSTEM, content: QUERY_ANALYSIS_PROMPT },
     { role: Role.USER, content: userRequest },
@@ -68,7 +70,7 @@ async function retrieveContext(userRequest: string): Promise<any> {
   const response = await llmClient.chat.completions.parse({
     model: 'gpt-4.1-nano',
     temperature: 0,
-    messages: messages as any,
+    messages: messages as OpenAI.ChatCompletionMessageParam[],
     response_format: zodResponseFormat(SearchRequests, 'searchRequests')
   });
 
@@ -86,7 +88,7 @@ async function retrieveContext(userRequest: string): Promise<any> {
   return [];
 }
 
-async function augmentPrompt(userRequest: string, context: Array<any>): Promise<any> {
+async function augmentPrompt(userRequest: string, context: UserInfo[]): Promise<string> {
   const contextStr = context.map(user => {
     const userDetails = Object.entries(user)
       .map(([key, value]) => `  ${key}: ${value}`)
@@ -100,13 +102,13 @@ async function augmentPrompt(userRequest: string, context: Array<any>): Promise<
   return augmentedPrompt;
 }
 
-async function generateAnswer(augmentedPrompt: string): Promise<any> {
+async function generateAnswer(augmentedPrompt: string): Promise<string | null> {
   const messages = [
     { role: Role.SYSTEM, content: SYSTEM_PROMPT },
     { role: Role.USER, content: augmentedPrompt },
   ]
   const response = await llmClient.chat.completions.create({
-    model: "gpt-4.1-mini", temperature: 0, messages: messages as any[]
+    model: "gpt-4.1-mini", temperature: 0, messages: messages as OpenAI.ChatCompletionMessageParam[]
   });
   return response.choices[0].message.content;
 }

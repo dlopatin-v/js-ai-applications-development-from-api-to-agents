@@ -1,6 +1,7 @@
-import { OPENAI_API_KEY, OPENAI_HOST } from "../../commons";
 import * as fs from "node:fs";
 import * as path from "node:path";
+
+import { OPENAI_API_KEY, OPENAI_HOST } from "commons";
 
 class OpenAIClient {
   constructor(
@@ -18,7 +19,10 @@ class OpenAIClient {
   call = async (
     args: {
       printRequest?: boolean;
-      [key: string]: any;
+      model: string;
+      modalities: string[];
+      audio: { voice: string; format: string };
+      messages: { role: string; content: unknown[] | string }[];
     }) => {
 
     const headers = {
@@ -35,7 +39,10 @@ class OpenAIClient {
     const response = await fetch(this.endpoint, {headers, method: "POST", body: JSON.stringify(args)});
 
     if (response.status === 200) {
-      const data = await response.json();
+      interface SpeechToSpeechResponse {
+        choices: { message: { audio?: { data: string } } }[];
+      }
+      const data = await response.json() as SpeechToSpeechResponse;
       const audio_data = data.choices[0]?.message?.audio?.data;
 
       if (audio_data) {

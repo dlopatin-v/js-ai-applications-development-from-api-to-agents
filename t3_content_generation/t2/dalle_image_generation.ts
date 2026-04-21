@@ -1,4 +1,4 @@
-import { OPENAI_HOST } from "../../commons";
+import { OPENAI_HOST } from "commons";
 import { OpenAIClientT3 } from "../_openai_client";
 
 /**

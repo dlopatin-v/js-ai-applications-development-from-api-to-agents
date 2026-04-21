@@ -1,5 +1,5 @@
 import { OpenAI } from "openai";
-import { OPENAI_API_KEY, Role } from "../../commons";
+import { OPENAI_API_KEY, Role } from "commons";
 import * as readline from "node:readline/promises";
 
 // Note: JavaScript has no direct equivalent of Microsoft Presidio + spaCy.
@@ -215,7 +215,7 @@ const client = new OpenAI({ apiKey: OPENAI_API_KEY });
 async function main(): Promise<void> {
   const guardrail = new PresidioStreamingPIIGuardrail(50);
   // const regexGuardrail = new StreamingPIIGuardrail(50);
-  const messages: { role: string; content: string }[] = [
+  const messages: OpenAI.ChatCompletionMessageParam[] = [
     { role: Role.SYSTEM, content: SYSTEM_PROMPT },
     { role: Role.USER, content: PROFILE },
   ];
@@ -247,7 +247,7 @@ async function main(): Promise<void> {
     const stream = await client.chat.completions.create({
       model: MODEL,
       temperature: 0.0,
-      messages: messages as any,
+      messages: messages,
       stream: true,
     });
 

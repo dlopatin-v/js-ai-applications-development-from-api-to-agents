@@ -1,4 +1,4 @@
-import { Message, Role } from "../../../commons";
+import { Message, Role } from "commons";
 import { BaseOpenAiClient } from "../base";
 
 /**
@@ -16,7 +16,7 @@ export class CustomOpenAIResponsesClient extends BaseOpenAiClient {
    * @param messages Conversation history sent to the model.
    * @returns The AI response as a single message.
    */
-  response = async (messages: Array<Message>): Promise<Message> => {
+  response = async (messages: Message[]): Promise<Message> => {
     const headers = {
       "Content-Type": "application/json",
       "Authorization": this.apiKey,
@@ -35,7 +35,7 @@ export class CustomOpenAIResponsesClient extends BaseOpenAiClient {
     });
 
     if (response.status === 200) {
-      const result = await response.json();
+      const result = await response.json() as Record<string, unknown>;
       const content = this._extractOutputText(result);
 
       console.log(content);
@@ -55,7 +55,7 @@ export class CustomOpenAIResponsesClient extends BaseOpenAiClient {
    * @param messages Conversation history sent to the model.
    * @returns The final aggregated AI message after the stream completes.
    */
-  streamResponse = async (messages: Array<Message>): Promise<Message> => {
+  streamResponse = async (messages: Message[]): Promise<Message> => {
     const headers = {
       "Content-Type": "application/json",
       "Authorization": this.apiKey,
@@ -68,7 +68,7 @@ export class CustomOpenAIResponsesClient extends BaseOpenAiClient {
       stream: true,
     };
 
-    const contents: Array<string> = [];
+    const contents: string[] = [];
 
     const response = await fetch(this.endpoint, {
       headers,
@@ -99,7 +99,8 @@ export class CustomOpenAIResponsesClient extends BaseOpenAiClient {
             eventType = line.slice(7).trim();
           } else if (line.startsWith('data: ') && eventType === 'response.output_text.delta') {
             const data = line.slice(6).trim();
-            const parsed = JSON.parse(data);
+            interface OutputTextDelta { delta?: string }
+            const parsed = JSON.parse(data) as OutputTextDelta;
             const delta = parsed.delta;
             if (delta) {
               process.stdout.write(delta);
@@ -128,9 +129,9 @@ export class CustomOpenAIResponsesClient extends BaseOpenAiClient {
    * @returns The extracted text content.
    */
   private _extractOutputText = (data: Record<string, unknown>): string => {
-    const output = (data.output ?? []) as Array<Record<string, unknown>>;
+    const output = (data.output ?? []) as Record<string, unknown>[];
     for (const item of output) {
-      const content = (item.content ?? []) as Array<Record<string, unknown>>;
+      const content = (item.content ?? []) as Record<string, unknown>[];
       for (const contentPart of content) {
         if (contentPart.type === "output_text") {
           return contentPart.text as string;

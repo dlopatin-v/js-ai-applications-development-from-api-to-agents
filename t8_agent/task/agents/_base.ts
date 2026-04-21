@@ -1,4 +1,4 @@
-import { Message } from "../../../commons/models/message";
+import { Message } from "commons/models/message";
 import { BaseTool } from "../tools/base";
 
 /**
@@ -8,7 +8,7 @@ import { BaseTool } from "../tools/base";
  * common state: model name, credentials, optional system prompt, and a
  * registry of callable tools.
  */
-export abstract class BaseAgent {
+export abstract class BaseAgent<T = unknown> {
   protected readonly _model: string;
   protected readonly _apiKey: string;
   protected readonly _systemPrompt: string | undefined;
@@ -48,5 +48,5 @@ export abstract class BaseAgent {
    * @param printRequest   When true, log the outgoing request / incoming response.
    * @returns The final assistant Message after all tool rounds are complete.
    */
-  abstract getResponse(messages: Message[], printRequest?: boolean): Promise<Message>;
+  abstract getResponse(messages: Message<T>[], printRequest?: boolean): Promise<Message<T>>;
 }

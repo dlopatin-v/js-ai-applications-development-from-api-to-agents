@@ -1,4 +1,4 @@
-import { Message, Role } from "../../commons";
+import { Message, Role } from "commons";
 
 /** HTTP client for the OpenAI Chat Completions API. */
 export class ChatCompletionClient {
@@ -19,7 +19,7 @@ export class ChatCompletionClient {
    * @param messages - The conversation messages to format.
    * @returns A single string with each message's role and content separated by dividers.
    */
-  private getMessageString(messages: Array<Message>): string {
+  private getMessageString(messages: Message[]): string {
     return messages
       .map((message) => (
         `---Role: ${message.role.toUpperCase()}---\n💬 Message: ${message.content}`
@@ -35,9 +35,9 @@ export class ChatCompletionClient {
    * @param args - Additional parameters spread into the request body (e.g. `temperature`).
    * @returns A `Message` with `Role.ASSISTANT` containing the model's response.
    */
-  async getCompletion(messages: Array<Message>, printRequest = false, ...args: any[]) {
+  async getCompletion(messages: Message[], printRequest = false, options?: { temperature?: number; max_tokens?: number }) {
     if (printRequest) {
-      console.log(`Getting completion for \`${this.getMessageString(messages)}\` \n\n ---And such parameters: ${JSON.stringify(args)}---`);
+      console.log(`Getting completion for \`${this.getMessageString(messages)}\` \n\n ---And such parameters: ${JSON.stringify(options)}---`);
     }
 
     const headers = {
@@ -48,13 +48,16 @@ export class ChatCompletionClient {
     const requestData = {
       model: this.modelName,
       messages,
-      ...args
+      ...(options || {})
     };
     console.log( { request: JSON.stringify(requestData) })
     const response = await fetch(`${this.endpoint}`, { method: "POST", headers: headers, body: JSON.stringify(requestData) });
 
     if (response.status === 200) {
-      const data = await response.json();
+      interface ChatCompletionResponse {
+        choices: { message: { content: string } }[];
+      }
+      const data = await response.json() as ChatCompletionResponse;
       const choices = data.choices;
 
       if (choices) {

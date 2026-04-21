@@ -1,6 +1,12 @@
 # AI Simple Agent Task
 TypeScript implementation for building AI-powered chat applications using the OpenAI and Anthropic API with advanced tool integration.
 
+**Run from the repository root:**
+
+```bash
+npm run t8
+```
+
 ## App Architecture
 
 ![](flow.png)

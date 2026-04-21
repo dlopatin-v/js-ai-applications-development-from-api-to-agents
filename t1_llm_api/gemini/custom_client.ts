@@ -1,4 +1,4 @@
-import { Message, Role } from "../../commons";
+import { Message, Role } from "commons";
 import AIClient from "../base_client";
 
 /**
@@ -16,7 +16,7 @@ export class CustomGeminiAIClient extends AIClient {
    * @param messages Conversation messages to convert.
    * @returns Messages formatted as Gemini content objects.
    */
-  private _toGeminiContents = (messages: Array<Message>): Array<{role: string, parts: Array<{text: string}> }> => {
+  private _toGeminiContents = (messages: Message[]): {role: string, parts: {text: string}[] }[] => {
     return messages.map(message => ({
       role: message.role,
       parts: [{text: message.content}],
@@ -32,7 +32,7 @@ export class CustomGeminiAIClient extends AIClient {
    * @param messages Conversation history sent to the model.
    * @returns The AI response as a single message.
    */
-  response = async (messages: Array<Message>): Promise<Message> => {
+  response = async (messages: Message[]): Promise<Message> => {
     const headers = {
       "Content-Type": "application/json",
       "x-goog-api-key": this.apiKey,
@@ -54,7 +54,10 @@ export class CustomGeminiAIClient extends AIClient {
     });
 
     if (response.status === 200) {
-      const result = await response.json();
+      interface GeminiResponse {
+              candidates: { content: { parts: { text: string }[] } }[];
+      }
+      const result = await response.json() as GeminiResponse;
       const message = result.candidates[0].content.parts
         .map((part: { text: string }) => part.text || "")
         .join("");
@@ -77,7 +80,7 @@ export class CustomGeminiAIClient extends AIClient {
    * @param messages Conversation history sent to the model.
    * @returns The final aggregated AI message after the stream completes.
    */
-  streamResponse = async (messages: Array<Message>): Promise<Message> => {
+  streamResponse = async (messages: Message[]): Promise<Message> => {
     const headers = {
       "Content-Type": "application/json",
       "x-goog-api-key": this.apiKey,
@@ -97,7 +100,7 @@ export class CustomGeminiAIClient extends AIClient {
       method: "POST",
       body: JSON.stringify(requestData)
     });
-    const contents: Array<string> = [];
+    const contents: string[] = [];
 
     if (response.status === 200) {
       if (!response.body) {
@@ -119,7 +122,10 @@ export class CustomGeminiAIClient extends AIClient {
         for (const line of lines) {
           if (line.startsWith('data: ')) {
             const data = line.slice(6).trim();
-            const parsed = JSON.parse(data);
+            interface GeminiStreamChunk {
+        candidates: { content: { parts: { text: string }[] } }[];
+            }
+            const parsed = JSON.parse(data) as GeminiStreamChunk;
             parsed.candidates[0].content.parts.forEach((part: { text: string }) => {
               process.stdout.write(part.text);
               contents.push(part.text);

@@ -2,7 +2,7 @@ import { OpenAI } from "openai";
 import { OpenAIEmbeddings } from "@langchain/openai";
 import { FaissStore } from "@langchain/community/vectorstores/faiss";
 import { Document } from "@langchain/core/documents";
-import { OPENAI_API_KEY, Role } from "../../commons";
+import { OPENAI_API_KEY, Role, UserInfo } from "commons";
 import { UserServiceClient } from "../user_service_client";
 import * as readline from "node:readline/promises";
 
@@ -55,7 +55,7 @@ class UserRAG {
 
     private async initialize(): Promise<void> {
         console.log("🔎 Loading all users...");
-        const users: Record<string, any>[] = await this.userService.getAllUsers();
+        const users: UserInfo[] = await this.userService.getAllUsers();
 
         console.log(`Formatting ${users.length} user documents...`);
         const documents = users.map(user =>
@@ -122,7 +122,7 @@ class UserRAG {
         const response = await this.llmClient.chat.completions.create({
             model: "gpt-4.1-mini",
             temperature: 0,
-            messages: messages as any[],
+            messages: messages as OpenAI.ChatCompletionMessageParam[],
         });
         return response.choices[0].message.content ?? "";
     }

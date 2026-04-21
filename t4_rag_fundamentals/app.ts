@@ -6,7 +6,7 @@ import { HumanMessage, SystemMessage } from "@langchain/core/messages";
 import { FaissStore } from "@langchain/community/vectorstores/faiss";
 import { TextLoader } from "@langchain/classic/document_loaders/fs/text";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
-import { OPENAI_API_KEY } from "../commons";
+import { OPENAI_API_KEY } from "commons";
 
 const SYSTEM_PROMPT = `You are a RAG-powered assistant that assists users with their questions about microwave usage.
             
@@ -29,7 +29,7 @@ ${context}
 ${query}`;
 
 class MicrowaveRAG {
-  vectorStore: FaissStore;
+  vectorStore!: FaissStore;
 
   /** Resolves when the vector store is fully initialised and ready for queries. */
   readonly ready: Promise<void>;
@@ -161,10 +161,14 @@ class MicrowaveRAG {
 
     const response = await this.llmClient.invoke(messages);
 
-    console.log(response.content);
+    const rawContent = response.content;
+    const text = typeof rawContent === "string"
+      ? rawContent
+      : rawContent.map(c => (typeof c === "string" ? c : (c as { text?: string }).text ?? "")).join("");
+    console.log(text);
     console.log("=".repeat(100));
 
-    return response.content.toString();
+    return text;
   }
 }
 

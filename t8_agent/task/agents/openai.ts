@@ -1,6 +1,7 @@
-import { OPENAI_CHAT_COMPLETIONS_ENDPOINT } from "../../../commons/constants";
-import { Message } from "../../../commons/models/message";
-import { Role } from "../../../commons/models/role";
+import OpenAI from "openai";
+import { OPENAI_CHAT_COMPLETIONS_ENDPOINT } from "commons/constants";
+import { Message } from "commons/models/message";
+import { Role } from "commons/models/role";
 import { BaseTool } from "../tools/base";
 import { BaseAgent } from "./_base";
 
@@ -22,7 +23,7 @@ export class OpenAIBasedAgent extends BaseAgent {
     console.log(JSON.stringify(this._toolsSchemas, null, 4));
   }
 
-  async getResponse(messages: Message[], printRequest = true): Promise<Message> {
+  async getResponse(messages: Message<OpenAI.ChatCompletionMessageFunctionToolCall>[], printRequest = true): Promise<Message<OpenAI.ChatCompletionMessageFunctionToolCall>> {
     const headers = {
       "Authorization": `Bearer ${this._apiKey}`,
       "Content-Type": "application/json"
@@ -63,7 +64,7 @@ export class OpenAIBasedAgent extends BaseAgent {
     });
 
     if (response.status === 200) {
-      const data = await response.json();
+      const data = await response.json() as any;
 
       const choice = data.choices[0];
       const messageData = choice.message;
@@ -74,7 +75,7 @@ export class OpenAIBasedAgent extends BaseAgent {
       const content = messageData.content;
       const toolCalls = messageData.tool_calls;
 
-      const aiResponse = new Message(Role.ASSISTANT, content, undefined, undefined, toolCalls);
+      const aiResponse = new Message<OpenAI.ChatCompletionMessageFunctionToolCall>(Role.ASSISTANT, content, undefined, undefined, toolCalls);
 
       if (choice.finish_reason === "tool_calls") {
         messages.push(aiResponse);
@@ -91,19 +92,17 @@ export class OpenAIBasedAgent extends BaseAgent {
   }
 
   private async _processToolCalls(
-    toolCalls: Array<Record<string, unknown>>,
-  ): Promise<Message[]> {
-    const messages = await Promise.all(toolCalls.map(async (toolCall) => {
-      const toolCallId = toolCall.id as string;
-      const fn = toolCall.function as { name: string; arguments: string };
-      const functionName = fn.name;
-      const args = JSON.parse(fn.arguments) as Record<string, unknown>;
+    toolCalls: OpenAI.ChatCompletionMessageFunctionToolCall[],
+  ): Promise<Message<OpenAI.ChatCompletionMessageFunctionToolCall>[]> {
+    return await Promise.all(toolCalls.map(async (toolCall) => {
+      const toolCallId = toolCall.id;
+      const functionName = toolCall.function.name;
+      const args = JSON.parse(toolCall.function.arguments) as Record<string, unknown>;
 
       const result = await this._callTool(functionName, args);
       console.log(`FUNCTION '${functionName}'\n${result}\n${'-'.repeat(50)}`);
       return new Message(Role.TOOL, result, toolCallId, functionName);
     }));
-    return messages;
   }
 
   private async _callTool(

@@ -3,6 +3,17 @@
 In this task, you will work with multimodal AI APIs to generate and process different types of content — images, speech, 
 and audio. The goal is to understand how to work with vision models, image generation models, speech-to-text, text-to-speech, and audio models.
 
+**Run from the repository root:**
+
+| Task | Command |
+|---|---|
+| Image Analysis | `npm run t3:image-analysis` |
+| DALL-E Image Generation | `npm run t3:dalle` |
+| GPT Image Generation | `npm run t3:gpt-image` |
+| Speech to Text | `npm run t3:speech-to-text` |
+| Text to Speech | `npm run t3:text-to-speech` |
+| Speech to Speech | `npm run t3:speech-to-speech` |
+
 ---
 
 ## Task

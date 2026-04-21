@@ -1,7 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
-import { Message, Role } from "../../commons";
+
+import { Message, Role } from "commons";
 import AIClient from "../base_client";
-import { MessageParam } from "@anthropic-ai/sdk/resources";
 
 /**
  * Client for Anthropic's Claude API using the official SDK.
@@ -36,12 +36,12 @@ export class AnthropicAIClient extends AIClient {
    * Response content blocks are concatenated into a single text response.
    * The response is printed to stdout before being returned.
    */
-  response = async (messages: Array<Message>): Promise<Message> => {
+  response = async (messages: Message[]): Promise<Message> => {
     const {content} = await this.client.messages.create({
       max_tokens: 1024,
       model: this.modelName,
       system: this.systemPrompt,
-      messages: messages as MessageParam[],
+      messages: messages as Anthropic.MessageParam[],
     });
 
     let message = "";
@@ -66,12 +66,12 @@ export class AnthropicAIClient extends AIClient {
    * Note: Listens for 'text' events with text deltas.
    * Each delta is printed to stdout as it arrives for real-time display.
    */
-  streamResponse = async (messages: Array<Message>): Promise<Message> => {
+  streamResponse = async (messages: Message[]): Promise<Message> => {
     const stream = this.client.messages.stream({
       max_tokens: 1024,
       model: this.modelName,
       system: this.systemPrompt,
-      messages: messages as MessageParam[],
+      messages: messages as Anthropic.MessageParam[],
     }).on("text", (text) => {
       process.stdout.write(text);
     })

@@ -1,4 +1,4 @@
-import { OPENAI_API_KEY } from "../commons";
+import { OPENAI_API_KEY } from "commons";
 
 export class OpenAIClientT3 {
   constructor(
@@ -18,8 +18,8 @@ export class OpenAIClientT3 {
                 }: {
     printRequest?: boolean;
     printResponse?: boolean;
-    [key: string]: any;
-  }) => {
+    [key: string]: unknown;
+  }): Promise<Record<string, unknown>> => {
     const headers = {
       "Content-Type": "application/json",
       "Authorization": this.apiKey,
@@ -32,7 +32,7 @@ export class OpenAIClientT3 {
     const response = await fetch(this.endpoint, {headers, method: "POST", body: JSON.stringify(args)});
 
     if (response.status === 200) {
-      const result = await response.json();
+      const result = await response.json() as Record<string, unknown>;
 
       if (printResponse) {
         console.log(JSON.stringify(result, null, 2));

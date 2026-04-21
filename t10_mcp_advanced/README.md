@@ -3,7 +3,14 @@
 Create and run an MCP server with custom tools, then implement an AI Agent with MCP Client that utilizes tools from the created server.
 This task demonstrates the full MCP workflow from server implementation to client integration.
 
-## Learning Goals
+**Run from the repository root:**
+
+| Component | Command |
+|---|---|
+| MCP Server | `npm run t10:server` |
+| Agent | `npm run t10:agent` |
+
+---
 
 By completing this task, you will learn:
 

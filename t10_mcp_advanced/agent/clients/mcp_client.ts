@@ -1,12 +1,13 @@
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
+import { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 
 export type ToolSchema = {
   type: "function";
   function: {
     name: string;
     description: string;
-    parameters: Record<string, any>;
+    parameters: Record<string, unknown>;
   };
 };
 
@@ -39,17 +40,17 @@ export class MCPClient {
       function: {
         name: tool.name,
         description: tool.description ?? "",
-        parameters: tool.inputSchema as Record<string, any>,
+        parameters: tool.inputSchema as Record<string, unknown>,
       },
     }));
   }
 
-  async callTool(toolName: string, toolArgs: Record<string, any>): Promise<string> {
+  async callTool(toolName: string, toolArgs: Record<string, unknown>): Promise<string> {
     console.log(`    Calling \`${toolName}\` with`, toolArgs);
-    const result = await this.client.callTool({ name: toolName, arguments: toolArgs });
+    const result = await this.client.callTool({ name: toolName, arguments: toolArgs }) as CallToolResult;
     const content = result.content;
     if (Array.isArray(content) && content.length > 0) {
-      const item = content[0] as any;
+      const item = content[0] as { type: string; text?: string };
       const text = item.text ?? String(item);
       console.log(`    ⚙️: ${text}\n`);
       return text;

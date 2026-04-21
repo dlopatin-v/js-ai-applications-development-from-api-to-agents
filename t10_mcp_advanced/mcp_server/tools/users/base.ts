@@ -1,4 +1,4 @@
-import userServiceClient from "../../../../commons/user_service/client.js";
+import userServiceClient from "commons/user_service/client";
 import { BaseTool } from "../base.js";
 
 export abstract class BaseUserServiceTool extends BaseTool {

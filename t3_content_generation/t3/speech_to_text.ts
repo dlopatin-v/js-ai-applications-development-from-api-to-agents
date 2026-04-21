@@ -1,4 +1,4 @@
-import { OPENAI_HOST, OPENAI_API_KEY } from "../../commons";
+import { OPENAI_HOST, OPENAI_API_KEY } from "commons";
 import * as fs from "node:fs";
 import * as path from "node:path";
 
@@ -18,9 +18,12 @@ class OpenAIClient {
   call = async ({
     audioFilePath, ...args
   }: {
-
     audioFilePath: string;
-    [key: string]: any;
+    model: string;
+    language?: string;
+    prompt?: string;
+    response_format?: string;
+    temperature?: number;
   }) => {
 
     const headers = {
@@ -34,7 +37,8 @@ class OpenAIClient {
     const response = await fetch(this.endpoint, {headers, method: "POST", body: form});
 
     if (response.status === 200) {
-      const result = await response.json();
+      interface TranscriptionResponse { text: string }
+      const result = await response.json() as TranscriptionResponse;
       if (result) {
         console.log(JSON.stringify(result, null, 2));
       }

@@ -1,12 +1,14 @@
+import * as readline from "node:readline/promises";
+
 import { OpenAI } from "openai";
 import { OpenAIEmbeddings } from "@langchain/openai";
 import { Chroma } from "@langchain/community/vectorstores/chroma";
 import { Document } from "@langchain/core/documents";
 import { zodResponseFormat } from "openai/helpers/zod";
 import { z } from "zod";
-import { OPENAI_API_KEY, Role } from "../../commons";
+
+import { OPENAI_API_KEY, Role, UserInfo } from "commons";
 import { UserServiceClient } from "../user_service_client";
-import * as readline from "node:readline/promises";
 
 /*
  HOBBIES SEARCHER:
@@ -56,7 +58,7 @@ type GroupingResults = z.infer<typeof GroupingResultsSchema>;
 
 // ---
 
-function formatUserDocument(user: Record<string, any>): string {
+function formatUserDocument(user: UserInfo): string {
   return `User:\n id: ${user["id"]},\nAbout user: ${user["about_me"]}\n`;
 }
 
@@ -82,7 +84,7 @@ class InputGrounder {
   private async initializeVectorstore(): Promise<void> {
     console.log("🔍 Loading all users for initial vectorstore...");
     const users = await this.userService.getAllUsers();
-    const documents = users.map((user: any) => new Document({ pageContent: formatUserDocument(user), metadata: { user_id: user.id } }));
+    const documents = users.map((user: UserInfo) => new Document({ pageContent: formatUserDocument(user), metadata: { user_id: user.id } }));
 
     console.log("setup vectorstore...");
     this.vectorStore = await Chroma.fromDocuments(documents, this.embeddings, { collectionName: "users" });
@@ -98,7 +100,7 @@ class InputGrounder {
     const vectorstoreIdsSet = new Set<string>(vectorData.ids.map(String));
 
     // Build a lookup map from the fresh user list
-    const usersDict: Record<string, Record<string, any>> = {};
+    const usersDict: Record<string, UserInfo> = {};
     for (const user of users) {
       usersDict[String(user["id"])] = user;
     }
@@ -163,7 +165,7 @@ class InputGrounder {
 
     const response = await this.llmClient.chat.completions.parse({
       model: "gpt-4.1-nano",
-      messages: messages as any,
+      messages: messages as OpenAI.ChatCompletionMessageParam[],
       temperature: 0,
       response_format: zodResponseFormat(GroupingResultsSchema, 'groupingResults'),
     });
@@ -188,11 +190,11 @@ class OutputGrounder {
     console.log("----------");
   }
 
-  private async _findUsers(ids: Array<number>): Promise<Record<string, any>[]> {
+  private async _findUsers(ids: number[]): Promise<Record<string, any>[]> {
     const safeGetUser = async (userId: number): Promise<Record<string, any> | null> => {
       try {
         return await this.userService.getUser(userId);
-      } catch (e: any) {
+      } catch (e: unknown) {
         if (String(e).includes("404")) {
           console.log(`User with ID ${userId} is absent (404)`);
           return null;

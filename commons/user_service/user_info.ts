@@ -50,3 +50,5 @@ export const userSearchSchema = z.object({
 });
 
 export type UserSearchRequest = z.infer<typeof userSearchSchema>;
+
+export type UserInfo = UserCreate & { id: number };

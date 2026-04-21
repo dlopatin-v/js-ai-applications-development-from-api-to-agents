@@ -1,10 +1,13 @@
 import * as readline from "readline";
-import { Message } from "../../commons/models/message.js";
-import { Role } from "../../commons/models/role.js";
-import { OPENAI_API_KEY } from "../../commons/constants.js";
-import { MCPClient, ToolSchema } from "./clients/mcpClient.js";
-import { CustomMCPClient } from "./clients/customMcpClient.js";
+
+import { OpenAI } from "openai";
+
+import { OPENAI_API_KEY } from "commons/constants";
+import { Message } from "commons/models/message";
+import { Role } from "commons/models/role";
 import { CustomAgentMCP } from "./agent.js";
+import { CustomMCPClient } from "./clients/custom_mcp_client.js";
+import { MCPClient, ToolSchema } from "./clients/mcp_client.js";
 
 async function collectTools(
   client: MCPClient | CustomMCPClient,
@@ -23,11 +26,11 @@ async function collectTools(
 async function main(): Promise<void> {
   const toolNameClientMap = new Map<string, MCPClient | CustomMCPClient>();
 
-  const umsMcpClient = await CustomMCPClient.create("http://localhost:8006/mcp");
-  const tools = await collectTools(umsMcpClient, toolNameClientMap);
+  // const umsMcpClient = await CustomMCPClient.create("http://localhost:8006/mcp");
+  // const tools = await collectTools(umsMcpClient, toolNameClientMap);
 
-  // const fetchMcpClient = await CustomMCPClient.create("https://remote.mcpservers.org/fetch/mcp");
-  // const tools = await collectTools(fetchMcpClient, toolNameClientMap);
+  const fetchMcpClient = await CustomMCPClient.create("https://remote.mcpservers.org/fetch/mcp");
+  const tools = await collectTools(fetchMcpClient, toolNameClientMap);
 
   const agent = new CustomAgentMCP({
     apiKey: OPENAI_API_KEY,
@@ -36,7 +39,7 @@ async function main(): Promise<void> {
     toolNameClientMap,
   });
 
-  const messages: Message[] = [
+  const messages: Message<OpenAI.ChatCompletionMessageFunctionToolCall>[] = [
     new Message(
       Role.SYSTEM,
       "You are an advanced AI agent. Your goal is to assist user with his questions."

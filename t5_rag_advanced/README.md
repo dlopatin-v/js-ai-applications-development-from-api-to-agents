@@ -2,7 +2,13 @@
 
 A JS/TS implementation task to build a complete RAG system for microwave manual assistance using PostgreSQL with pgvector extension and OpenAI API
 
-## Learning Goals
+**Run from the repository root:**
+
+```bash
+npm run t5
+```
+
+---
 
 By completing this task, you will learn:
 - How to implement the complete RAG pipeline: **Retrieval**, **Augmentation**, and **Generation**

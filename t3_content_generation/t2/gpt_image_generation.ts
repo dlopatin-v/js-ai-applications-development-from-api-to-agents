@@ -1,5 +1,7 @@
+import * as fs from "fs";
 import { OpenAIClientT3 } from "../_openai_client";
-import { OPENAI_HOST } from "../../commons";
+import { OPENAI_HOST } from "commons";
+import path from "node:path";
 
 // https://platform.openai.com/docs/guides/image-generation?image-generation-model=gpt-image-1&api=image&multi-turn=imageid
 // ---
@@ -21,13 +23,25 @@ import { OPENAI_HOST } from "../../commons";
 // ]
 // }
 
-function main(modelName: string, request: string, args?: any) {
+interface GptImageParams {
+  n?: number;
+  size?: string;
+  quality?: string;
+}
+
+function main(modelName: string, request: string, args?: GptImageParams) {
   const client = new OpenAIClientT3(OPENAI_HOST + "/v1/images/generations");
 
   client.call({
     model: modelName,
     prompt: request,
     ...( args || {} )
+  }).then((response) => {
+    const imageBase64 = (response["data"] as { b64_json: string }[])[0].b64_json;
+    const imageBytes = Buffer.from(imageBase64, "base64");
+    const filename = `${new Date().toISOString().replace(/[:.]/g, "-")}.png`;
+    fs.writeFileSync(path.join(__dirname, filename), imageBytes);
+    console.log(`Image saved as ${filename}`);
   });
 }
 

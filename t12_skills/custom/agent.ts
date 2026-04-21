@@ -1,16 +1,16 @@
 import OpenAI from "openai";
-import { Message } from "../../commons/models/message.js";
-import { Role } from "../../commons/models/role.js";
+import { Message } from "commons/models/message";
+import { Role } from "commons/models/role";
 import { BaseTool } from "./tools/base.js";
 
 export class T12Agent {
-  private readonly toolsMap: Map<string, BaseTool>;
-  private readonly toolsSchemas: object[];
+  private readonly toolsMap: Map<string, BaseTool<OpenAI.ChatCompletionTool>>;
+  private readonly toolsSchemas: OpenAI.ChatCompletionTool[];
 
   constructor(
     private readonly client: OpenAI,
     private readonly model: string,
-    tools: BaseTool[],
+    tools: BaseTool<OpenAI.ChatCompletionTool>[],
   ) {
     this.toolsMap = new Map(tools.map((t) => [t.name, t]));
     this.toolsSchemas = tools.map((t) => t.schema);
@@ -28,10 +28,8 @@ export class T12Agent {
   private async _chatCompletion(messages: Message[], logMessages = false): Promise<Message> {
     const response = await this.client.chat.completions.create({
       model: this.model,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      messages: messages as any,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      tools: this.toolsSchemas as any,
+      messages: messages as OpenAI.ChatCompletionMessageParam[],
+      tools: this.toolsSchemas,
     });
 
     const choice = response.choices[0];
@@ -41,16 +39,18 @@ export class T12Agent {
       assistantMsg.content = choice.message.content;
     }
     if (choice.message.tool_calls && choice.message.tool_calls.length > 0) {
-      assistantMsg.tool_calls = choice.message.tool_calls.map((tc) => ({
-        id: tc.id,
-        type: tc.type,
-        function: { name: tc.function.name, arguments: tc.function.arguments },
+      const toolCalls = choice.message.tool_calls as OpenAI.ChatCompletionMessageFunctionToolCall[];
+
+      assistantMsg.tool_calls = toolCalls.map((toolCall) => ({
+        id: toolCall.id,
+        type: toolCall.type,
+        function: { name: toolCall.function.name, arguments: toolCall.function.arguments },
       }));
     }
 
     if (choice.finish_reason === "tool_calls") {
       messages.push(assistantMsg);
-      const toolMessages = await this._dispatchToolCalls(choice.message.tool_calls!);
+      const toolMessages = await this._dispatchToolCalls(choice.message.tool_calls as OpenAI.ChatCompletionMessageFunctionToolCall[]);
       messages.push(...toolMessages);
 
       if (logMessages) {
@@ -69,17 +69,17 @@ export class T12Agent {
   }
 
   private async _dispatchToolCalls(
-    toolCalls: OpenAI.Chat.Completions.ChatCompletionMessageToolCall[],
+    toolCalls: OpenAI.ChatCompletionMessageFunctionToolCall[],
   ): Promise<Message[]> {
     const toolMessages: Message[] = [];
-    for (const tc of toolCalls) {
-      const tool = this.toolsMap.get(tc.function.name);
+    for (const toolCall of toolCalls) {
+      const tool = this.toolsMap.get(toolCall.function.name);
       let content: string;
       if (!tool) {
-        content = `ERROR: unknown tool '${tc.function.name}'`;
-        toolMessages.push(new Message(Role.TOOL, content, tc.id, tc.function.name));
+        content = `ERROR: unknown tool '${toolCall.function.name}'`;
+        toolMessages.push(new Message(Role.TOOL, content, toolCall.id, toolCall.function.name));
       } else {
-        const resultMsg = await tool.execute(tc.id, JSON.parse(tc.function.arguments));
+        const resultMsg = await tool.execute(toolCall.id, JSON.parse(toolCall.function.arguments));
         toolMessages.push(resultMsg);
       }
     }

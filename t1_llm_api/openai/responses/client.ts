@@ -1,5 +1,5 @@
 import { OpenAI } from "openai";
-import { Message, Role } from "../../../commons";
+import { Message, Role } from "commons";
 import { BaseOpenAiClient } from "../base";
 
 /**
@@ -27,11 +27,11 @@ export class OpenAIResponsesClient extends BaseOpenAiClient {
    * @param messages Conversation history sent to the model.
    * @returns The AI response as a single message.
    */
-  response = async (messages: Array<Message>): Promise<Message> => {
+  response = async (messages: Message[]): Promise<Message> => {
     const response = await this.client.responses.create({
       model: this.modelName,
       instructions: this.systemPrompt,
-      input: messages as any,
+      input: messages as OpenAI.Responses.ResponseInput,
     });
 
     console.log(response.output_text);
@@ -48,15 +48,15 @@ export class OpenAIResponsesClient extends BaseOpenAiClient {
    * @param messages Conversation history sent to the model.
    * @returns The final aggregated AI message after the stream completes.
    */
-  streamResponse = async (messages: Array<Message>): Promise<Message> => {
+  streamResponse = async (messages: Message[]): Promise<Message> => {
     const stream = await this.client.responses.create({
       model: this.modelName,
       instructions: this.systemPrompt,
-      input: messages as any,
+      input: messages as OpenAI.Responses.ResponseInput,
       stream: true,
     });
 
-    const contents: Array<string> = [];
+    const contents: string[] = [];
 
     for await (const event of stream) {
       if (event.type === "response.output_text.delta") {
@@ -65,7 +65,6 @@ export class OpenAIResponsesClient extends BaseOpenAiClient {
       }
     }
 
-    console.log();
     return new Message(Role.ASSISTANT, contents.join(""));
   };
 }

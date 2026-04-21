@@ -1,9 +1,9 @@
 import * as path from "path";
 import { BaseTool } from "../base.js";
-import { T12MCPClient } from "../../mcp/mcpClient.js";
-import { MCPToolModel } from "../../mcp/mcpToolModel.js";
+import { T12MCPClient } from "../../mcp/mcp_client.js";
+import { MCPToolModel } from "../../mcp/mcp_tool_model.js";
 import { ExecutionResult } from "./_response.js";
-import { getFileContent } from "../../fileUtils.js";
+import { getFileContent } from "../../file_utils.js";
 
 export class PythonCodeInterpreterTool extends BaseTool {
   private constructor(
@@ -21,9 +21,9 @@ export class PythonCodeInterpreterTool extends BaseTool {
   ): Promise<PythonCodeInterpreterTool> {
     const mcpClient = await T12MCPClient.create(mcpUrl);
     const tools = await mcpClient.getTools();
-    const found = tools.find((t) => t.name === toolName);
+    const found = tools.find((t: MCPToolModel) => t.name === toolName);
     if (!found) {
-      const available = tools.map((t) => t.name).join(", ");
+      const available = tools.map((t: MCPToolModel) => t.name).join(", ");
       throw new Error(`MCP server doesn't have \`${toolName}\` tool. Available: ${available}`);
     }
     return new PythonCodeInterpreterTool(mcpClient, found, skillsDir);
@@ -65,7 +65,7 @@ export class PythonCodeInterpreterTool extends BaseTool {
     }
 
     const content = await this.mcpClient.callTool(this.name, callArgs);
-    const result: ExecutionResult = JSON.parse(content);
+    const result = JSON.parse(content) as ExecutionResult;
     return JSON.stringify(result);
   }
 }

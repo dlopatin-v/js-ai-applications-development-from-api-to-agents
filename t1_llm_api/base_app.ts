@@ -1,5 +1,5 @@
 import * as readline from "node:readline/promises";
-import { Conversation, Message, Role } from "../commons";
+import { Conversation, Message, Role } from "commons";
 import AIClient from "./base_client";
 
 
@@ -39,7 +39,7 @@ export async function start(stream: boolean, client: AIClient) {
 
     conversation.addMessage(new Message(Role.USER, input));
 
-    console.log("🤖: ");
+    process.stdout.write("🤖: ");
 
     let aiMessage: Message;
     if (stream) {

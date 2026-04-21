@@ -1,7 +1,7 @@
-import { Message } from "../../../commons/models/message.js";
-import { Role } from "../../../commons/models/role.js";
+import { Message } from "commons/models/message";
+import { Role } from "commons/models/role";
 
-export abstract class BaseTool {
+export abstract class BaseTool<T = any> {
   async execute(toolCallId: string, args: Record<string, unknown>): Promise<Message> {
     let content: string;
     try {
@@ -18,7 +18,7 @@ export abstract class BaseTool {
   abstract get description(): string;
   abstract get parameters(): Record<string, unknown>;
 
-  get schema(): object {
+  get schema(): T {
     return {
       type: "function",
       function: {
@@ -26,6 +26,6 @@ export abstract class BaseTool {
         description: this.description,
         parameters: this.parameters,
       },
-    };
+    } as T;
   }
 }

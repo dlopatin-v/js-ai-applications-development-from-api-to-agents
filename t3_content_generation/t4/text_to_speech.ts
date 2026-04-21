@@ -1,4 +1,4 @@
-import { OPENAI_API_KEY, OPENAI_HOST } from "../../commons";
+import { OPENAI_API_KEY, OPENAI_HOST } from "commons";
 import * as fs from "node:fs";
 import * as path from "node:path";
 
@@ -31,7 +31,10 @@ class OpenAIClient {
   call = async (
     args: {
       printRequest?: boolean;
-      [key: string]: any;
+      model: string;
+      input: string;
+      voice: Voice;
+      instructions?: string;
     }) => {
 
     const headers = {
@@ -48,8 +51,16 @@ class OpenAIClient {
     const response = await fetch(this.endpoint, {headers, method: "POST", body: JSON.stringify(args)});
 
     if (response.status === 200) {
+      if (!response.body) throw new Error("Missing response body");
       const reader = response.body.getReader();
-      fs.writeFileSync(path.join(__dirname, filename), reader.read().toString());
+      const chunks: Uint8Array[] = [];
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        if (value) chunks.push(value);
+      }
+      const buffer = Buffer.concat(chunks.map(c => Buffer.from(c)));
+      fs.writeFileSync(path.join(__dirname, filename), buffer);
       console.log("Audio content saved to " + filename);
     } else {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);

@@ -1,11 +1,14 @@
-import * as readline from "readline";
 import * as path from "path";
-import { OPENAI_API_KEY, Message, Role } from "../../commons";
+import * as readline from "readline";
+
+import { OpenAI } from "openai";
+
+import { OPENAI_API_KEY, Message, Role } from "commons";
 import { AgentMCPFundamentals } from "./agent.js";
-import { StdioMCPClient } from "./mcp_clients/stdio.js";
-import { HttpMCPClient } from "./mcp_clients/http.js";
-import { SYSTEM_PROMPT } from "./prompts.js";
 import { MCPClient, ToolSchema } from "./mcp_clients/base.js";
+import { HttpMCPClient } from "./mcp_clients/http.js";
+import { StdioMCPClient } from "./mcp_clients/stdio.js";
+import { SYSTEM_PROMPT } from "./prompts.js";
 
 // https://remote.mcpservers.org/fetch/mcp
 // Pay attention that `fetch` doesn't have resources and prompts
@@ -14,7 +17,7 @@ async function main() {
   // 1. Local STDIO — spawns stdioServer.ts using the same npm run ts command
   const mcpClient: MCPClient = new StdioMCPClient({
     command: "npm",
-    args: ["run", "ts", path.join(__dirname, "..", "mcp_server", "stdioServer.ts")],
+    args: ["run", "ts", path.join(__dirname, "..", "mcp_server", "stdio_server.ts")],
     env: { ...process.env } as Record<string, string>,
   });
 
@@ -46,7 +49,7 @@ async function main() {
       mcpClient,
     });
 
-    const messages: Message[] = [
+    const messages: Message<OpenAI.ChatCompletionMessageFunctionToolCall>[] = [
       new Message(Role.SYSTEM, SYSTEM_PROMPT),
     ];
 
@@ -76,7 +79,7 @@ async function main() {
         }
         messages.push(new Message(Role.USER, trimmed));
         const aiMessage = await agent.getCompletion(messages);
-        messages.push(aiMessage);
+        messages.push(aiMessage as Message<OpenAI.ChatCompletionMessageFunctionToolCall>);
         ask();
       });
 

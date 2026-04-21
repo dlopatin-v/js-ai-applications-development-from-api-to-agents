@@ -1,5 +1,5 @@
 import * as readline from "node:readline/promises";
-import { Conversation, Message, Role } from "../commons";
+import { Conversation, Message, Role } from "commons";
 import AIClient from "./_clients/base_client";
 
 
@@ -19,7 +19,7 @@ import AIClient from "./_clients/base_client";
  * @param printOnlyContent If true, prints only the response text; otherwise prints the full response JSON.
  * @param args Optional extra parameters forwarded to the client's response method (e.g. temperature, top_p).
  */
-export async function run(client: AIClient, printRequest: boolean, printOnlyContent: boolean, args?: any) {
+export async function run(client: AIClient, printRequest: boolean, printOnlyContent: boolean, args?: Record<string, unknown>) {
   const conversation = new Conversation();
   const rl = readline.createInterface({
     input: process.stdin,
@@ -39,7 +39,7 @@ export async function run(client: AIClient, printRequest: boolean, printOnlyCont
 
     conversation.addMessage(new Message(Role.USER, input));
 
-    console.log("🤖: ");
+    process.stdout.write("🤖: ");
 
     const aiMessage = await client.response(conversation.messages, printRequest, printOnlyContent, args);
     conversation.addMessage(aiMessage);

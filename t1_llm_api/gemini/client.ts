@@ -1,5 +1,5 @@
 import { GoogleGenAI, Content } from "@google/genai";
-import { Message, Role } from "../../commons";
+import { Message, Role } from "commons";
 import AIClient from "../base_client";
 
 /**
@@ -31,7 +31,7 @@ export class GeminiAICLient extends AIClient {
    * @param messages The conversation messages to convert.
    * @returns Messages in Gemini's Content format.
    */
-  private convertToGeminiContent = (messages: Array<Message>): Content[] => {
+  private convertToGeminiContent = (messages: Message[]): Content[] => {
     return messages.map((message): Content => ({
       role: message.role,
       parts: [{text: message.content}],
@@ -47,7 +47,7 @@ export class GeminiAICLient extends AIClient {
    * Note: Gemini uses 'systemInstruction' parameter for system-level guidance.
    * The response is printed to stdout before being returned.
    */
-  response = async (messages: Array<Message>): Promise<Message> => {
+  response = async (messages: Message[]): Promise<Message> => {
     const response = await this.client.models.generateContent({
       model: this.modelName,
       contents: this.convertToGeminiContent(messages),
@@ -74,7 +74,7 @@ export class GeminiAICLient extends AIClient {
    * Note: Uses the async streaming interface provided by the Gemini SDK.
    * Each chunk's text is printed to stdout as it arrives.
    */
-  streamResponse = async (messages: Array<Message>): Promise<Message> => {
+  streamResponse = async (messages: Message[]): Promise<Message> => {
     const response = await this.client.models.generateContentStream({
       model: this.modelName,
       contents: this.convertToGeminiContent(messages),

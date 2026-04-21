@@ -2,7 +2,15 @@
 
 TypeScript implementation for building Users Management Agent with MCP tools and MCP server
 
-## Learning Goals
+**Run from the repository root:**
+
+| Component | Command |
+|---|---|
+| HTTP MCP Server | `npm run t9:server` |
+| STDIO MCP Server | `npm run t9:server-stdio` |
+| Agent | `npm run t9:agent` |
+
+---
 
 By exploring and working with this project, you will learn:
 

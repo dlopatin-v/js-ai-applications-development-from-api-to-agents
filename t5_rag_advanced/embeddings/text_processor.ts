@@ -1,7 +1,9 @@
-import { Client, ClientConfig } from "pg";
-import { chunkText } from "../utils/text";
 import * as fs from "node:fs";
 import * as path from "node:path";
+
+import { Client, ClientConfig } from "pg";
+
+import { chunkText } from "../utils/text";
 import { EmbeddingsClient } from "./embeddings_client";
 
 export enum SearchMode {
@@ -39,7 +41,7 @@ export class TextProcessor {
    * @param chunk - The raw text chunk.
    * @param documentName - Source document identifier stored alongside the chunk.
    */
-  private async saveChunk(embedding: Array<number>, chunk: string, documentName: string) {
+  private async saveChunk(embedding: number[], chunk: string, documentName: string) {
     const vectorString = `[${embedding.join(',')}]`;
 
     const query = "INSERT INTO vectors (document_name, text, embedding) VALUES ($1, $2, $3::vector)";
@@ -114,7 +116,7 @@ export class TextProcessor {
    *   (must match the dimensionality of the stored vectors).
    * @returns An array of matching text chunks ordered by descending similarity.
    */
-  async search(searchMode: SearchMode, userRequest: string, topK: number, scoreThreshold: number, dimensions: number): Promise<Array<string>> {
+  async search(searchMode: SearchMode, userRequest: string, topK: number, scoreThreshold: number, dimensions: number): Promise<string[]> {
     if (topK < 1) {
       throw new Error("top_k must be at least 1");
     }
@@ -125,7 +127,7 @@ export class TextProcessor {
     const queryEmbedding = await this.embeddingClient.getEmbeddings(userRequest, dimensions);
     let vectorString = "";
     Object.keys(queryEmbedding).forEach((key) => {
-      vectorString += queryEmbedding[key];
+      vectorString += queryEmbedding[Number(key)];
     });
     vectorString =`[${vectorString}]`;
     let maxDistance: number;
@@ -135,8 +137,9 @@ export class TextProcessor {
       maxDistance = scoreThreshold === 0 ? Infinity : (1.0 / scoreThreshold) - 1.0;
     }
 
-    const retrievedChunks: Array<string> = [];
-    const result = await this.client.query(
+    const retrievedChunks: string[] = [];
+    interface QueryRow { text: string; distance: number }
+    const result = await this.client.query<QueryRow>(
       this.getSearchQuery(searchMode),
       [vectorString, maxDistance, topK]
     );

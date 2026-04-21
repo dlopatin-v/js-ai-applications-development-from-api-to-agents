@@ -1,8 +1,8 @@
 import OpenAI from "openai";
-import { Message } from "../../commons/models/message.js";
-import { Role } from "../../commons/models/role.js";
-import { MCPClient, ToolSchema } from "./clients/mcpClient.js";
-import { CustomMCPClient } from "./clients/customMcpClient.js";
+import { Message } from "commons/models/message";
+import { Role } from "commons/models/role";
+import { MCPClient, ToolSchema } from "./clients/mcp_client.js";
+import { CustomMCPClient } from "./clients/custom_mcp_client.js";
 
 interface ToolCallDelta {
   index: number;
@@ -31,7 +31,7 @@ export class CustomAgentMCP {
 
   private _collectToolCalls(
     toolDeltas: ToolCallDelta[]
-  ): OpenAI.Chat.Completions.ChatCompletionMessageToolCall[] {
+  ): OpenAI.ChatCompletionMessageFunctionToolCall[] {
     const toolMap: Record<
       number,
       { id: string; type: string; function: { name: string; arguments: string } }
@@ -51,14 +51,14 @@ export class CustomAgentMCP {
 
     return Object.values(
       toolMap
-    ) as OpenAI.Chat.Completions.ChatCompletionMessageToolCall[];
+    ) as OpenAI.ChatCompletionMessageFunctionToolCall[];
   }
 
-  private async _streamResponse(messages: Message[]): Promise<Message> {
+  private async _streamResponse(messages: Message<any>[]): Promise<Message<any>> {
     const stream = await this.openai.chat.completions.create({
       model: this.model,
-      messages: messages as any,
-      tools: this.tools as OpenAI.Chat.Completions.ChatCompletionTool[],
+      messages: messages as OpenAI.ChatCompletionMessageParam[],
+      tools: this.tools as OpenAI.ChatCompletionTool[],
       temperature: 0.0,
       stream: true,
     });
@@ -91,11 +91,11 @@ export class CustomAgentMCP {
       content,
       undefined,
       undefined,
-      toolDeltas.length > 0 ? this._collectToolCalls(toolDeltas) : []
+      (toolDeltas.length > 0 ? this._collectToolCalls(toolDeltas) : []) as unknown as Record<string, unknown>[]
     );
   }
 
-  async getCompletion(messages: Message[]): Promise<Message> {
+  async getCompletion(messages: Message<OpenAI.ChatCompletionMessageFunctionToolCall>[]): Promise<Message<OpenAI.ChatCompletionMessageFunctionToolCall>> {
     const aiMessage = await this._streamResponse(messages);
 
     if (aiMessage.tool_calls && aiMessage.tool_calls.length > 0) {
@@ -107,8 +107,9 @@ export class CustomAgentMCP {
     return aiMessage;
   }
 
-  private async _callTools(aiMessage: Message, messages: Message[]): Promise<void> {
-    for (const toolCall of aiMessage.tool_calls ?? []) {
+  private async _callTools(aiMessage: Message<OpenAI.ChatCompletionMessageFunctionToolCall>, messages: Message<OpenAI.ChatCompletionMessageFunctionToolCall>[]): Promise<void> {
+    for (const rawToolCall of aiMessage.tool_calls ?? []) {
+      const toolCall = rawToolCall;
       const toolName = toolCall.function.name;
       const toolArgs = JSON.parse(toolCall.function.arguments);
 

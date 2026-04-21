@@ -1,7 +1,9 @@
-import { OpenAI } from "openai";
-import { OPENAI_API_KEY, Role } from "../../commons";
-import { UserServiceClient } from "../user_service_client";
 import * as readline from "node:readline/promises";
+
+import { OpenAI } from "openai";
+
+import { OPENAI_API_KEY, Role, UserInfo } from "commons";
+import { UserServiceClient } from "../user_service_client";
 
 const BATCH_SYSTEM_PROMPT = `You are a user search assistant. Your task is to find users from the provided list that match the search criteria.
 
@@ -33,7 +35,7 @@ ${query}`);
 
 class TokenTracker {
   private totalTokens = 0;
-  private batchTokens = [];
+  private batchTokens: number[] = [];
 
   addTokens(tokens: number) {
     this.totalTokens += tokens;
@@ -54,8 +56,7 @@ const tokenTracker = new TokenTracker();
 const userService = new UserServiceClient();
 
 
-// @TODO User type
-function joinContext(context: Array<any>) {
+function joinContext(context: UserInfo[]) {
   return context
     .map(user => {
       const userDetails = Object.entries(user)
@@ -66,7 +67,7 @@ function joinContext(context: Array<any>) {
     .join('');
 }
 
-function chunkArray(array, size) {
+function chunkArray<T>(array: T[], size: number): T[][] {
   return Array.from({length: Math.ceil(array.length / size)}, (_, i) =>
     array.slice(i * size, i * size + size)
   );
@@ -80,10 +81,11 @@ async function generateResponse(systemPrompt: string, userMessage: string) {
     {role: Role.USER, content: userMessage},
   ]
   const response = await llmClient.chat.completions.create({
-    model: "gpt-4.1-nano", temperature: 0, messages: messages as any[]
+    model: "gpt-4.1-nano", temperature: 0,
+    messages: messages as OpenAI.ChatCompletionMessageParam[]
   });
 
-  const totalTokens = response.usage.total_tokens ?? 0;
+  const totalTokens = response.usage?.total_tokens ?? 0;
   const content = response.choices[0].message.content;
 
   tokenTracker.addTokens(totalTokens);
@@ -115,7 +117,7 @@ async function main() {
 
   console.log("\n--- Compiling results ---");
 
-  const relevantResults = batchResults.filter(result => result.trim() !== "NO_MATCHES_FOUND");
+  const relevantResults = batchResults.filter((result): result is string => result !== null && result.trim() !== "NO_MATCHES_FOUND");
 
   console.log("\n=== SEARCH RESULTS ===");
 

@@ -62,7 +62,7 @@ export async function checkOAuth(req: Request, res: Response): Promise<boolean> 
 
   // ── Step 3: Check realm role ────────────────────────────────────
   // Keycloak embeds roles in: payload.realm_access.roles
-  const realmAccess = (payload as any).realm_access as { roles?: string[] } | undefined;
+  const realmAccess = payload.realm_access as { roles?: string[] } | undefined;
   const realmRoles: string[] = realmAccess?.roles ?? [];
 
   if (!realmRoles.includes(REQUIRED_ROLE)) {
@@ -73,7 +73,7 @@ export async function checkOAuth(req: Request, res: Response): Promise<boolean> 
     return false;
   }
 
-  const username = (payload as any).preferred_username;
+  const username = payload.preferred_username;
   console.log(`Authenticated: ${username} | roles: ${JSON.stringify(realmRoles)}`);
   return true;
 }

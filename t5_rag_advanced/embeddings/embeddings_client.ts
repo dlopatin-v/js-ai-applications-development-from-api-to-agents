@@ -1,4 +1,4 @@
-type EmbeddingList = Record<number, Array<number>>;
+type EmbeddingList = Record<number, number[]>;
 
 /**
  * Client for generating text embeddings via the OpenAI Embeddings API.
@@ -24,7 +24,7 @@ export class EmbeddingsClient {
    * @param inputs - The `data` array from the API response.
    * @returns A map of `{ index: embeddingVector }` pairs.
    */
-  private formData = (inputs: Array<{ index: 0, embedding: Array<number>, object: 'string' }>): EmbeddingList => {
+  private formData = (inputs: { index: number, embedding: number[], object: string }[]): EmbeddingList => {
     const structuredEmbeddings: EmbeddingList = {};
     inputs.forEach(({ embedding, index }) => {
       structuredEmbeddings[index] = embedding;
@@ -45,7 +45,7 @@ export class EmbeddingsClient {
    * @param printResponse - When true, pretty-prints the full API response to console.
    * @returns A map of `{ index: embeddingVector }` pairs.
    */
-  async getEmbeddings(inputs: string | Array<string>, dimensions: number, printResponse = true): Promise<EmbeddingList> {
+  async getEmbeddings(inputs: string | string[], dimensions: number, printResponse = true): Promise<EmbeddingList> {
     console.log(`Creating embeddings for \`${inputs}\` \nAnd such dimensions: ${dimensions}\n📋Results:\n`);
 
     const headers = {
@@ -62,7 +62,10 @@ export class EmbeddingsClient {
     const response = await fetch(this.endpoint, { method: "POST", body: JSON.stringify(requestData), headers });
 
     if (response.status === 200) {
-        const data = await response.json();
+        interface EmbeddingsResponse {
+          data: { index: number; embedding: number[]; object: string }[];
+        }
+        const data = await response.json() as EmbeddingsResponse;
         if (printResponse) {
           console.log("=".repeat(50) + "RESPONSE" + "=".repeat(50));
           console.log(JSON.stringify(data, null, 2));

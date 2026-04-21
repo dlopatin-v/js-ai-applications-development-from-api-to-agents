@@ -24,10 +24,10 @@ Your implementation will demonstrate the complete RAG workflow:
 npm install
 ```
 
-Run the application:
+Run the application (from the repository root):
 
 ```bash
-npm run ts t4_rag_fundamentals/app.ts
+npm run t4
 ```
 
 ---

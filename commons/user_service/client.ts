@@ -13,7 +13,7 @@ export class UserServiceClient {
     return '```\n' + lines.join('\n') + '\n```\n';
   }
 
-  private usersToString = (users: Array<any>): string => {
+  private usersToString = (users: any[]): string => {
     return users.map(this.userToString).join("") + "\n";
   }
 
@@ -34,7 +34,7 @@ export class UserServiceClient {
     const response = await fetch(`${USER_SERVICE_PATH}/search?${params.toString()}`, { headers: DEFAULT_HEADERS })
 
     if (response.status === 200) {
-      const result = await response.json();
+      const result = await response.json() as unknown as any[];
       console.info(`Get: ${result.length} users successfuly`);
       return this.usersToString(result);
     }
@@ -77,9 +77,7 @@ export class UserServiceClient {
 
     if (response.status === 200) {
       await response.json();
-
       console.info("User successfully deleted");
-
       return "User successfully deleted";
     }
 

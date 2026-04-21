@@ -1,4 +1,4 @@
-import { UserCreate } from "../../../../commons";
+import { UserCreate } from "commons";
 import { BaseUserServiceTool } from "./base";
 
 export class CreateUserTool extends BaseUserServiceTool {
@@ -42,8 +42,8 @@ export class CreateUserTool extends BaseUserServiceTool {
   async execute(args: Record<string, unknown>): Promise<string> {
     try {
       return await this.userClient.addUser(args as unknown as UserCreate);
-    } catch (e: any) {
-      return `Error while creating a new user: ${e.message}`;
+    } catch (e: unknown) {
+      return `Error while creating a new user: ${e instanceof Error ? e.message : String(e)}`;
     }
   }
 }

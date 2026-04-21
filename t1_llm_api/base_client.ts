@@ -1,4 +1,4 @@
-import { Message } from "../commons";
+import { Message } from "commons";
 
 /**
  * Abstract base class for AI service clients.
@@ -37,7 +37,7 @@ class AIClient {
    * @param messages Conversation history sent to the model.
    * @returns The AI response as a single message.
    */
-  response = async (messages: Array<Message>): Promise<Message> => {
+  response = async (messages: Message[]): Promise<Message> => {
     throw new Error("Method not implemented.");
   };
 
@@ -48,7 +48,7 @@ class AIClient {
    * @param messages Conversation history sent to the model.
    * @returns The final aggregated AI message after the stream completes.
    */
-  streamResponse = async (messages: Array<Message>): Promise<Message> => {
+  streamResponse = async (messages: Message[]): Promise<Message> => {
     throw new Error("Method not implemented.");
   }
 }

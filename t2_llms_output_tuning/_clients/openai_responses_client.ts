@@ -1,6 +1,7 @@
-import { Message, Role, OPENAI_API_KEY, OPENAI_RESPONSES_ENDPOINT } from "../../commons";
-import AIClient from "./base_client";
 import { OpenAI } from "openai";
+
+import { Message, Role, OPENAI_API_KEY, OPENAI_RESPONSES_ENDPOINT } from "commons";
+import AIClient from "./base_client";
 
 const API_KEY_HEADER_NAME = "Authorization";
 
@@ -30,7 +31,7 @@ export class OpenAIResponsesClient extends AIClient {
    * @param args Optional provider-specific parameters to include in the request body (e.g. `{ temperature: 0.5 }`).
    * @returns The AI response as a single message.
    */
-  response = async (messages: Array<Message>, printRequest: boolean, printOnlyContent: boolean, args?: any): Promise<Message> => {
+  response = async (messages: Message[], printRequest: boolean, printOnlyContent: boolean, args?: Record<string, unknown>): Promise<Message> => {
     const headers = {
       "Content-Type": "application/json",
       "Authorization": this.apiKey,
@@ -48,7 +49,7 @@ export class OpenAIResponsesClient extends AIClient {
 
     const response = await this.client.responses.create({
       model: this.modelName,
-      input: messages as any,
+      input: messages as OpenAI.Responses.ResponseInput,
       ...(args || {})
     });
 

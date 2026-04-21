@@ -1,6 +1,8 @@
-import { ANTHROPIC_ENDPOINT } from "../../../commons/constants";
-import { Message } from "../../../commons/models/message";
-import { Role } from "../../../commons/models/role";
+import Anthropic, { ParsedMessage } from "@anthropic-ai/sdk";
+
+import { ANTHROPIC_ENDPOINT } from "commons/constants";
+import { Message } from "commons/models/message";
+import { Role } from "commons/models/role";
 import { BaseTool } from "../tools/base";
 import { BaseAgent } from "./_base";
 
@@ -22,7 +24,7 @@ export class AnthropicBasedAgent extends BaseAgent {
     console.log(JSON.stringify(this._toolsSchemas, null, 4));
   }
 
-  async getResponse(messages: Message[], printRequest = true): Promise<Message> {
+  async getResponse(messages: Message<Anthropic.ToolUseBlock>[], printRequest = true): Promise<Message<Anthropic.ToolUseBlock>> {
     const headers = {
       "x-api-key": this._apiKey,
       "anthropic-version": "2023-06-01",
@@ -50,7 +52,7 @@ export class AnthropicBasedAgent extends BaseAgent {
     });
 
     if (response.status === 200) {
-      const data = await response.json();
+      const data = await response.json() as ParsedMessage<any>;
 
       const contentBlocks = data.content;
       const stopReason = data.stop_reason;
@@ -58,10 +60,10 @@ export class AnthropicBasedAgent extends BaseAgent {
       console.log(`RESPONSE: ${JSON.stringify({ data }, null, 2)}`);
       console.log("-".repeat(100));
 
-      const textContent = (contentBlocks.find(({ type }: { type: string }) => type === "text") as any)?.text ?? '';
-      const toolUseBlocks = contentBlocks.filter(({ type }: { type: string }) => (type === "tool_use"));
+      const textContent = (contentBlocks.find(({ type }) => type === "text") as Anthropic.TextBlock | undefined)?.text ?? '';
+      const toolUseBlocks = contentBlocks.filter(({ type }) => (type === "tool_use"))  as Anthropic.ToolUseBlock[];
 
-      const aiResponse = new Message(Role.ASSISTANT, textContent, undefined, undefined, toolUseBlocks.length ? contentBlocks : undefined);
+      const aiResponse = new Message<Anthropic.ToolUseBlock>(Role.ASSISTANT, textContent, undefined, undefined, toolUseBlocks.length ? toolUseBlocks : undefined);
 
       if (stopReason === "tool_use") {
         messages.push(aiResponse);
@@ -78,16 +80,16 @@ export class AnthropicBasedAgent extends BaseAgent {
   }
 
   private _toAnthropicMessages(
-    messages: Message[],
-  ): Array<Record<string, unknown>> {
-    const result: Array<Record<string, unknown>> = [];
+    messages: Message<Anthropic.ToolUseBlock>[],
+  ): Record<string, unknown>[] {
+    const result: Record<string, unknown>[] = [];
     let i = 0;
 
     while (i < messages.length) {
       const msg = messages[i];
 
       if (msg.role === Role.TOOL) {
-        const toolGroup: Message[] = [];
+        const toolGroup: Message<Anthropic.ToolUseBlock>[] = [];
         while (i < messages.length && messages[i].role === Role.TOOL) {
           toolGroup.push(messages[i]);
           i += 1;
@@ -119,16 +121,15 @@ export class AnthropicBasedAgent extends BaseAgent {
   }
 
   private async _processToolCalls(
-    toolUseBlocks: Array<Record<string, unknown>>,
-  ): Promise<Message[]> {
-    const messages = await Promise.all(toolUseBlocks.map(async (block) => {
+    toolUseBlocks: Anthropic.ToolUseBlock[],
+  ): Promise<Message<Anthropic.ToolUseBlock>[]> {
+    return await Promise.all(toolUseBlocks.map(async (block) => {
       const name = block.name as string;
       const input = block.input as Record<string, unknown>;
       const result = await this._callTool(name, input);
       console.log(`FUNCTION '${name}'\n${result}\n${'-'.repeat(50)}`);
-      return new Message(Role.TOOL, result, block.id as string, name);
+      return new Message(Role.TOOL, result, block.id as string, name) as Message<Anthropic.ToolUseBlock>;
     }));
-    return messages;
   }
 
   private async _callTool(

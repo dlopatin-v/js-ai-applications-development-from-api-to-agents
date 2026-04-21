@@ -1,5 +1,5 @@
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
-import { Resource, Prompt } from "@modelcontextprotocol/sdk/types.js";
+import { Resource, Prompt, TextContent, CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 
 export type ToolSchema = {
   type: "function";
@@ -34,13 +34,13 @@ export abstract class MCPClient {
 
   async callTool(toolName: string, toolArgs: Record<string, unknown>): Promise<string> {
     console.log(`    🔧 Calling ${toolName} with ${toolArgs}`);
-    const result = await this.client.callTool({ name: toolName, arguments: toolArgs });
-    const content = result.content[0] as any;
+    const result = await this.client.callTool({ name: toolName, arguments: toolArgs }) as CallToolResult;
+    const content = result.content[0] as TextContent;
 
     console.log(`    ⚙️:`, content, "\n");
 
     if (content.text) return content.text;
-    return content;
+    return String(content);
   }
 
   async getResources(): Promise<Resource[]> {

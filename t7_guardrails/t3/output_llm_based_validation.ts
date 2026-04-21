@@ -1,7 +1,7 @@
 import { OpenAI } from "openai";
 import { zodResponseFormat } from "openai/helpers/zod";
 import { z } from "zod";
-import { OPENAI_API_KEY, Role } from "../../commons";
+import { OPENAI_API_KEY, Role } from "commons";
 import * as readline from "node:readline/promises";
 
 const MODEL = "gpt-4.1-nano";
@@ -147,7 +147,7 @@ async function filter(aiResponse: string): Promise<string> {
 }
 
 async function main(softResponse: boolean): Promise<void> {
-  const messages: { role: string; content: string }[] = [
+  const messages: OpenAI.ChatCompletionMessageParam[] = [
     { role: Role.SYSTEM, content: SYSTEM_PROMPT },
     { role: Role.USER, content: PROFILE },
   ];
@@ -171,7 +171,7 @@ async function main(softResponse: boolean): Promise<void> {
     const response = await client.chat.completions.create({
       model: "gpt-4.1-nano",
       temperature: 0.0,
-      messages: messages as any,
+      messages: messages,
     });
 
     const aiContent = response.choices[0].message.content ?? "";

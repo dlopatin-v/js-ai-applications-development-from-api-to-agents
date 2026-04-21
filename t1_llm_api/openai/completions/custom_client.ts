@@ -1,4 +1,4 @@
-import { Message, Role } from "../../../commons";
+import { Message, Role } from "commons";
 import { BaseOpenAiClient } from "../base";
 
 /**
@@ -16,7 +16,7 @@ export class CustomOpenAIClient extends BaseOpenAiClient {
    * @param messages Conversation history sent to the model.
    * @returns The AI response as a single message.
    */
-  response = async (messages: Array<Message>): Promise<Message> => {
+  response = async (messages: Message[]): Promise<Message> => {
     const headers = {
       "Content-Type": "application/json",
       "Authorization": this.apiKey,
@@ -39,7 +39,10 @@ export class CustomOpenAIClient extends BaseOpenAiClient {
     });
 
     if (response.status === 200) {
-      const result = await response.json();
+      interface ChatCompletionResponse {
+        choices: { message: { content: string } }[];
+      }
+      const result = await response.json() as ChatCompletionResponse;
       const message = result.choices[0].message.content;
 
       console.log(message);
@@ -59,7 +62,7 @@ export class CustomOpenAIClient extends BaseOpenAiClient {
    * @param messages Conversation history sent to the model.
    * @returns The final aggregated AI message after the stream completes.
    */
-  streamResponse = async (messages: Array<Message>): Promise<Message> => {
+  streamResponse = async (messages: Message[]): Promise<Message> => {
     const headers = {
       "Content-Type": "application/json",
       "Authorization": this.apiKey,
@@ -81,7 +84,7 @@ export class CustomOpenAIClient extends BaseOpenAiClient {
       method: "POST",
       body: JSON.stringify(requestData)
     });
-    const contents: Array<string> = [];
+    const contents: string[] = [];
 
     if (response.status === 200) {
       if (!response.body) {
@@ -131,7 +134,10 @@ export class CustomOpenAIClient extends BaseOpenAiClient {
    * @returns The content text from the chunk, or empty string if no content.
    */
   private _getContentSnippet = (data: string): string => {
-    const parsed = JSON.parse(data);
+    interface StreamingChunk {
+      choices: { delta?: { content?: string } }[];
+    }
+    const parsed = JSON.parse(data) as StreamingChunk;
     const choices = parsed.choices;
     if (choices && choices.length > 0) {
       return choices[0].delta?.content || '';

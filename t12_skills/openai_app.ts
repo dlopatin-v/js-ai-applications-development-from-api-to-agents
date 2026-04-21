@@ -1,12 +1,15 @@
-import * as fs from "fs";
-import * as path from "path";
-import * as os from "os";
+import { BlobPart } from "node:buffer";
 import { execSync } from "child_process";
+import * as fs from "fs";
+import * as os from "os";
+import * as path from "path";
 import * as readline from "readline";
-import OpenAI from "openai";
-import { OPENAI_API_KEY } from "../commons/constants.js";
 
-function zipSkill(skillDir: string): Buffer {
+import OpenAI from "openai";
+
+import { OPENAI_API_KEY } from "commons/constants";
+
+function zipSkill(skillDir: string): BlobPart {
   const tmpFile = path.join(os.tmpdir(), `skill-${Date.now()}.zip`);
   const parentDir = path.dirname(skillDir);
   const dirName = path.basename(skillDir);
@@ -19,8 +22,7 @@ function zipSkill(skillDir: string): Buffer {
 async function getOrCreateSkill(skillName: string, skillDir: string, client: OpenAI): Promise<string> {
   const existing = await client.skills.list();
   for (const skill of existing.data) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    if ((skill as any).name === skillName) {
+    if (skill.name === skillName) {
       console.log(`Skill already exists: ${skill.id}`);
       return skill.id;
     }
@@ -30,8 +32,7 @@ async function getOrCreateSkill(skillName: string, skillDir: string, client: Ope
   const dirName = path.basename(skillDir);
 
   const zipFile = new File([zipBytes], `${dirName}.zip`, { type: "application/zip" });
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const skill = await (client.skills as any).create({
+  const skill = await client.skills.create({
     files: [zipFile],
   });
 
@@ -63,7 +64,6 @@ function chat(client: OpenAI, skillId: string, logRequest = true, logResponse = 
         ],
       };
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const requestPayload: any = {
         model: "gpt-5.2",
         input: [{ role: "user", content: userInput }],
@@ -80,8 +80,7 @@ function chat(client: OpenAI, skillId: string, logRequest = true, logResponse = 
         console.log("---------------\n");
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const response = await (client.responses as any).create(requestPayload);
+      const response = await client.responses.create(requestPayload);
       previousResponseId = response.id;
 
       if (logResponse) {
@@ -103,12 +102,10 @@ async function deleteSkills(client: OpenAI): Promise<void> {
   const skills = await client.skills.list();
   for (const skill of skills.data) {
     await client.skills.delete(skill.id);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    console.log(`Deleted skill ${(skill as any).name}`);
+    console.log(`Deleted skill ${skill.name}`);
   }
 }
 
-const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
 // const STYLE_SKILL_NAME = "style-guide";
 // const STYLE_SKILL_DIR = path.join(__dirname, "_skills", STYLE_SKILL_NAME);
@@ -120,9 +117,7 @@ async function main(): Promise<void> {
   const client = new OpenAI({ apiKey: OPENAI_API_KEY });
   const skillId = await getOrCreateSkill(CALCULATOR_SKILL_NAME, CALCULATOR_SKILL_DIR, client);
   chat(client, skillId);
-  // Note: deleteSkills is called after chat() exits (on readline close)
-  // For cleanup after session, uncomment:
-  // await deleteSkills(client);
+  await deleteSkills(client);
 }
 
 main();

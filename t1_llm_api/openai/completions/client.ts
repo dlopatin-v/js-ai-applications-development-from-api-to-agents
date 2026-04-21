@@ -1,5 +1,5 @@
 import { OpenAI } from "openai";
-import { Message, Role } from "../../../commons";
+import { Message, Role } from "commons";
 import { BaseOpenAiClient } from "../base";
 
 /**
@@ -27,19 +27,19 @@ export class OpenAIClient extends BaseOpenAiClient {
    * @param messages Conversation history sent to the model.
    * @returns The AI response as a single message.
    */
-  response = async (messages: Array<Message>): Promise<Message> => {
+  response = async (messages: Message[]): Promise<Message> => {
     const messagesWithSystem = [
       { role: "system", content: this.systemPrompt },
       ...messages
     ];
     const completion = await this.client.chat.completions.create({
       model: this.modelName,
-      messages: messagesWithSystem as any[],
+      messages: messagesWithSystem as OpenAI.ChatCompletionMessageParam[],
     });
 
     console.log(completion.choices[0].message.content);
 
-    return new Message(Role.ASSISTANT, completion.choices[0].message.content);
+    return new Message(Role.ASSISTANT, completion.choices[0].message.content ?? '');
   };
 
   /**
@@ -51,18 +51,18 @@ export class OpenAIClient extends BaseOpenAiClient {
    * @param messages Conversation history sent to the model.
    * @returns The final aggregated AI message after the stream completes.
    */
-  streamResponse = async (messages: Array<Message>): Promise<Message> => {
+  streamResponse = async (messages: Message[]): Promise<Message> => {
     const messagesWithSystem = [
       { role: "system", content: this.systemPrompt },
       ...messages
     ];
     const stream = await this.client.chat.completions.create({
       model: this.modelName,
-      messages: messagesWithSystem as any[],
+      messages: messagesWithSystem as OpenAI.ChatCompletionMessageParam[],
       stream: true
     });
 
-    const contents: Array<string> = [];
+    const contents: string[] = [];
 
     for await (const chunk of stream) {
       const deltaContent = chunk.choices[0]?.delta?.content;
@@ -72,7 +72,6 @@ export class OpenAIClient extends BaseOpenAiClient {
       }
     }
 
-    console.log();
     return new Message(Role.ASSISTANT, contents.join(''));
   };
 }

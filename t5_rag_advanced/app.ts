@@ -4,7 +4,7 @@ import {
   OPENAI_API_KEY,
   OPENAI_CHAT_COMPLETIONS_ENDPOINT,
   OPENAI_EMBEDDINGS_ENDPOINT, Role
-} from "../commons";
+} from "commons";
 import { ChatCompletionClient } from "./chat/chat_completion_client";
 import { EmbeddingsClient } from "./embeddings/embeddings_client";
 import { SearchMode, TextProcessor } from "./embeddings/text_processor";

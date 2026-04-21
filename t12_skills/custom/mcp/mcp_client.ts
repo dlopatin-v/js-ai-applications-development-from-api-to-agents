@@ -1,6 +1,6 @@
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
-import { MCPToolModel } from "./mcpToolModel.js";
+import { MCPToolModel } from "./mcp_tool_model.js";
 
 export class T12MCPClient {
   private client: Client;

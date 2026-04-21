@@ -1,7 +1,7 @@
 import * as http from "http";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { server } from "./_server.js";
-import { checkApiKey } from "./auth/apiKeyAuth.js";
+import { checkApiKey } from "./auth/api_key_auth.js";
 
 const PORT = 8007;
 

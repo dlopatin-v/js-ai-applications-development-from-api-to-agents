@@ -3,8 +3,8 @@ import { OPENAI_API_KEY, DEFAULT_SYSTEM_PROMPT } from "../../commons/constants.j
 import { Message } from "../../commons/models/message.js";
 import { Role } from "../../commons/models/role.js";
 import { AgentMCPAuth } from "./_agent.js";
-import { ApiKeyMCPClient } from "./mcp_clients/apiKeyMcpClient.js";
-import { OauthMCPClient } from "./mcp_clients/oauthMcpClient.js";
+import { ApiKeyMCPClient } from "./mcp_clients/api_key_mcp_client.js";
+import { OauthMCPClient } from "./mcp_clients/oauth_mcp_client.js";
 
 const MCP_API_KEY = "dev-secret-key";
 

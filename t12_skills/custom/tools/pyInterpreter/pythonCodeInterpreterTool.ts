@@ -1,9 +1,9 @@
 import * as path from "path";
 import { BaseTool } from "../base.js";
-import { T12MCPClient } from "../../mcp/mcpClient.js";
-import { MCPToolModel } from "../../mcp/mcpToolModel.js";
+import { T12MCPClient } from "../../mcp/mcp_client.js";
+import { MCPToolModel } from "../../mcp/mcp_tool_model.js";
 import { ExecutionResult } from "./_response.js";
-import { getFileContent } from "../../fileUtils.js";
+import { getFileContent } from "../../file_utils.js";
 
 export class PythonCodeInterpreterTool extends BaseTool {
   private constructor(

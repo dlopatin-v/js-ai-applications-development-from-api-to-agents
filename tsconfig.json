@@ -1,0 +1,44 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": ["ES2022"],
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "allowJs": true,
+    "checkJs": false,
+    "baseUrl": ".",
+    "paths": {
+      "commons": ["./commons/index"],
+      "commons/*": ["./commons/*"]
+    }
+  },
+  "include": [
+    "commons/**/*",
+    "t1_llm_api/**/*",
+    "t2_llms_output_tuning/**/*",
+    "t3_content_generation/**/*",
+    "t4_rag_fundamentals/**/*",
+    "t5_rag_advanced/**/*",
+    "t6_grounding/**/*",
+    "t7_guardrails/**/*",
+    "t8_agent/**/*",
+    "t9_mcp_fundamentals/**/*",
+    "t10_mcp_advanced/**/*",
+    "t11_mcp_auth/**/*",
+    "t12_skills/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/*.js",
+    "**/node_modules/**"
+  ]
+}
+

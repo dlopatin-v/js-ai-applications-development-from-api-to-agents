@@ -85,7 +85,7 @@ export class EmbeddingsClient {
           console.log(JSON.stringify(data, null, 2));
           console.log("=".repeat(108));
         }
-        return null; // TODO: Return this.formData(data.data)
+        throw new Error("Not implemented");
     } else {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }

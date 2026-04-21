@@ -33,25 +33,29 @@ ${query}
 
 // TODO:
 //  Initialize EmbeddingsClient with:
-//  - endpoint: OPENAI_EMBEDDINGS_ENDPOINT
-//  - modelName: 'text-embedding-3-small'
-//  - apiKey: OPENAI_API_KEY
-const embeddingClient = new EmbeddingsClient();
+// const embeddingClient = new EmbeddingsClient(
+//   OPENAI_EMBEDDINGS_ENDPOINT,
+//   'text-embedding-3-small',
+//   OPENAI_API_KEY
+// );
 
 // TODO:
 //  Initialize ChatCompletionClient with:
-//  - endpoint: OPENAI_CHAT_COMPLETIONS_ENDPOINT
-//  - modelName: 'gpt-5.2'
-//  - apiKey: OPENAI_API_KEY
-const completionClient = new ChatCompletionClient();
+// const completionClient = new ChatCompletionClient(
+//   OPENAI_CHAT_COMPLETIONS_ENDPOINT,
+//   'gpt-5.2',
+//   OPENAI_API_KEY
+// );
 
-const textProcessor = new TextProcessor(embeddingClient, {
-  'host': 'localhost',
-  'port': 5433,
-  'database': 'vectordb',
-  'user': 'postgres',
-  'password': 'postgres'
-});
+// TODO:
+//  Initialize TextProcessor with:
+// const textProcessor = new TextProcessor(embeddingClient, {
+//   'host': 'localhost',
+//   'port': 5433,
+//   'database': 'vectordb',
+//   'user': 'postgres',
+//   'password': 'postgres'
+// });
 
 async function main() {
   const rl = readline.createInterface({
@@ -116,7 +120,7 @@ async function main() {
     // TODO:
     //  1. Call `completionClient.getCompletion(conversation.messages)` → assign to `aiMessage`
     //  2. Add `aiMessage` to `conversation`
-    const aiMessage = null;
+    const aiMessage = null as any;
 
     console.log("✅ RESPONSE");
     console.log(aiMessage.content);

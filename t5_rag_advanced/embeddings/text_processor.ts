@@ -95,8 +95,8 @@ export class TextProcessor {
     //  4. Generate embeddings for all chunks via `this.embeddingClient.getEmbeddings(chunks, dimensions)` → assign to `embeddings`
 
     console.log(`Processing document: ${filePath}`);
-    console.log(`Total chunks: ${chunks.length}`);
-    console.log(`Total embeddings: ${Object.keys(embeddings).length}`);
+    // console.log(`Total embeddings: ${Object.keys(embeddings).length}`);
+    // console.log(`Total chunks: ${chunks.length}`);
 
     // TODO:
     //  1. Iterate over chunks with index: `chunks.map(async (chunk, i) => { ... })`

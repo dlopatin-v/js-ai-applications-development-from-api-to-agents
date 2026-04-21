@@ -6,7 +6,7 @@ import { Message } from "../../commons/models/message.js";
 import { Role } from "../../commons/models/role.js";
 import { BaseTool } from "./tools/base.js";
 import { SkillMetadata, loadSkills } from "./models.js";
-import { ReadSkillTool } from "./tools/skills/readSkillTool.js";
+import { ReadSkillTool } from "./tools/skills/read_skill_tool.js";
 import { PythonCodeInterpreterTool } from "./tools/pyInterpreter/pythonCodeInterpreterTool.js";
 import { T12Agent } from "./agent.js";
 

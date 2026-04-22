@@ -105,38 +105,35 @@ async function generateAnswer(augmentedPrompt: string): Promise<any> {
 }
 
 async function main() {
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-  });
-  console.log("Query samples:");
-  console.log(" - I need user emails that filled with hiking and psychology");
-  console.log(" - Who is John?");
-  console.log(" - Find users with surname Adams");
-  console.log(" - Do we have smbd with name John that love painting?");
-
-  while (true) {
-    const userRequest = await rl.question(`➡️ `);
-
-    if (userRequest === "exit") {
-      console.log("👋 Goodbye");
-      rl.close();
-      process.exit(0);
-    }
-
-    console.log("\n--- Retrieving context ---")
-    const context = await retrieveContext(userRequest)
-    if (context) {
-      console.log("\n--- Augmenting prompt ---")
-      const augmentedPrompt = await augmentPrompt(userRequest, context)
-
-      console.log("\n--- Generating answer ---")
-      const answer = await generateAnswer(augmentedPrompt)
-      console.log(`\nAnswer: ${answer}\n`);
-    } else {
-      console.log("\n--- No relevant information found ---")
-    }
-  }
+  // TODO:
+  // 1. Create readline interface with process.stdin / process.stdout
+  // 2. Print query samples:
+  //    - "Query samples:"
+  //    - " - I need user emails that filled with hiking and psychology"
+  //    - " - Who is John?"
+  //    - " - Find users with surname Adams"
+  //    - " - Do we have smbd with name John that love painting?"
+  // 3. Start a while(true) loop:
+  //   3.1. Read userRequest via rl.question("➡️ ")
+  //   3.2. If userRequest === "exit": close rl and process.exit(0)
+  //   3.3. Print "\n--- Retrieving context ---"
+  //   3.4. Call retrieveContext(userRequest) → context
+  //   3.5. If context is not empty:
+  //     - Print "\n--- Augmenting prompt ---"
+  //     - Call augmentPrompt(userRequest, context) → augmentedPrompt
+  //     - Print "\n--- Generating answer ---"
+  //     - Call generateAnswer(augmentedPrompt) → answer
+  //     - Print `\nAnswer: ${answer}\n`
+  //   3.6. Otherwise: print "\n--- No relevant information found ---"
+  throw new Error("Not implemented");
 }
 
 main();
+
+// The problems with API based Grounding approach are:
+//   - We need a Pre-Step to figure out what field should be used for search (Takes time)
+//   - Values for search should be correct (✅ John -> ❌ Jonh)
+//   - Is not so flexible
+// Benefits are:
+//   - We fetch actual data (new users added and deleted every 5 minutes)
+//   - Costs reduce

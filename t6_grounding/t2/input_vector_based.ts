@@ -129,47 +129,39 @@ class UserRAG {
 }
 
 async function main() {
-    const embeddings = new OpenAIEmbeddings({
-        model: "text-embedding-3-small",
-        apiKey: OPENAI_API_KEY,
-        dimensions: 384,
-    });
-
-    const rag = new UserRAG(embeddings);
-    await rag.ready;
-
-    const rl = readline.createInterface({
-        input: process.stdin,
-        output: process.stdout,
-    });
-
-    console.log("Query samples:");
-    console.log(" - I need user emails that filled with hiking and psychology");
-    console.log(" - Who is John?");
-
-    while (true) {
-        const userRequest = await rl.question("➡️ ");
-
-        if (userRequest === "exit") {
-            console.log("👋 Goodbye");
-            rl.close();
-            process.exit(0);
-        }
-
-        console.log("\n--- Retrieving context ---");
-        const context = await rag.retrieveContext(userRequest);
-
-        if (context) {
-            console.log("\n--- Augmenting prompt ---");
-            const augmentedPrompt = rag.augmentPrompt(userRequest, context);
-
-            console.log("\n--- Generating answer ---");
-            const answer = await rag.generateAnswer(augmentedPrompt);
-            console.log(`\nAnswer: ${answer}\n`);
-        } else {
-            console.log("\n--- No relevant information found ---");
-        }
-    }
+    // TODO:
+    // 1. Create OpenAIEmbeddings with:
+    //    - model: "text-embedding-3-small"
+    //    - apiKey: OPENAI_API_KEY
+    //    - dimensions: 384
+    // 2. Create UserRAG(embeddings) and await rag.ready
+    // 3. Create readline interface with process.stdin / process.stdout
+    // 4. Print "Query samples:" and sample queries:
+    //    " - I need user emails that filled with hiking and psychology"
+    //    " - Who is John?"
+    // 5. Start a while(true) loop:
+    //   5.1. Read userRequest via rl.question("➡️ ")
+    //   5.2. If userRequest === "exit": close rl and process.exit(0)
+    //   5.3. Call rag.retrieveContext(userRequest) → context
+    //   5.4. Call rag.augmentPrompt(userRequest, context) → augmentedPrompt
+    //   5.5. Call rag.generateAnswer(augmentedPrompt) → answer
+    //   5.6. Print answer
+    throw new Error("Not implemented");
 }
 
 main();
+
+// The problems with Vector based Grounding approach are:
+//   - In current solution we fetched all users once, prepared Vector store (Embed takes money) but we didn't play
+//     around the point that new users added and deleted every 5 minutes. (Actually, it can be fixed, we can create once
+//     Vector store and with new request we will fetch all the users, compare new and deleted with version in Vector
+//     store and delete the data about deleted users and add new users).
+//   - Limit with top_k (we can set up to 100, but what if the real number of similarity search 100+?)
+//   - With some requests works not so perfectly. (Here we can play and add extra chain with LLM that will refactor the
+//     user question in a way that will help for Vector search, but it is also not okay in the point that we have
+//     changed original user question).
+//   - Need to play with balance between top_k and score_threshold
+// Benefits are:
+//   - Similarity search by context
+//   - Any input can be used for search
+//   - Costs reduce

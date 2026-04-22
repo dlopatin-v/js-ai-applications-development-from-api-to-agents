@@ -102,19 +102,25 @@ async function main() {
       process.exit(0);
     }
 
-    console.log("\n--- Retrieving context ---")
-    const context = await retrieveContext(userRequest)
-    if (context) {
-      console.log("\n--- Augmenting prompt ---")
-      const augmentedPrompt = await augmentPrompt(userRequest, context)
-
-      console.log("\n--- Generating answer ---")
-      const answer = await generateAnswer(augmentedPrompt)
-      console.log(`\nAnswer: ${answer}\n`);
-    } else {
-      console.log("\n--- No relevant information found ---")
-    }
+    // TODO:
+    // - Print "\n--- Retrieving context ---"
+    // - Call retrieveContext(userRequest) and store in context
+    // - If context is not empty:
+    //   - Print "\n--- Augmenting prompt ---"
+    //   - Call augmentPrompt(userRequest, context) and store in augmentedPrompt
+    //   - Print "\n--- Generating answer ---"
+    //   - Call generateAnswer(augmentedPrompt), print "\nAnswer: ${answer}\n"
+    // - Otherwise: print "\n--- No relevant information found ---"
+    throw new Error("Not implemented");
   }
 }
 
 main();
+
+// The problems with API based Grounding approach are:
+//   - We need a Pre-Step to figure out what field should be used for search (Takes time)
+//   - Values for search should be correct (✅ John -> ❌ Jonh)
+//   - Is not so flexible
+// Benefits are:
+//   - We fetch actual data (new users added and deleted every 5 minutes)
+//   - Costs reduce

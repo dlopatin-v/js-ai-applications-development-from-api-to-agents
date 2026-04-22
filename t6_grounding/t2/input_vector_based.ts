@@ -124,20 +124,27 @@ async function main() {
             process.exit(0);
         }
 
-        console.log("\n--- Retrieving context ---");
-        const context = await rag.retrieveContext(userRequest);
-
-        if (context) {
-            console.log("\n--- Augmenting prompt ---");
-            const augmentedPrompt = rag.augmentPrompt(userRequest, context);
-
-            console.log("\n--- Generating answer ---");
-            const answer = await rag.generateAnswer(augmentedPrompt);
-            console.log(`\nAnswer: ${answer}\n`);
-        } else {
-            console.log("\n--- No relevant information found ---");
-        }
+        // TODO:
+        // - Call rag.retrieveContext(userRequest) and store in context
+        // - Call rag.augmentPrompt(userRequest, context) and store in augmentedPrompt
+        // - Call rag.generateAnswer(augmentedPrompt) and print the answer
+        throw new Error("Not implemented");
     }
 }
 
 main();
+
+// The problems with Vector based Grounding approach are:
+//   - In current solution we fetched all users once, prepared Vector store (Embed takes money) but we didn't play
+//     around the point that new users added and deleted every 5 minutes. (Actually, it can be fixed, we can create once
+//     Vector store and with new request we will fetch all the users, compare new and deleted with version in Vector
+//     store and delete the data about deleted users and add new users).
+//   - Limit with top_k (we can set up to 100, but what if the real number of similarity search 100+?)
+//   - With some requests works not so perfectly. (Here we can play and add extra chain with LLM that will refactor the
+//     user question in a way that will help for Vector search, but it is also not okay in the point that we have
+//     changed original user question).
+//   - Need to play with balance between top_k and score_threshold
+// Benefits are:
+//   - Similarity search by context
+//   - Any input can be used for search
+//   - Costs reduce

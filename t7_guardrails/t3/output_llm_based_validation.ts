@@ -25,55 +25,34 @@ const PROFILE = `
 **Annual Income:** $112,800
 `;
 
-const VALIDATION_PROMPT = `You are a security validation system designed to detect leaks of PII (Personally Identifiable Information) in AI responses.
+// TODO: Write VALIDATION_PROMPT for an output PII leak detector.
+// The prompt should instruct the LLM to:
+//   - Act as a security validator that scans AI responses for leaked PII
+//   - Define what counts as PII (SSN, credit card numbers, CVV, card expiry,
+//     driver's license numbers, bank account numbers, home address, date of birth, income/salary)
+//   - Define what is NOT PII and is allowed (name, phone, email, job title, company)
+//   - Set valid=true if the response contains no PII
+//   - Set valid=false + description of leaked PII types if any PII is detected
+//   - Warn to also detect PII hidden inside structured formats (JSON, XML, HTML, tables)
+// Note: Response is structured via zodResponseFormat — only write system instructions.
+const VALIDATION_PROMPT = "NEED TO WRITE IT";
 
-## DEFINITION OF PII FOR THIS SYSTEM:
-PII includes any sensitive personal information that should NOT be disclosed:
-- Credit card numbers (XXXX XXXX XXXX XXXX, XXXX-XXXX-XXXX-XXXX, XXXXXXXXXXXXXXXX)
-- CVV code (XXX, XXXX)
-- Expiration date (MM/YY)
-- Social Security Numbers (SSN) (XXX XXX XXXX, XXX-XXX-XXXX, XXXXXXXXXX)
-- Driver's license numbers
-- Bank account numbers
-- Home addresses (street addresses)
-- Date of birth
-- Annual income/salary information
-- Any other financial or government identification numbers
-
-## NOT CONSIDERED PII (ALLOWED):
-- Names (first, last, full names)
-- Phone numbers
-- Email addresses
-- Job titles/occupations
-- Company names
-
-## YOUR TASK:
-Analyze the provided AI response and determine if it contains any PII as defined above.
-
-Mark as INVALID (valid: false) if the response contains any restricted PII.
-Mark as VALID (valid: true) if the response only contains names, phone numbers, email addresses,
-general business information, or non-sensitive professional details.
-
-Analyze the following AI response for PII leaks:`;
-
-const FILTER_SYSTEM_PROMPT = `You are a PII filtering system. Your task is to remove all sensitive Personally Identifiable Information from the provided text while preserving allowed information.
-
-## REMOVE THE FOLLOWING PII:
-- Credit card numbers         → replace with [CREDIT CARD REDACTED]
-- CVV code                    → replace with [CVV REDACTED]
-- Card expiration data        → replace with [CARD EXP DATE REDACTED]
-- Social Security Numbers     → replace with [SSN REDACTED]
-- Driver's license numbers    → replace with [LICENSE REDACTED]
-- Bank account numbers        → replace with [ACCOUNT REDACTED]
-- Home addresses              → replace with [ADDRESS REDACTED]
-- Date of birth               → replace with [DOB REDACTED]
-- Annual income/salary        → replace with [INCOME REDACTED]
-- Any other financial/gov IDs → replace with [ID REDACTED]
-
-## KEEP THE FOLLOWING (DO NOT REMOVE):
-- Names, phone numbers, email addresses, job titles, company names
-
-Process the following text:`;
+// TODO: Write FILTER_SYSTEM_PROMPT for a PII redaction filter.
+// The prompt should instruct the LLM to:
+//   - Remove all PII from the provided text, replacing each type with a labeled placeholder:
+//       credit card      → [CREDIT CARD REDACTED]
+//       CVV              → [CVV REDACTED]
+//       expiration date  → [CARD EXP DATE REDACTED]
+//       SSN              → [SSN REDACTED]
+//       driver's license → [LICENSE REDACTED]
+//       bank account     → [ACCOUNT REDACTED]
+//       home address     → [ADDRESS REDACTED]
+//       date of birth    → [DOB REDACTED]
+//       income/salary    → [INCOME REDACTED]
+//   - Keep allowed info intact: names, phone numbers, emails, job titles, company names
+//   - Preserve original formatting and structure
+//   - If no PII is found, return the text unchanged
+const FILTER_SYSTEM_PROMPT = "NEED TO WRITE IT";
 
 const ValidationSchema = z.object({
   valid: z.boolean().describe(
@@ -141,14 +120,38 @@ async function main(softResponse: boolean): Promise<void> {
     }
 
     // TODO:
-    // 1. Append userInput as a user message.
-    // 2. Call the assistant (gpt-4.1-nano, temperature 0) to get aiContent.
-    // 3. Call validate(aiContent).
-    // 4. If valid: append assistant reply and print it.
-    //    If not valid AND softResponse: call filter(), append filtered reply and print with ⚠️ prefix.
-    //    If not valid AND !softResponse: append blocked message and print the PII description with 🚫 prefix.
+    // 1. Append userInput as user message: { role: "user", content: userInput }
+    // 2. Call client.chat.completions.create() with MODEL, temperature 0 → get aiContent
+    // 3. Call validate(aiContent) → validation
+    // 4. If validation.valid is true:
+    //    - Append assistant message and print `🤖Response:\n${aiContent}`
+    // 5. Else if softResponse is true (PII found, soft mode — redact instead of block):
+    //    - Call filter(aiContent) → filteredContent
+    //    - Append filtered assistant message
+    //    - Print `⚠️Validated response:\n${filteredContent}`
+    // 6. Else (hard block):
+    //    - Append assistant message "Blocked! Attempt to access PII!"
+    //    - Print `🚫Response contains PII: ${validation.description}`
     throw new Error("Not implemented");
   }
 }
 
 main(true);
+
+// TODO:
+// ---------
+// Create guardrail that will prevent leaks of PII (output guardrail).
+// Flow:
+//    -> user query
+//    -> call to LLM with message history
+//    -> PII leaks validation by LLM:
+//       Not found: add response to history and print to console
+//       Found: block such request and inform user.
+//           if softResponse is true:
+//               - replace PII with LLM, add updated response to history and print to console
+//           else:
+//               - add info that user has tried to access PII to history and print it to console
+// ---------
+// 1. Complete all TODOs above
+// 2. Run application and try to get Amanda's PII (use approaches from previous task)
+//    Injections to try 👉 prompt_injections.md

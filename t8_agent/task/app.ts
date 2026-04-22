@@ -11,62 +11,27 @@ import { UpdateUserTool } from "./tools/users/update_user_tool";
 import { WebSearchTool } from "./tools/web_search";
 
 async function main() {
-  const tools = [
-    new WebSearchTool(OPENAI_API_KEY),
-    new GetUserByIdTool(userClient),
-    new SearchUsersTool(userClient),
-    new CreateUserTool(userClient),
-    new UpdateUserTool(userClient),
-    new DeleteUserTool(userClient),
-  ];
-
-  // const agent = new OpenAIBasedAgent({
-  //   model: "gpt-5.2",
-  //   apiKey: OPENAI_API_KEY,
-  //   tools,
-  //   systemPrompt: SYSTEM_PROMPT,
-  // });
-  const agent = new AnthropicBasedAgent(
-    "claude-sonnet-4-5",
-    ANTHROPIC_API_KEY,
-    tools,
-    SYSTEM_PROMPT,
-  );
-
-  const conversation = new Conversation();
-
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  });
-
-  console.log("Type your question or 'exit' to quit.");
-  console.log("Sample:");
-  console.log("Add Andrej Karpathy as a new user");
-
-  const ask = () => {
-    rl.question("> ", async (userInput) => {
-      const trimmed = userInput.trim();
-
-      if (trimmed.toLowerCase() === "exit") {
-        console.log("Exiting the chat. Goodbye!");
-        rl.close();
-        return;
-      }
-
-      conversation.addMessage(new Message(Role.USER, trimmed));
-
-      const aiMessage = await agent.getResponse(conversation.messages, true);
-      conversation.addMessage(aiMessage);
-      console.log("AI:", aiMessage.content);
-      console.log("=".repeat(100));
-      console.log();
-
-      ask();
-    });
-  };
-
-  ask();
+  // TODO:
+  // 1. Create tools list:
+  //    - new WebSearchTool(OPENAI_API_KEY)
+  //    - new GetUserByIdTool(userClient)
+  //    - new SearchUsersTool(userClient)
+  //    - new CreateUserTool(userClient)
+  //    - new UpdateUserTool(userClient)
+  //    - new DeleteUserTool(userClient)
+  // 2. Create agent — choose one:
+  //    - new OpenAIBasedAgent({ model: "gpt-5.2", apiKey: OPENAI_API_KEY, tools, systemPrompt: SYSTEM_PROMPT })
+  //    - new AnthropicBasedAgent("claude-sonnet-4-5", ANTHROPIC_API_KEY, tools, SYSTEM_PROMPT)
+  // 3. Create new Conversation()
+  // 4. Print "Type your question or 'exit' to quit." and sample prompt
+  // 5. Run infinite loop:
+  //    5.1. Get user input from terminal (input("> ").trim())
+  //    5.2. If "exit": print goodbye and break
+  //    5.3. Add new Message(Role.USER, trimmed) to conversation
+  //    5.4. Call agent.getResponse(conversation.messages, true) → aiMessage
+  //    5.5. Add aiMessage to conversation
+  //    5.6. Print `AI: ${aiMessage.content}` and separator
+  throw new Error("Not implemented");
 }
 
 main();

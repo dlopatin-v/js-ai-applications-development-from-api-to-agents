@@ -33,7 +33,8 @@
     "t9_mcp_fundamentals/**/*",
     "t10_mcp_advanced/**/*",
     "t11_mcp_auth/**/*",
-    "t12_skills/**/*"
+    "t12_skills/**/*",
+    "t13_final_task/**/*"
   ],
   "exclude": [
     "node_modules",

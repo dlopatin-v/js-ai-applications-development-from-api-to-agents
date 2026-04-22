@@ -125,11 +125,13 @@ export class TextProcessor {
     }
 
     const queryEmbedding = await this.embeddingClient.getEmbeddings(userRequest, dimensions);
+
     let vectorString = "";
     Object.keys(queryEmbedding).forEach((key) => {
       vectorString += queryEmbedding[Number(key)];
     });
     vectorString =`[${vectorString}]`;
+
     let maxDistance: number;
     if (searchMode === SearchMode.COSINE_DISTANCE) {
       maxDistance = 1.0 - scoreThreshold;

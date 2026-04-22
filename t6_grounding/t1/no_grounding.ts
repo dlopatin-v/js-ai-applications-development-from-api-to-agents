@@ -77,8 +77,8 @@ async function generateResponse(systemPrompt: string, userMessage: string) {
   console.log("Processing...");
 
   const messages = [
-    {role: Role.SYSTEM, content: systemPrompt},
-    {role: Role.USER, content: userMessage},
+    { role: Role.SYSTEM, content: systemPrompt },
+    { role: Role.USER, content: userMessage },
   ]
   const response = await llmClient.chat.completions.create({
     model: "gpt-4.1-nano", temperature: 0,

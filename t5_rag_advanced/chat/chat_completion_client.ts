@@ -1,4 +1,5 @@
 import { Message, Role } from "commons";
+import { OpenAI } from "openai";
 
 /** HTTP client for the OpenAI Chat Completions API. */
 export class ChatCompletionClient {
@@ -54,15 +55,12 @@ export class ChatCompletionClient {
     const response = await fetch(`${this.endpoint}`, { method: "POST", headers: headers, body: JSON.stringify(requestData) });
 
     if (response.status === 200) {
-      interface ChatCompletionResponse {
-        choices: { message: { content: string } }[];
-      }
-      const data = await response.json() as ChatCompletionResponse;
+      const data = await response.json() as OpenAI.ChatCompletion;
       const choices = data.choices;
 
       if (choices) {
         const content = choices[0].message.content;
-        return new Message(Role.ASSISTANT, content);
+        return new Message(Role.ASSISTANT, content || "");
       }
 
       throw new Error("No Choice has been present in the response");

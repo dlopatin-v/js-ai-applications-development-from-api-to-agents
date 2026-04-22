@@ -1,3 +1,5 @@
+import { OpenAI } from "openai";
+
 type EmbeddingList = Record<number, number[]>;
 
 /**
@@ -62,10 +64,7 @@ export class EmbeddingsClient {
     const response = await fetch(this.endpoint, { method: "POST", body: JSON.stringify(requestData), headers });
 
     if (response.status === 200) {
-        interface EmbeddingsResponse {
-          data: { index: number; embedding: number[]; object: string }[];
-        }
-        const data = await response.json() as EmbeddingsResponse;
+        const data = await response.json() as OpenAI.CreateEmbeddingResponse;
         if (printResponse) {
           console.log("=".repeat(50) + "RESPONSE" + "=".repeat(50));
           console.log(JSON.stringify(data, null, 2));

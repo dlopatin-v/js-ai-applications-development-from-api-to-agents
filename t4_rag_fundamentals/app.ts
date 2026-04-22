@@ -164,7 +164,7 @@ class MicrowaveRAG {
     const rawContent = response.content;
     const text = typeof rawContent === "string"
       ? rawContent
-      : rawContent.map(c => (typeof c === "string" ? c : (c as { text?: string }).text ?? "")).join("");
+      : rawContent.map(c => (c?.text || "")).join("");
     console.log(text);
     console.log("=".repeat(100));
 

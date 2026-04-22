@@ -11,62 +11,17 @@ import { UpdateUserTool } from "./tools/users/update_user_tool";
 import { WebSearchTool } from "./tools/web_search";
 
 async function main() {
-  const tools = [
-    new WebSearchTool(OPENAI_API_KEY),
-    new GetUserByIdTool(userClient),
-    new SearchUsersTool(userClient),
-    new CreateUserTool(userClient),
-    new UpdateUserTool(userClient),
-    new DeleteUserTool(userClient),
-  ];
-
-  // const agent = new OpenAIBasedAgent({
-  //   model: "gpt-5.2",
-  //   apiKey: OPENAI_API_KEY,
-  //   tools,
-  //   systemPrompt: SYSTEM_PROMPT,
-  // });
-  const agent = new AnthropicBasedAgent(
-    "claude-sonnet-4-5",
-    ANTHROPIC_API_KEY,
-    tools,
-    SYSTEM_PROMPT,
-  );
-
-  const conversation = new Conversation();
-
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  });
-
-  console.log("Type your question or 'exit' to quit.");
-  console.log("Sample:");
-  console.log("Add Andrej Karpathy as a new user");
-
-  const ask = () => {
-    rl.question("> ", async (userInput) => {
-      const trimmed = userInput.trim();
-
-      if (trimmed.toLowerCase() === "exit") {
-        console.log("Exiting the chat. Goodbye!");
-        rl.close();
-        return;
-      }
-
-      conversation.addMessage(new Message(Role.USER, trimmed));
-
-      const aiMessage = await agent.getResponse(conversation.messages, true);
-      conversation.addMessage(aiMessage);
-      console.log("AI:", aiMessage.content);
-      console.log("=".repeat(100));
-      console.log();
-
-      ask();
-    });
-  };
-
-  ask();
+  // TODO:
+  // 1. Create list with all tools: WebSearchTool, GetUserByIdTool, SearchUsersTool,
+  //    CreateUserTool, UpdateUserTool, DeleteUserTool
+  // 2. Create OpenAIBasedAgent (or AnthropicBasedAgent) with all tools and SYSTEM_PROMPT
+  // 3. Create Conversation
+  // 4. Run infinite loop:
+  //    - Get user input from terminal
+  //    - Add User message to Conversation
+  //    - Call agent with conversation history
+  //    - Add Assistant message to Conversation and print its content
+  throw new Error("Not implemented");
 }
 
 main();

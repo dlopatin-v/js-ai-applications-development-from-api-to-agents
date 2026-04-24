@@ -61,7 +61,8 @@ async function main(): Promise<void> {
   // 4. Connect to DuckDuckGo MCP server:
   //    - `const ddgMcpClient = await StdioMcpClient.create("khshanovskyi/ddg-mcp-server:latest")`
   //    - For each toolModel in `await ddgMcpClient.getTools()`: push `new McpTool(ddgMcpClient, toolModel)`
-  // 5. Create agent: `new UMSAgent(process.env.OPENAI_API_KEY ?? "", "gpt-4o", tools)`
+  // 5. Create agent: `new UMSAgent(process.env.OPENAI_API_KEY ?? "", <model>, tools)`
+  //    (choose an appropriate model name)
   // 6. Create Redis client:
   //    - `redisHost = process.env.REDIS_HOST ?? "localhost"`
   //    - `redisPort = parseInt(process.env.REDIS_PORT ?? "6379", 10)`
@@ -82,22 +83,27 @@ async function main(): Promise<void> {
   // - Return JSON `{ status: "healthy", conversation_manager_initialized: conversationManager !== undefined }`
 
   // TODO: POST /conversations
+  // - If `conversationManager` is not initialized: `res.status(503).json({ error: "Service not initialized" })` and return
   // - Call `await conversationManager.createConversation(req.body?.title)` and return JSON result
 
   // TODO: GET /conversations
+  // - If `conversationManager` is not initialized: `res.status(503).json({ error: "Service not initialized" })` and return
   // - Call `await conversationManager.listConversations()` and return JSON result
 
   // TODO: GET /conversations/:id
+  // - If `conversationManager` is not initialized: `res.status(503).json({ error: "Service not initialized" })` and return
   // - Call `await conversationManager.getConversation(req.params.id)`
   // - If null: `res.status(404).json({ error: "Conversation not found" })` and return
   // - Otherwise: `res.json(conversation)`
 
   // TODO: DELETE /conversations/:id
+  // - If `conversationManager` is not initialized: `res.status(503).json({ error: "Service not initialized" })` and return
   // - Call `await conversationManager.deleteConversation(req.params.id)`
   // - If false: `res.status(404).json({ error: "Conversation not found" })` and return
   // - Otherwise: `res.json({ message: "Conversation deleted successfully" })`
 
   // TODO: POST /conversations/:id/chat
+  // - If `conversationManager` is not initialized: `res.status(503).json({ error: "Service not initialized" })` and return
   // - Destructure `{ message: msgBody, stream = false }` from `req.body`
   // - Build `userMessage = new Message(msgBody.role, msgBody.content, msgBody.tool_call_id, msgBody.name, msgBody.tool_calls)`
   // - `const result = await conversationManager.chat(userMessage, req.params.id, stream)`

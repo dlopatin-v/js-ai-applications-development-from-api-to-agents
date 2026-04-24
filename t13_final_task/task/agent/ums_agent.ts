@@ -106,9 +106,12 @@ export class UMSAgent {
     //    b. Parse `args` from `tc.function.arguments` with `JSON.parse` (catch errors, default to `{}`)
     //    c. If tool found in `this._tools`:
     //       - `toolMessage = await tool.execute(tc.id, args)`
-    //       - Apply guardrail: `toolMessage.content = this._guardrail.redact(toolMessage.content)`
     //       - Push `toolMessage` to `messages`
     //    d. If tool NOT found: push `new Message(Role.TOOL, "Error: Unable to call <toolName>. Tool not found.", tc.id)`
     throw new Error("Not implemented");
+
+    // TODO 2:
+    // Implement ONLY after you started the app
+    // Make PII filtering for the tool call result with `this._guardrail.redact(toolMessage.content)`
   }
 }

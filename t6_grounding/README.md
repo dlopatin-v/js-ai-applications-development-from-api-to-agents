@@ -23,6 +23,8 @@ By exploring this project, you will learn:
 - Token optimization strategies and cost management
 - Trade-offs between accuracy, performance, and cost in AI systems
 
+---
+
 ### If the task in the main branch is hard for you, then switch to the `main-detailed` branch
 
 ---

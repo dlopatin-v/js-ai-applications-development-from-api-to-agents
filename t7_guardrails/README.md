@@ -19,7 +19,11 @@ break it — and then protect it.
 | Task 3 — Output Validation | `npm run t7:output-validation` |
 | Task 4 — Streaming PII Guardrail | `npm run t7:streaming-pii` |
 
+---
+
 ### If the task in the main branch is hard for you, switch to the `main-detailed` branch
+
+---
 
 ## Learning Goals
 

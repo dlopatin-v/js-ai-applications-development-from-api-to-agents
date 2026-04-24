@@ -11,7 +11,21 @@ By exploring and working with this project, you will learn:
 - How to create simple Agent with tools from MCP server
 - Key features of MCP
 
+---
+
+**Run from the repository root:**
+
+| Component | Command |
+|---|---|
+| API Key MCP Server | `npm run t11:server-apikey` |
+| OAuth MCP Server | `npm run t11:server-oauth` |
+| Agent | `npm run t11:agent` |
+
+---
+
 ### If the task in the main branch is hard for you, switch to the `main-detailed` branch
+
+---
 
 ![](flow.png)
 

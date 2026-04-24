@@ -131,7 +131,7 @@ This is the browser-based chat UI.
 
 1. Start the infrastructure:
    ```bash
-   docker compose -f t13_final_task/docker-compose.yml up -d
+   docker-compose -f t13_final_task/docker-compose.yml up -d
    ```
 
 2. Install dependencies (if not already done):

@@ -109,7 +109,7 @@ Open the file (create it if it doesn't exist) and add your server:
 
 
 <details> 
-<summary><b>Sample how it is done on my Mac:</b></summary>
+<summary><b>Sample how it is done on a Mac:</b></summary>
 
 ```json
 {
@@ -118,7 +118,7 @@ Open the file (create it if it doesn't exist) and add your server:
       "command": "npx",
       "args": [
         "tsx",
-        "/Users/pavlokhshanovskyi/dialx/courses/js-ai-applications-development-from-api-to-agents/t9_mcp_fundamentals/mcp_server/stdio_server.ts"
+        "/Users/<your_usrename>/dialx/courses/js-ai-applications-development-from-api-to-agents/t9_mcp_fundamentals/mcp_server/stdio_server.ts"
       ]
     }
   }

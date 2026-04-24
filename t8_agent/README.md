@@ -47,12 +47,12 @@ Then implement the web search tool in **[task/tools/web_search.ts](task/tools/we
 
 ### 2. Implement `BaseAgent` — [task/agents/_base.ts](task/agents/_base.ts)
 
-Implement `__init__`:
-- Validate `api_key` (raise `ValueError` if empty or blank)
-- Assign `self._model`, `self._api_key`, `self._system_prompt`
-- Build `self._tools_dict` as `{tool.name: tool}` for fast lookup during execution
+Implement the `constructor`:
+- Validate `apiKey` (throw `Error` if empty or blank)
+- Assign `this._model`, `this._apiKey`, `this._systemPrompt`
+- Build `this._toolsDict` as `{ tool.name: tool }` for fast lookup during execution
 
-`get_response` is abstract — you will implement it in the provider-specific subclasses below.
+`getResponse` is abstract — you will implement it in the provider-specific subclasses below.
 
 ---
 
@@ -60,10 +60,10 @@ Implement `__init__`:
 
 Extend `BaseAgent` to call the **OpenAI Chat Completions API**. Implement four methods:
 
-- **`__init__`** — format `api_key` as a Bearer token, build `_tools_schemas` using `tool.openai_schema`, set `_endpoint`
-- **`get_response`** — build the request payload (prepend system message locally, not stored in `messages`), POST to the API, parse the response; if `finish_reason == "tool_calls"` append the assistant message + tool results to `messages` and recurse; otherwise return the final `Message`
-- **`_process_tool_calls`** — for each tool call extract `id`, `function.name`, parse `function.arguments` with `json.loads`, call `_call_tool`, return a list of `TOOL` messages
-- **`_call_tool`** — look up the tool in `_tools_dict` and call `execute`, or return an unknown-function error string
+- **`constructor`** — build `_toolsSchemas` using `tool.openaiSchema`, set `_endpoint`
+- **`getResponse`** — build the request payload (prepend system message locally, not stored in `messages`), POST to the API, parse the response; if `finish_reason === "tool_calls"` append the assistant message + tool results to `messages` and recurse; otherwise return the final `Message`
+- **`_processToolCalls`** — for each tool call extract `id`, `function.name`, parse `function.arguments` with `JSON.parse`, call `_callTool`, return a list of `TOOL` messages
+- **`_callTool`** — look up the tool in `_toolsDict` and call `execute`, or return an unknown-function error string
 
 See the **OpenAI API Reference** section at the bottom for the exact request/response shapes.
 
@@ -79,10 +79,13 @@ Define a `SYSTEM_PROMPT` that tells the agent its role, which tools it has, and 
 
 Implement `main()`:
 - Create `UserServiceClient` and all tools
-- Create `OpenAIBasedAgent` with `system_prompt`
-- Create `Conversation` and run the input loop: read user input, add it to the conversation, call `agent.get_response`, add the reply and print it
+- Create `OpenAIBasedAgent` with `systemPrompt`
+- Create `Conversation` and run the input loop: read user input, add it to the conversation, call `agent.getResponse`, add the reply and print it
 
-Try the following sample inputs:
+Run and try the following sample inputs:
+```bash
+npm run t8
+```
 - `Add Andrej Karpathy as a new user`
 - `Find all female users`
 - `Delete user with id 3`
@@ -93,21 +96,21 @@ Try the following sample inputs:
 
 Extend `BaseAgent` for the **Anthropic Messages API**. Implement five methods:
 
-- **`__init__`** — set `_endpoint`, build `_tools_schemas` using `tool.anthropic_schema` (flat format, no `"type": "function"` wrapper)
-- **`get_response`** — build headers (`x-api-key`, `anthropic-version: 2023-06-01`), add `system` as a top-level field (not inside messages), POST to the API; if `stop_reason == "tool_use"` append messages and recurse; otherwise return the final `Message`
-- **`_to_anthropic_messages`** — convert the internal `Message` list to Anthropic format: group consecutive `TOOL` messages into a single user message with `tool_result` blocks; replay full content blocks for `AI` messages that had tool calls
-- **`_process_tool_calls`** — same as OpenAI but `block["input"]` is already a dict (no `json.loads` needed)
-- **`_call_tool`** — identical to the OpenAI agent
+- **`constructor`** — set `_endpoint`, build `_toolsSchemas` using `tool.anthropicSchema` (flat format, no `"type": "function"` wrapper)
+- **`getResponse`** — build headers (`x-api-key`, `anthropic-version: 2023-06-01`), add `system` as a top-level field (not inside messages), POST to the API; if `stop_reason === "tool_use"` append messages and recurse; otherwise return the final `Message`
+- **`_toAnthropicMessages`** — convert the internal `Message[]` to Anthropic format: group consecutive `TOOL` messages into a single user message with `tool_result` blocks; replay full content blocks for `ASSISTANT` messages that had tool calls
+- **`_processToolCalls`** — same as OpenAI but `block.input` is already an object (no `JSON.parse` needed)
+- **`_callTool`** — identical to the OpenAI agent
 
 Key differences from OpenAI summarised:
 
 | | OpenAI | Anthropic |
 |---|---|---|
 | Auth header | `Authorization: Bearer ...` | `x-api-key: ...` + `anthropic-version` |
-| System prompt | message with `role: system` | top-level `system` field |
-| Tool schema | `openai_schema` (`parameters`) | `anthropic_schema` (`input_schema`) |
+| System prompt | message with `role: "system"` | top-level `system` field |
+| Tool schema | `openaiSchema` (`parameters`) | `anthropicSchema` (`input_schema`) |
 | Stop signal | `finish_reason: "tool_calls"` | `stop_reason: "tool_use"` |
-| Tool input | JSON string → `json.loads` | dict directly (`block["input"]`) |
+| Tool input | JSON string → `JSON.parse` | object directly (`block.input`) |
 | Tool results | separate `tool` messages | grouped into one `user` message |
 
 Switch in [task/app.ts](task/app.ts) to `AnthropicBasedAgent` and run the same queries.

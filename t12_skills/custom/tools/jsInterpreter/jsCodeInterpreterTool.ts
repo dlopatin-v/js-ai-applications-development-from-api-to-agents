@@ -1,24 +1,20 @@
 import * as path from "path";
 import { BaseTool } from "../base.js";
 import { T12MCPClient } from "../../mcp/mcp_client.js";
-import { MCPToolModel } from "../../mcp/mcp_tool_model.js";
 import { ExecutionResult } from "./_response.js";
 import { getFileContent } from "../../file_utils.js";
 
-export class PythonCodeInterpreterTool extends BaseTool {
+export class JsCodeInterpreterTool extends BaseTool {
   private constructor(
     private readonly mcpClient: T12MCPClient,
-    private readonly codeExecuteTool: MCPToolModel,
     private readonly skillsDir: string,
   ) {
     super();
   }
 
   static async create(
-    mcpUrl: string,
-    toolName: string,
     skillsDir: string,
-  ): Promise<PythonCodeInterpreterTool> {
+  ): Promise<JsCodeInterpreterTool> {
     // TODO
   }
 

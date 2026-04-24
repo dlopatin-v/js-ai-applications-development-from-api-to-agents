@@ -1,7 +1,6 @@
 # MCP Auth
 
-Python implementation for securing the Users Management MCP Server with two authentication strategies: **API Key** and *
-*OAuth 2.0 + PKCE via Keycloak**.
+TypeScript implementation for securing the Users Management MCP Server with two authentication strategies: **API Key** and **OAuth 2.0 + PKCE via Keycloak**.
 
 ## Learning Goals
 

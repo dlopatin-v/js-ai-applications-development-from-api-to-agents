@@ -1,23 +1,28 @@
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
-import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
+import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import { MCPToolModel } from "./mcp_tool_model.js";
+
+const DOCKER_IMAGE = "mcp/node-code-sandbox";
 
 export class T12MCPClient {
   private client: Client;
-  private transport: StreamableHTTPClientTransport | null = null;
+  private transport: StdioClientTransport | null = null;
 
-  constructor(private readonly mcpServerUrl: string) {
+  constructor() {
     this.client = new Client({ name: "t12-mcp-client", version: "1.0.0" });
   }
 
-  static async create(mcpServerUrl: string): Promise<T12MCPClient> {
-    const instance = new T12MCPClient(mcpServerUrl);
+  static async create(): Promise<T12MCPClient> {
+    const instance = new T12MCPClient();
     await instance.connect();
     return instance;
   }
 
   async connect(): Promise<void> {
-    this.transport = new StreamableHTTPClientTransport(new URL(this.mcpServerUrl));
+    this.transport = new StdioClientTransport({
+      command: "docker",
+      args: ["run", "--rm", "-i", DOCKER_IMAGE],
+    });
     await this.client.connect(this.transport);
   }
 

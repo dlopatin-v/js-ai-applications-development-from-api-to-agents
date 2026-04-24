@@ -7,11 +7,10 @@ import { Role } from "../../commons/models/role.js";
 import { BaseTool } from "./tools/base.js";
 import { SkillMetadata, loadSkills } from "./models.js";
 import { ReadSkillTool } from "./tools/skills/read_skill_tool.js";
-import { PythonCodeInterpreterTool } from "./tools/pyInterpreter/pythonCodeInterpreterTool.js";
+import { JsCodeInterpreterTool } from "./tools/jsInterpreter/jsCodeInterpreterTool.js";
 import { T12Agent } from "./agent.js";
 
 const SKILLS_DIR = path.join(__dirname, "_skills");
-const MCP_URL = "http://localhost:8050/mcp";
 const MCP_TOOL_NAME = "execute_code";
 
 
@@ -72,7 +71,7 @@ async function main(): Promise<void> {
   // - Initialise the messages list with a SYSTEM message containing systemPrompt
   // - Build the tools list:
   //   - ReadSkillTool (pass SKILLS_DIR)
-  //   - PythonCodeInterpreterTool (use async factory .create() with MCP_URL, MCP_TOOL_NAME, SKILLS_DIR)
+  //   - JsCodeInterpreterTool (use async factory .create() with SKILLS_DIR)
   // - Create a T12Agent with an OpenAI client, model "gpt-5.2", and the tools list
   // - Run a chat loop: read user input, break on "exit",
   //   append USER message, call agent.chatCompletion, append the returned assistant message

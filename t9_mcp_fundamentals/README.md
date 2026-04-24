@@ -62,15 +62,15 @@ Service.
 ### 1. Create and run Agent with STDIO MCP Client:
 
 1. Open [STDIO mcp_client](agent/mcp_clients/stdio.ts) and implement all ***TODO***
-2. Open [app](agent/app.ts) and instead of HttpMCPClient client use this one:
-    ```python
-        async with StdioMCPClient(
-                command=sys.executable,          # use the same venv Python, not bare "python"
-                args=[str(STDIO_SERVER_PATH)],
-                env={**os.environ, "PYTHONPATH": str(PROJECT_ROOT)}  # inherit env + add project root
-        ) as mcp_client:
+2. Open [app](agent/app.ts) and instead of `HttpMCPClient` use this one:
+    ```typescript
+    const mcpClient: MCPClient = new StdioMCPClient({
+        command: "npm",
+        args: ["run", "ts", path.join(__dirname, "..", "mcp_server", "stdio_server.ts")],
+        env: { ...process.env } as Record<string, string>,
+    });
     ```
-3. Run application [app.py](agent/app.ts) and test that it is connecting to STDIO MCP Server and works properly
+3. Run application [app.ts](agent/app.ts) and test that it is connecting to STDIO MCP Server and works properly
 
 <details> 
 <summary><b>Connecting Your STDIO MCP Server to Claude Desktop</b></summary>
@@ -92,13 +92,11 @@ Open the file (create it if it doesn't exist) and add your server:
 {
   "mcpServers": {
     "users-management": {
-      "command": "{ABSOLUTE_PATH}/ai-applications-development-from-api-to-agents/.venv/bin/python",
+      "command": "npx",
       "args": [
-        "{ABSOLUTE_PATH}/ai-applications-development-from-api-to-agents/t9_mcp_fundamentals/mcp_server/stdio_server.ts"
-      ],
-      "env": {
-        "PYTHONPATH": "{ABSOLUTE_PATH}/ai-applications-development-from-api-to-agents"
-      }
+        "tsx",
+        "{ABSOLUTE_PATH}/js-ai-applications-development-from-api-to-agents/t9_mcp_fundamentals/mcp_server/stdio_server.ts"
+      ]
     }
   }
 }
@@ -106,13 +104,8 @@ Open the file (create it if it doesn't exist) and add your server:
 
 **Important notes:**
 
-- Don't forget to replace `{ABSOLUTE_PATH}` with absolute path to the project on your local machine
-- Set `PYTHONPATH` to your project root so imports like `t9_mcp_fundamentals` resolve correctly
-- If you're using a virtual environment, point to its Python binary instead:
-  ```json
-  "command": "/path/to/your/venv/bin/python"
-  ```
-  On Windows: `"C:\\Users\\you\\project\\.venv\\Scripts\\python.exe"`
+- Don't forget to replace `{ABSOLUTE_PATH}` with the absolute path to the project on your local machine
+- Make sure `npx` resolves to the correct Node.js installation
 
 
 <details> 
@@ -122,13 +115,11 @@ Open the file (create it if it doesn't exist) and add your server:
 {
   "mcpServers": {
     "users-management": {
-      "command": "/Users/pavlokhshanovskyi/dialx/courses/ai-applications-development-from-api-to-agents/.venv/bin/python",
+      "command": "npx",
       "args": [
-        "/Users/pavlokhshanovskyi/dialx/courses/ai-applications-development-from-api-to-agents/t9_mcp_fundamentals/mcp_server/stdio_server.py"
-      ],
-      "env": {
-        "PYTHONPATH": "/Users/pavlokhshanovskyi/dialx/courses/ai-applications-development-from-api-to-agents"
-      }
+        "tsx",
+        "/Users/pavlokhshanovskyi/dialx/courses/js-ai-applications-development-from-api-to-agents/t9_mcp_fundamentals/mcp_server/stdio_server.ts"
+      ]
     }
   }
 }
@@ -156,8 +147,8 @@ Configuration is the same as you have for Claude 👆
 ### 2. Play with STDIO MCP Servers from docker images:
 
 1. Use such mcp_client:
-    ```python
-    async with StdioMCPClient(docker_image="mcp/duckduckgo:latest") as mcp_client:
+    ```typescript
+    const mcpClient: MCPClient = new StdioMCPClient({ dockerImage: "mcp/duckduckgo:latest" });
     ```
 2. It is an MCP Server with WEB Search capabilities, [source code](https://github.com/khshanovskyi/duckduckgo-mcp-server)
-3. Try to search `Wthat is the weather in Kyiv now?`
+3. Try to search `What is the weather in Kyiv now?`

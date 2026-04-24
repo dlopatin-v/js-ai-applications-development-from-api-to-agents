@@ -193,28 +193,30 @@ function fmt(value: number): string {
   return parseFloat(value.toPrecision(10)).toString();
 }
 
-// CLI entry point
-const args = process.argv.slice(2);
-if (args.length < 3) {
-  console.error("Usage: npx tsx convert.ts <value> <from_unit> <to_unit>");
-  process.exit(1);
-}
+// CLI entry point (guarded so this file is safe to prepend into sandbox code)
+if (process.argv[2] !== undefined && !process.argv[2].startsWith("--sandbox")) {
+  const args = process.argv.slice(2);
+  if (args.length < 3) {
+    console.error("Usage: npx tsx convert.ts <value> <from_unit> <to_unit>");
+    process.exit(1);
+  }
 
-const value = parseFloat(args[0]);
-if (isNaN(value)) {
-  console.error(`Error: Invalid number: '${args[0]}'`);
-  process.exit(1);
-}
+  const value = parseFloat(args[0]);
+  if (isNaN(value)) {
+    console.error(`Error: Invalid number: '${args[0]}'`);
+    process.exit(1);
+  }
 
-const fromUnit = args[1];
-const toUnit = args[2];
+  const fromUnit = args[1];
+  const toUnit = args[2];
 
-try {
-  const [result, category] = convertUnits(value, fromUnit, toUnit);
-  console.log(`Category: ${category}`);
-  console.log(`Input:    ${fmt(value)} ${fromUnit}`);
-  console.log(`Result:   ${fmt(result)} ${toUnit}`);
-} catch (e: unknown) {
-  console.error(`Error: ${(e as Error).message}`);
-  process.exit(1);
+  try {
+    const [result, category] = convertUnits(value, fromUnit, toUnit);
+    console.log(`Category: ${category}`);
+    console.log(`Input:    ${fmt(value)} ${fromUnit}`);
+    console.log(`Result:   ${fmt(result)} ${toUnit}`);
+  } catch (e: unknown) {
+    console.error(`Error: ${(e as Error).message}`);
+    process.exit(1);
+  }
 }

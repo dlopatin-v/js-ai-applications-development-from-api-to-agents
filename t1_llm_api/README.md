@@ -35,7 +35,7 @@ libraries we commonly use.
 5. Open [openai/completions/client.ts](openai/completions/client.ts) and implement all TODOs (SDK client)
 6. Run [openai_chat_completions_app.ts](openai/completions/openai_chat_completions_app.ts) with `openAIClient` and test:
    ```bash
-   npm run run:ts t1_llm_api/openai/completions/openai_chat_completions_app.ts
+   npm run t1:openai-chat
    ```
 7. Open [openai/completions/custom_client.ts](openai/completions/custom_client.ts) and implement all TODOs (raw HTTP client)
 8. In [openai_chat_completions_app.ts](openai/completions/openai_chat_completions_app.ts) switch to `openAICustomClient` and test
@@ -45,7 +45,7 @@ libraries we commonly use.
 9. Open [openai/responses/client.ts](openai/responses/client.ts) and implement all TODOs (SDK client)
 10. Run [openai_responses_app.ts](openai/responses/openai_responses_app.ts) with `openAIClient` and test:
     ```bash
-    npm run run:ts t1_llm_api/openai/responses/openai_responses_app.ts
+    npm run t1:openai-responses
     ```
 11. Open [openai/responses/custom_client.ts](openai/responses/custom_client.ts) and implement all TODOs (raw HTTP client)
 12. In [openai_responses_app.ts](openai/responses/openai_responses_app.ts) switch to `openAICustomClient` and test
@@ -55,7 +55,7 @@ libraries we commonly use.
 13. Open [anthropic/client.ts](anthropic/client.ts) and implement all TODOs (SDK client)
 14. Run [anthropic_app.ts](anthropic/anthropic_app.ts) with `anthropicClient` and test:
     ```bash
-    npm run run:ts t1_llm_api/anthropic/anthropic_app.ts
+    npm run t1:anthropic
     ```
 15. Open [anthropic/custom_client.ts](anthropic/custom_client.ts) and implement all TODOs (raw HTTP client)
 16. In [anthropic_app.ts](anthropic/anthropic_app.ts) switch to `anthropicCustomClient` and test
@@ -65,7 +65,7 @@ libraries we commonly use.
 17. Open [gemini/client.ts](gemini/client.ts) and implement all TODOs (SDK client)
 18. Run [gemini_app.ts](gemini/gemini_app.ts) with `geminiClient` and test:
     ```bash
-    npm run run:ts t1_llm_api/gemini/gemini_app.ts
+    npm run t1:gemini
     ```
 19. Open [gemini/custom_client.ts](gemini/custom_client.ts) and implement all TODOs (raw HTTP client)
 20. In [gemini_app.ts](gemini/gemini_app.ts) switch to `geminiCustomClient` and test

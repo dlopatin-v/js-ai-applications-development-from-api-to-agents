@@ -27,9 +27,9 @@ By exploring and working with this project, you will learn:
 
 | Component | Command |
 |---|---|
-| API Key MCP Server | `npm run t11:server-apikey` |
-| OAuth MCP Server | `npm run t11:server-oauth` |
-| Agent | `npm run t11:agent` |
+| HTTP MCP Server | `npm run t9:server` |
+| STDIO MCP Server | `npm run t9:server-stdio` |
+| Agent | `npm run t9:agent` |
 
 ---
 

@@ -20,72 +20,49 @@ const TOKEN_ENDPOINT = `${_BASE}/token`;
 
 // ==================== PKCE HELPERS ====================
 
-/**
- * Generates a PKCE code_verifier (random 32-byte base64url string)
- * and the corresponding code_challenge (SHA-256 hash, base64url encoded).
- * @returns Object with codeVerifier and codeChallenge strings.
- * Hint: crypto.randomBytes(32).toString("base64url") for verifier;
- * crypto.createHash("sha256").update(verifier).digest("base64url") for challenge.
- */
 function generatePkcePair(): { codeVerifier: string; codeChallenge: string } {
-  // TODO
+  //TODO:
+  // 1. Generate codeVerifier = crypto.randomBytes(32).toString("base64url")
+  // 2. Generate codeChallenge = crypto.createHash("sha256").update(codeVerifier).digest("base64url")
+  // 3. Return { codeVerifier, codeChallenge }
 }
 
-/**
- * Builds the Keycloak authorization URL for the PKCE flow.
- * @param codeChallenge - The PKCE code_challenge string.
- * @param state - A random state parameter for CSRF protection.
- * @returns The full authorization URL as a string.
- * Hint: URLSearchParams with response_type, client_id, redirect_uri,
- * scope, state, code_challenge, code_challenge_method=S256.
- */
 function buildAuthUrl(codeChallenge: string, state: string): string {
-  // TODO
+  //TODO:
+  // Build URLSearchParams with: response_type="code", client_id=CLIENT_ID, redirect_uri=REDIRECT_URI,
+  //   scope="openid", state, code_challenge=codeChallenge, code_challenge_method="S256"
+  // Return `${AUTH_ENDPOINT}?${params}`
 }
 
 // ==================== LOCAL CALLBACK SERVER ====================
 
-/**
- * Starts a temporary HTTP server on REDIRECT_PORT that captures the OAuth callback.
- * @returns Promise resolving to { code, state } extracted from the callback query string.
- * Hint: create an http.createServer that parses req.url, resolves the promise, then
- * sends a success HTML response and closes the server.
- */
 function waitForCallback(): Promise<{ code: string; state: string }> {
-  // TODO
+  //TODO:
+  // Start a temporary http.createServer on REDIRECT_PORT
+  // Parse req.url to extract `code` and `state` query params
+  // Send a success HTML response, close the server, and resolve the promise with { code, state }
 }
 
-/**
- * Opens the given URL in the system's default browser.
- * @param url - The URL to open.
- * Hint: use exec("open <url>") on macOS, "xdg-open" on Linux, "start" on Windows.
- */
 function openBrowser(url: string): void {
-  // TODO
+  //TODO:
+  // Use exec() to open the URL in the default browser:
+  //   macOS: "open <url>", Linux: "xdg-open <url>", Windows: "start <url>"
 }
 
 // ==================== TOKEN EXCHANGE ====================
 
-/**
- * Exchanges the authorization code for access and refresh tokens at Keycloak.
- * @param code - The authorization code received in the callback.
- * @param codeVerifier - The original PKCE code_verifier.
- * @returns The parsed token response object (access_token, refresh_token, expires_in, etc.).
- * Hint: POST to TOKEN_ENDPOINT with grant_type=authorization_code, code, redirect_uri,
- * client_id, code_verifier as application/x-www-form-urlencoded.
- */
 async function exchangeCodeForTokens(code: string, codeVerifier: string): Promise<Record<string, unknown>> {
-  // TODO
+  //TODO:
+  // POST to TOKEN_ENDPOINT with application/x-www-form-urlencoded body:
+  //   grant_type="authorization_code", code, redirect_uri=REDIRECT_URI,
+  //   client_id=CLIENT_ID, code_verifier=codeVerifier
+  // Return the parsed JSON response
 }
 
-/**
- * Refreshes the access token using the stored refresh token.
- * @param refreshToken - The refresh_token from a prior token response.
- * @returns The new token response object.
- * Hint: POST to TOKEN_ENDPOINT with grant_type=refresh_token, refresh_token, client_id.
- */
 async function refreshAccessToken(refreshToken: string): Promise<Record<string, unknown>> {
-  // TODO
+  //TODO:
+  // POST to TOKEN_ENDPOINT with: grant_type="refresh_token", refresh_token=refreshToken, client_id=CLIENT_ID
+  // Return the parsed JSON response
 }
 
 // ==================== OAUTH TOKEN MANAGER ====================
@@ -95,61 +72,43 @@ class OAuthTokenManager {
   private _refreshToken: string | null = null;
   private _expiresAt: number | null = null;
 
-  /**
-   * Runs the full PKCE browser flow: generates PKCE pair, opens browser, waits for callback,
-   * exchanges code for tokens, then stores them.
-   * Hint: generatePkcePair → buildAuthUrl → openBrowser → waitForCallback → exchangeCodeForTokens → _storeTokens.
-   */
   async authenticate(): Promise<void> {
-    // TODO
+    //TODO:
+    // 1. Generate PKCE pair: { codeVerifier, codeChallenge } = generatePkcePair()
+    // 2. Generate state = crypto.randomBytes(16).toString("hex")
+    // 3. Build auth URL: buildAuthUrl(codeChallenge, state)
+    // 4. Open browser with openBrowser(authUrl)
+    // 5. Wait for callback: { code } = await waitForCallback()
+    // 6. Exchange code: tokens = await exchangeCodeForTokens(code, codeVerifier)
+    // 7. Store tokens: this._storeTokens(tokens)
   }
 
-  /**
-   * Stores access_token, refresh_token, and calculates expiry from expires_in.
-   * @param tokens - The token response object from Keycloak.
-   * Hint: this._expiresAt = Date.now() + (expires_in * 1000) - 10000 (10s buffer).
-   */
   private _storeTokens(tokens: Record<string, unknown>): void {
-    // TODO
+    //TODO:
+    // 1. Set this._accessToken = tokens["access_token"] as string
+    // 2. Set this._refreshToken = tokens["refresh_token"] as string
+    // 3. Set this._expiresAt = Date.now() + ((tokens["expires_in"] as number) * 1000) - 10000
   }
 
-  /**
-   * Checks whether the stored access token has expired.
-   * @returns true if the token is expired or expiry is unknown.
-   */
   isTokenExpired(): boolean {
-    // TODO
+    //TODO:
+    // Return true if _expiresAt is null or Date.now() >= _expiresAt
   }
 
-  /**
-   * Requests a new access token using the stored refresh token and updates stored tokens.
-   * Hint: call refreshAccessToken(this._refreshToken!); then _storeTokens.
-   */
   async refresh(): Promise<void> {
-    // TODO
+    //TODO:
+    // 1. Call refreshAccessToken(this._refreshToken!)
+    // 2. Store the result with _storeTokens
   }
 
-  /**
-   * Returns the Authorization header object for the current access token.
-   * @returns { Authorization: "Bearer <token>" }
-   */
   authHeaders(): Record<string, string> {
-    // TODO
+    //TODO:
+    // Return { Authorization: `Bearer ${this._accessToken}` }
   }
 }
 
 // ==================== OAUTH MCP CLIENT ====================
 
-/**
- * MCP client that authenticates via OAuth 2.0 + PKCE (Keycloak).
- *
- * On connect():
- *   1. Runs the PKCE browser flow (opens Keycloak login once)
- *   2. Connects to the MCP server with the resulting Bearer token
- *
- * On callTool():
- *   - Automatically refreshes the token and reconnects if token is expired
- */
 export class OauthMCPClient extends T11MCPClient {
   private readonly serverUrl: string;
   private readonly tokenManager: OAuthTokenManager;
@@ -161,59 +120,41 @@ export class OauthMCPClient extends T11MCPClient {
     this.tokenManager = new OAuthTokenManager();
   }
 
-  /**
-   * Authenticates via PKCE flow then connects to the MCP server with the Bearer token.
-   * Hint: await this.tokenManager.authenticate(); then _connectWithCurrentToken().
-   */
   async connect(): Promise<void> {
-    // TODO
+    //TODO:
+    // 1. Await this.tokenManager.authenticate() to run the PKCE browser flow
+    // 2. Await this._connectWithCurrentToken()
   }
 
-  /**
-   * Creates a new StreamableHTTPClientTransport with the current Bearer token injected
-   * via a custom fetch wrapper, then connects this.client to the server.
-   * Hint: create a new Client, build transport with fetch override merging authHeaders(),
-   * then call this.client.connect(transport).
-   */
   private async _connectWithCurrentToken(): Promise<void> {
-    // TODO
+    //TODO:
+    // 1. Create a new Client({ name: "oauth-mcp-client", version: "1.0.0" }), assign to this.client
+    // 2. Create StreamableHTTPClientTransport with a custom fetch that injects
+    //    this.tokenManager.authHeaders() into every request's headers; assign to this.transport
+    // 3. Call await this.client.connect(this.transport)
+    // 4. Log: `Connected to OAuth MCP server at ${this.serverUrl}`
   }
 
-  /**
-   * Closes the active transport connection.
-   * Hint: call this.transport?.close().
-   */
   async disconnect(): Promise<void> {
-    // TODO
+    //TODO:
+    // Call await this.transport?.close()
   }
 
-  /**
-   * Calls a tool, automatically refreshing the token and reconnecting if expired.
-   * @param toolName - Name of the tool to invoke.
-   * @param toolArgs - Arguments to pass to the tool.
-   * @returns The tool's result value.
-   * Hint: if tokenManager.isTokenExpired(), call _reconnectWithFreshToken(); then _doCallTool().
-   */
   async callTool(toolName: string, toolArgs: Record<string, unknown>): Promise<unknown> {
-    // TODO
+    //TODO:
+    // 1. If this.tokenManager.isTokenExpired(), await this._reconnectWithFreshToken()
+    // 2. Return await this._doCallTool(toolName, toolArgs)
   }
 
-  /**
-   * Delegates the actual tool call to the parent class implementation.
-   * @param toolName - Tool name.
-   * @param toolArgs - Tool arguments.
-   * @returns The tool result.
-   * Hint: call super.callTool(toolName, toolArgs).
-   */
   private async _doCallTool(toolName: string, toolArgs: Record<string, unknown>): Promise<unknown> {
-    // TODO
+    //TODO:
+    // Delegate to super.callTool(toolName, toolArgs) and return the result
   }
 
-  /**
-   * Refreshes the access token and re-establishes the MCP connection.
-   * Hint: await tokenManager.refresh(); then _connectWithCurrentToken().
-   */
   private async _reconnectWithFreshToken(): Promise<void> {
-    // TODO
+    //TODO:
+    // 1. Await this.tokenManager.refresh()
+    // 2. Await this._connectWithCurrentToken()
+    // 3. Log: "Reconnected with fresh token"
   }
 }

@@ -22,187 +22,70 @@ export class AnthropicBasedAgent extends BaseAgent {
     console.log(JSON.stringify(this._toolsSchemas, null, 4));
   }
 
-  /**
-   * Sends the conversation to the Anthropic Messages API and handles the
-   * agentic tool-use loop until the model returns a final text response.
-   *
-   * Step 1 — Convert messages to Anthropic format.
-   *   Call `this._toAnthropicMessages(messages)`.
-   *   Note: Anthropic does NOT accept a system message inside the messages array.
-   *   The system prompt is passed as a top-level "system" field in the request body.
-   *
-   * Step 2 — Build the request body:
-   *   {
-   *     model: this._model,
-   *     max_tokens: 8096,
-   *     messages: <anthropic messages>,
-   *     tools: this._toolsSchemas,
-   *     ...(this._systemPrompt ? { system: this._systemPrompt } : {}),
-   *   }
-   *
-   * Step 3 — POST to this._endpoint with headers:
-   *   { "x-api-key": this._apiKey, "anthropic-version": "2023-06-01", "Content-Type": "application/json" }
-   *   If printRequest, log this._endpoint and the messages with JSON.stringify.
-   *
-   * Step 4 — Parse the response.
-   *   On non-ok status throw: new Error(`HTTP ${response.status}: ${text}`)
-   *   Extract data.content (array of blocks) and data.stop_reason.
-   *   Log data with JSON.stringify when printRequest is true.
-   *   Find the text block: content_blocks.find(b => b.type === "text")?.text
-   *   Find tool_use blocks: content_blocks.filter(b => b.type === "tool_use")
-   *   Build: new Message(Role.ASSISTANT, textContent, undefined, undefined,
-   *            toolUseBlocks.length > 0 ? contentBlocks : undefined)
-   *
-   * Step 5 — Handle tool use.
-   *   If data.stop_reason === "tool_use":
-   *     a) Append the assistant Message to `messages` (mutate — same as Python).
-   *     b) Call `this._processToolCalls(toolUseBlocks)` to get tool result Messages.
-   *     c) Append all tool result Messages to `messages`.
-   *     d) Recurse: return this.getResponse(messages, printRequest).
-   *   Otherwise return the assistant Message directly.
-   *
-   * @param messages     - Ordered conversation history (excluding the system prompt).
-   * @param printRequest - When true, log the outgoing request and incoming response.
-   * @returns The final assistant Message after all tool rounds are complete.
-   */
   async getResponse(messages: Message[], printRequest = true): Promise<Message> {
-    // TODO: Implement the Anthropic tool-calling agentic loop.
-    //
-    // Step 1 — Convert messages to Anthropic format.
-    //   Call this._toAnthropicMessages(messages).
-    //   Note: Anthropic does NOT accept a system message inside the messages array.
-    //   The system prompt is passed as a top-level "system" field in the request body.
-    //
-    // Step 2 — Build the request body:
-    //   {
-    //     model: this._model,
-    //     max_tokens: 8096,
-    //     messages: <anthropic messages>,
-    //     tools: this._toolsSchemas,
-    //     ...(this._systemPrompt ? { system: this._systemPrompt } : {}),
-    //   }
-    //
-    // Step 3 — POST to this._endpoint with headers:
-    //   { "x-api-key": this._apiKey, "anthropic-version": "2023-06-01", "Content-Type": "application/json" }
-    //   If printRequest, log this._endpoint and the messages with JSON.stringify.
-    //
-    // Step 4 — Parse the response.
-    //   On non-ok status throw: new Error(`HTTP ${response.status}: ${text}`)
-    //   Extract data.content (array of blocks) and data.stop_reason.
-    //   Log data with JSON.stringify when printRequest is true.
-    //   Find the text block: content_blocks.find(b => b.type === "text")?.text
-    //   Find tool_use blocks: content_blocks.filter(b => b.type === "tool_use")
-    //   Build: new Message(Role.ASSISTANT, textContent, undefined, undefined,
-    //            toolUseBlocks.length > 0 ? contentBlocks : undefined)
-    //
-    // Step 5 — Handle tool use.
-    //   If data.stop_reason === "tool_use":
-    //     a) Append the assistant Message to `messages` (mutate — same as Python).
-    //     b) Call this._processToolCalls(toolUseBlocks) to get tool result Messages.
-    //     c) Append all tool result Messages to `messages`.
-    //     d) Recurse: return this.getResponse(messages, printRequest).
-    //   Otherwise return the assistant Message directly.
-    throw new Error("Not implemented — see TODO comments above");
+    //TODO:
+    // 1. Build headers: { "x-api-key": this._apiKey, "anthropic-version": "2023-06-01", "Content-Type": "application/json" }
+    // 2. Convert messages to Anthropic format using this._toAnthropicMessages(messages)
+    //    Note: Anthropic does NOT accept a system message inside the messages array —
+    //    pass this._systemPrompt as a top-level "system" field in the request body instead
+    // 3. Build body: { model, max_tokens: 8096, messages, tools: this._toolsSchemas }
+    //    If this._systemPrompt is set, also add: system: this._systemPrompt
+    // 4. If printRequest: log this._endpoint and the request messages
+    // 5. POST to this._endpoint; on non-ok status throw: new Error(`HTTP ${response.status}: ${text}`)
+    // 6. Parse response JSON; extract content (blocks array) and stop_reason
+    //    If printRequest: log the response
+    //    Find text block: blocks.find(b => b.type === "text")?.text
+    //    Find tool_use blocks: blocks.filter(b => b.type === "tool_use")
+    //    Build: new Message(Role.ASSISTANT, textContent, undefined, undefined,
+    //             toolUseBlocks.length > 0 ? contentBlocks : undefined)
+    //    If stop_reason === "tool_use":
+    //      - Append ai_response to messages
+    //      - tool_messages = await this._processToolCalls(toolUseBlocks)
+    //      - Extend messages with tool_messages
+    //      - Recursively call this.getResponse(messages, printRequest) and return result
+    //    Otherwise return ai_response
+    throw new Error("Not implemented");
   }
 
-  /**
-   * Converts internal `Message` objects to the Anthropic API message format.
-   *
-   * The tricky part: Anthropic requires consecutive TOOL result messages to be
-   * grouped into a SINGLE user message with a content array of `tool_result` blocks.
-   *
-   * Walk `messages` with an index `i` and build `result`:
-   *
-   *   if `messages[i].role === Role.TOOL`:
-   *     Collect all consecutive TOOL messages into tool_results:
-   *       `[{ type: "tool_result", tool_use_id: msg.tool_call_id, content: msg.content }, ...]`
-   *     Push `{ role: "user", content: tool_results }` to result.
-   *
-   *   else if `messages[i].role === Role.ASSISTANT`:
-   *     `content = msg.tool_calls ?? msg.content`
-   *     Push `{ role: "assistant", content }` to result.
-   *
-   *   else (USER / SYSTEM):
-   *     Push `{ role: msg.role, content: msg.content }` to result.
-   *
-   * @param messages - Internal Message list to convert.
-   * @returns Anthropic-formatted message array.
-   */
   private _toAnthropicMessages(
     messages: Message[],
   ): Array<Record<string, unknown>> {
-    // TODO: Convert our internal Message list to the Anthropic messages format.
-    //
-    // The tricky part: Anthropic requires consecutive TOOL result messages to be
-    // grouped into a SINGLE user message with a content array of tool_result blocks.
-    //
-    // Walk `messages` with an index `i` and build `result`:
-    //
+    //TODO:
+    // Walk messages with index i and build result array:
     //   if messages[i].role === Role.TOOL:
     //     Collect all consecutive TOOL messages into tool_results:
-    //       [{ type: "tool_result", tool_use_id: msg.tool_call_id, content: msg.content }, ...]
-    //     Push { role: "user", content: tool_results } to result.
-    //
+    //       [{ type: "tool_result", tool_use_id: msg.toolCallId, content: msg.content }, ...]
+    //     Push { role: "user", content: tool_results } to result; advance i past them
     //   else if messages[i].role === Role.ASSISTANT:
-    //     content = msg.tool_calls if msg.tool_calls else msg.content
-    //     Push { role: "assistant", content } to result.
-    //
-    //   else (USER / SYSTEM):
-    //     Push { role: msg.role, content: msg.content } to result.
-    //
-    // Return result.
-    throw new Error("Not implemented — see TODO comments above");
+    //     content = msg.toolCalls ?? msg.content
+    //     Push { role: "assistant", content } to result
+    //   else (USER):
+    //     Push { role: msg.role, content: msg.content } to result
+    // Return result
+    throw new Error("Not implemented");
   }
 
-  /**
-   * Executes a batch of Anthropic `tool_use` blocks and returns the results.
-   *
-   * Each block has the shape:
-   *   `{ type: "tool_use", id: string, name: string, input: Record<string, unknown> }`
-   *
-   * For each block:
-   *   1. Extract `id` (tool_use_id), `name`, `input` (already parsed — no JSON.parse needed).
-   *   2. Call `await this._callTool(name, input)` to get the result string.
-   *   3. Build: `new Message(Role.TOOL, result, id, name)`
-   *   4. Log: `FUNCTION '${name}'\n${result}\n${'-'.repeat(50)}`
-   *
-   * @param toolUseBlocks - Array of tool_use content blocks from the API response.
-   * @returns Array of tool-result Messages ready to append to the conversation.
-   */
   private async _processToolCalls(
     toolUseBlocks: Array<Record<string, unknown>>,
   ): Promise<Message[]> {
-    // TODO: Iterate over toolUseBlocks. Each block has shape:
-    //   { type: "tool_use", id: string, name: string, input: Record<string, unknown> }
-    //
-    // For each block:
-    //   1. Extract id (tool_use_id), name, input (already parsed — no JSON.parse needed).
-    //   2. Call await this._callTool(name, input) to get the result string.
-    //   3. Build: new Message(Role.TOOL, result, id, name)
-    //   4. Log: `FUNCTION '${name}'\n${result}\n${'-'.repeat(50)}`
-    //
-    // Return the array of tool result Messages.
-    throw new Error("Not implemented — see TODO comments above");
+    //TODO:
+    // For each block in toolUseBlocks (shape: { type, id, name, input }):
+    // 1. Extract id (tool_use_id), name, input (already parsed — no JSON.parse needed)
+    // 2. Call await this._callTool(name, input) to get toolExecutionResult
+    // 3. Build: new Message(Role.TOOL, toolExecutionResult, id, name)
+    // 4. Print: `FUNCTION '${name}'\n${toolExecutionResult}\n${"-".repeat(50)}`
+    // Return the list of tool result Messages
+    throw new Error("Not implemented");
   }
 
-  /**
-   * Dispatches a single tool call to the appropriate registered tool.
-   *
-   * Looks up `functionName` in `this._toolsDict`. If found, calls
-   * `await tool.execute(args)` and returns the result string. If not found,
-   * returns `"Unknown function: ${functionName}"`.
-   *
-   * @param functionName - The tool identifier from the `tool_use` block.
-   * @param args         - Already-parsed arguments object (Anthropic provides these pre-parsed).
-   * @returns The tool's string output, or an error message if not found.
-   */
   private async _callTool(
     functionName: string,
     args: Record<string, unknown>,
   ): Promise<string> {
-    // TODO: Look up the tool by functionName in this._toolsDict.
-    //   If found, call await tool.execute(args) and return the result.
-    //   If not found, return `Unknown function: ${functionName}`.
-    throw new Error("Not implemented — see TODO comments above");
+    //TODO:
+    // 1. Look up the tool in this._toolsDict by functionName
+    // 2. If found, call await tool.execute(args) and return the result
+    // 3. If not found, return `Unknown function: ${functionName}`
+    throw new Error("Not implemented");
   }
 }

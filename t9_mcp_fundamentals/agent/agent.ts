@@ -98,13 +98,15 @@ export class AgentMCPFundamentals {
   }
 
   private async _callTools(aiMessage: Message, messages: Message[]): Promise<void> {
-    for (const toolCall of aiMessage.tool_calls ?? []) {
+    for (const toolCall of aiMessage.tool_calls as OpenAI.Chat.Completions.ChatCompletionMessageToolCall[]) {
       const toolName = toolCall.function.name;
       const toolArgs = JSON.parse(toolCall.function.arguments);
 
       try {
-        const toolResult = await this.mcpClient.callTool(toolName, toolArgs);
-        messages.push(new Message(Role.TOOL, String(toolResult), toolCall.id));
+        //TODO:
+        // 1. Call await this.mcpClient.callTool(toolName, toolArgs), assign to toolResult
+        // 2. Push new Message(Role.TOOL, String(toolResult), toolCall.id) to messages
+        throw new Error("Not implemented");
       } catch (err) {
         const errorMsg = `Error: ${err}`;
         console.error(errorMsg);

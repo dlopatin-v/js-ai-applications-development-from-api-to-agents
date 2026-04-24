@@ -11,98 +11,43 @@ import { MCPClient, ToolSchema } from "./mcp_clients/base.js";
 // Pay attention that `fetch` doesn't have resources and prompts
 
 async function main() {
-  // TODO: Create an mcpClient and connect to an MCP server.
-  // Choose ONE of the three options below (uncomment and adjust the chosen one):
-
-  // Option 1 — Local STDIO: spawns your own stdioServer.ts as a child process.
-  //   Step 1: Import * as path from "path" (already done above)
-  //   Step 2: Create a StdioMCPClient with:
-  //           command: "npm"
-  //           args: ["run", "ts", path.join(__dirname, "..", "mcp_server", "stdioServer.ts")]
-  //           env: { ...process.env } as Record<string, string>
-  //   This runs `npm run ts <path-to-stdioServer>` as a subprocess and communicates
-  //   with it over stdin/stdout using the MCP STDIO transport.
-  // const mcpClient: MCPClient = new StdioMCPClient({
-  //   command: "npm",
-  //   args: ["run", "ts", path.join(__dirname, "..", "mcp_server", "stdioServer.ts")],
-  //   env: { ...process.env } as Record<string, string>,
-  // });
-
-  // Option 2 — Docker STDIO: runs a containerised MCP server.
-  //   Step 1: Pull the image: docker pull mcp/duckduckgo:latest
-  //   Step 2: Create a StdioMCPClient with: { dockerImage: "mcp/duckduckgo:latest" }
-  //   The StdioMCPClient handles running `docker run --rm -i <image>` internally.
-  //   Note: this server only exposes tools — getResources() and getPrompts() will throw.
-  // const mcpClient: MCPClient = new StdioMCPClient({ dockerImage: "mcp/duckduckgo:latest" });
-
-  // Option 3 — HTTP: connects to a running HTTP MCP server.
-  //   Step 1: Start the server in another terminal: npm run ts t9_mcp_fundamentals/mcp_server/httpServer.ts
-  //   Step 2: Create an HttpMCPClient with the server URL: "http://localhost:8005/mcp"
-  // const mcpClient: MCPClient = new HttpMCPClient("http://localhost:8005/mcp");
-
-  const mcpClient: MCPClient = new StdioMCPClient({ dockerImage: "mcp/duckduckgo:latest" });
-
-  await mcpClient.connect();
-
-  try {
-    console.log("\n=== Available Resources ===");
-    const resources = await mcpClient.getResources();
-    for (const resource of resources) {
-      console.log(resource);
-    }
-
-    console.log("\n=== Available Tools ===");
-    const tools: ToolSchema[] = await mcpClient.getTools();
-    for (const tool of tools) {
-      console.log(JSON.stringify(tool, null, 2));
-    }
-
-    const agent = new AgentMCPFundamentals({
-      apiKey: OPENAI_API_KEY,
-      model: "gpt-4o",
-      tools,
-      mcpClient,
-    });
-
-    const messages: Message[] = [
-      new Message(Role.SYSTEM, SYSTEM_PROMPT),
-    ];
-
-    console.log("\n=== Available Prompts ===");
-    const prompts = await mcpClient.getPrompts();
-    for (const prompt of prompts) {
-      console.log(prompt);
-      const content = await mcpClient.getPrompt(prompt.name);
-      console.log(content);
-      messages.push(
-        new Message(
-          Role.USER,
-          `## Prompt provided by MCP server:\n${prompt.description ?? ""}\n${content}`
-        )
-      );
-    }
-
-    console.log("MCP-based Agent is ready! Type your query or 'exit' to exit.");
-
-    const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
-    const ask = () =>
-      rl.question("\n> ", async (userInput) => {
-        const trimmed = userInput.trim();
-        if (trimmed.toLowerCase() === "exit") {
-          rl.close();
-          return;
-        }
-        messages.push(new Message(Role.USER, trimmed));
-        const aiMessage = await agent.getCompletion(messages);
-        messages.push(aiMessage);
-        ask();
-      });
-
-    ask();
-  } catch (err) {
-    await mcpClient.disconnect();
-    throw err;
-  }
+  //TODO:
+  // 1. Create an mcpClient — choose ONE of the three options below and uncomment it:
+  //
+  //    Option A — Local STDIO: spawns your own stdioServer.ts as a child process.
+  //      const mcpClient: MCPClient = new StdioMCPClient({
+  //        command: "npm",
+  //        args: ["run", "ts", path.join(__dirname, "..", "mcp_server", "stdioServer.ts")],
+  //        env: { ...process.env } as Record<string, string>,
+  //      });
+  //
+  //    Option B — Docker STDIO: runs a containerised MCP server (only exposes tools).
+  //      docker pull mcp/duckduckgo:latest
+  //      const mcpClient: MCPClient = new StdioMCPClient({ dockerImage: "mcp/duckduckgo:latest" });
+  //
+  //    Option C — HTTP: connects to a running HTTP MCP server.
+  //      Start the server first: npm run t9:mcp-server-http
+  //      const mcpClient: MCPClient = new HttpMCPClient("http://localhost:8005/mcp");
+  //
+  // 2. Call await mcpClient.connect()
+  // 3. Print "\n=== Available Resources ===" and fetch resources via mcpClient.getResources(),
+  //    iterate and print each resource
+  // 4. Print "\n=== Available Tools ===" and fetch tools via mcpClient.getTools(),
+  //    iterate and print each tool with JSON.stringify(tool, null, 2)
+  // 5. Create AgentMCPFundamentals with apiKey, model="gpt-4o", tools, mcpClient; assign to agent
+  // 6. Create messages array with a single new Message(Role.SYSTEM, SYSTEM_PROMPT)
+  // 7. Print "\n=== Available Prompts ===" and fetch prompts via mcpClient.getPrompts().
+  //    For each prompt:
+  //      - print the prompt
+  //      - get its content with mcpClient.getPrompt(prompt.name) and print it
+  //      - push new Message(Role.USER, `## Prompt provided by MCP server:\n${prompt.description}\n${content}`)
+  //        to messages
+  // 8. Print "MCP-based Agent is ready! Type your query or 'exit' to exit."
+  // 9. Run a readline chat loop:
+  //      - read user input; exit on "exit"
+  //      - push new Message(Role.USER, trimmed) to messages
+  //      - call await agent.getCompletion(messages), push result to messages
+  throw new Error("Not implemented");
 }
 
 main().catch(console.error);

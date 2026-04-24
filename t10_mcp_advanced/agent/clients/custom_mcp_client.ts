@@ -25,65 +25,64 @@ export class CustomMCPClient {
     return instance;
   }
 
-  /**
-   * Sends a JSON-RPC 2.0 POST request to the server and returns the parsed result.
-   * @param method - The JSON-RPC method name (e.g. "tools/list").
-   * @param params - Optional parameters object to include in the request body.
-   * @returns The parsed JSON-RPC result as a plain object.
-   * Hint: attach `Mcp-Session-Id` header when sessionId is set; parse SSE or JSON response.
-   */
   private async _sendRequest(
     method: string,
     params?: Record<string, any>
   ): Promise<Record<string, any>> {
-    // TODO
+    //TODO:
+    // 1. Build request body: { jsonrpc: "2.0", id: randomUUID(), method, ...(params ? { params } : {}) }
+    // 2. Build headers: { "Content-Type": "application/json", "Accept": "application/json, text/event-stream" }
+    //    If method !== "initialize" and this.sessionId is set, add MCP_SESSION_ID_HEADER header
+    // 3. POST to this.serverUrl with JSON body and headers
+    //    If !this.sessionId and the response has MCP_SESSION_ID_HEADER, capture it in this.sessionId
+    //    If response.status === 202, return {} (successful notification)
+    // 4. Check content-type:
+    //    If it includes "text/event-stream": call await this._parseSseResponse(response)
+    //    Otherwise: await response.json()
+    // 5. If "error" in responseData, throw: new Error(`MCP Error ${error.code}: ${error.message}`)
+    // 6. Return responseData
   }
 
-  /**
-   * Reads all SSE lines from a streaming response and extracts the last JSON-RPC result.
-   * @param response - The raw fetch Response with `text/event-stream` content-type.
-   * @returns The parsed result object from the final `data:` line containing a result field.
-   * Hint: split text by newlines; look for lines starting with "data:"; parse JSON.
-   */
   private async _parseSseResponse(response: Response): Promise<Record<string, any>> {
-    // TODO
+    //TODO:
+    // 1. Read all text: await response.text()
+    // 2. Split by newlines and iterate
+    // 3. For each line starting with "data: ", extract the data part (remove "data: " prefix)
+    //    If data part !== "[DONE]": return JSON.parse(data part)
+    //    (return on first valid data chunk — MCP tool response fits in one chunk)
+    // 4. throw new Error("No valid data found in SSE response")
   }
 
-  /**
-   * Sends a JSON-RPC notification (fire-and-forget — no result expected).
-   * @param method - The notification method name (e.g. "notifications/initialized").
-   * Hint: same POST format as _sendRequest but id is null and response is not parsed.
-   */
   private async _sendNotification(method: string): Promise<void> {
-    // TODO
+    //TODO:
+    // 1. Build request body: { jsonrpc: "2.0", method } (no id for notifications)
+    // 2. Build headers: { "Content-Type": "application/json", "Accept": "application/json, text/event-stream" }
+    //    If this.sessionId is set, add MCP_SESSION_ID_HEADER header
+    // 3. POST to this.serverUrl; if response has MCP_SESSION_ID_HEADER, update this.sessionId
   }
 
-  /**
-   * Performs the MCP session handshake: initialize → store sessionId → send initialized notification.
-   * Hint: call _sendRequest("initialize", {...}), extract session id from response headers,
-   * then call _sendNotification("notifications/initialized").
-   */
   async connect(): Promise<void> {
-    // TODO
+    //TODO:
+    // 1. Call this._sendRequest("initialize", { protocolVersion: "2024-11-05", capabilities: { tools: {} }, clientInfo: { name: "my-custom-mcp-client", version: "1.0.0" } })
+    //    and log the result (server capabilities)
+    // 2. Call await this._sendNotification("notifications/initialized")
   }
 
-  /**
-   * Fetches the list of available tools from the server and maps them to ToolSchema.
-   * @returns Array of ToolSchema objects ready to pass to the OpenAI tools parameter.
-   * Hint: call _sendRequest("tools/list"); map result.tools to ToolSchema format.
-   */
   async getTools(): Promise<ToolSchema[]> {
-    // TODO
+    //TODO:
+    // 1. Call await this._sendRequest("tools/list") and get response
+    // 2. Extract tools = response.result.tools
+    // 3. Map each tool to ToolSchema: { type: "function", function: { name, description, parameters: tool.inputSchema } }
+    // 4. Return the mapped array
   }
 
-  /**
-   * Calls a named tool on the server and returns its text output as a string.
-   * @param toolName - The tool name registered on the server.
-   * @param toolArgs - Arguments object to pass to the tool.
-   * @returns The text content of the first result item.
-   * Hint: use _sendRequest("tools/call", { name, arguments }); extract content[0].text.
-   */
   async callTool(toolName: string, toolArgs: Record<string, any>): Promise<string> {
-    // TODO
+    //TODO:
+    // 1. Log: `    Calling \`${toolName}\` with ${JSON.stringify(toolArgs)}`
+    // 2. Call await this._sendRequest("tools/call", { name: toolName, arguments: toolArgs })
+    // 3. Extract content = response.result?.content ?? []
+    // 4. Extract text = content[0]?.text ?? ""
+    // 5. Log: `    ⚙️: ${text}\n`
+    // 6. Return text (or "Unexpected error occurred!" if no content)
   }
 }

@@ -1,6 +1,6 @@
 import http from "http";
 import { MCPRequest } from "./models/request.js";
-import { MCPResponse } from "./models/response.js";
+import { MCPResponse, ErrorResponse, createResponse } from "./models/response.js";
 import { UmsMCPServer } from "./ums_mcp_server.js";
 
 const MCP_SESSION_ID_HEADER = "mcp-session-id";
@@ -8,52 +8,58 @@ const PORT = 8006;
 
 const mcpServer = new UmsMCPServer();
 
-/**
- * Validates that the request Accept header includes both required MIME types.
- * @param accept - The value of the incoming Accept header.
- * @returns true if the header includes "application/json" AND "text/event-stream".
- */
 function validateAcceptHeader(accept: string | undefined): boolean {
-  // TODO
+  //TODO:
+  // 1. If accept is falsy, return false
+  // 2. Split by comma, strip and lowercase each part
+  // 3. Return true only if both "application/json" and "text/event-stream" are present
 }
 
-/**
- * Writes a JSON-RPC response to the client as an SSE event stream.
- * @param res - The HTTP server response to write to.
- * @param sessionId - The MCP session id to include in the response header.
- * @param response - The MCPResponse object to serialise as a `data:` SSE line.
- * Hint: set Content-Type to text/event-stream; write "data: <json>\n\n".
- */
 function sendSseResponse(
   res: http.ServerResponse,
   sessionId: string | undefined,
   response: MCPResponse
 ): void {
-  // TODO
+  //TODO:
+  // 1. Set headers: Content-Type: text/event-stream, Cache-Control: no-cache, Connection: keep-alive
+  // 2. If sessionId, set MCP_SESSION_ID_HEADER response header
+  // 3. Write: `data: ${JSON.stringify(response)}\n\n`
+  // 4. End the response
 }
 
-/**
- * Sends a plain JSON error response with the given HTTP status code.
- * @param res - The HTTP server response to write to.
- * @param status - HTTP status code (e.g. 400, 405, 500).
- * @param body - JSON string to send as the response body.
- */
 function sendError(res: http.ServerResponse, status: number, body: string): void {
-  // TODO
+  //TODO:
+  // 1. Set status code and Content-Type: application/json
+  // 2. End the response with body
 }
 
-/**
- * Main HTTP request handler for the custom MCP server.
- * Routes incoming requests to the correct MCP handler based on method and headers.
- * - Only accepts POST /mcp
- * - Validates the Accept header
- * - Reads and parses the JSON body
- * - Dispatches initialize / tools/list / tools/call / notifications
- * - Handles DELETE for session teardown
- * Hint: use req.method, req.url, req.headers; read body chunks manually.
- */
 const server = http.createServer(async (req, res) => {
-  // TODO
+  //TODO:
+  // 1. Only handle POST /mcp and DELETE /mcp; return sendError(405, "Method Not Allowed") otherwise
+  //
+  // 2. Handle DELETE: extract mcp-session-id header; return 200 OK (session teardown)
+  //
+  // 3. For POST: validate Accept header with validateAcceptHeader();
+  //    if invalid, return sendError(406, JSON.stringify MCPResponse with error -32600)
+  //
+  // 4. Read body chunks manually and JSON.parse into MCPRequest
+  //
+  // 5. If method === "initialize":
+  //    - Call mcpServer.handleInitialize(request); get { response, sessionId }
+  //    - Call sendSseResponse(res, sessionId, response)
+  //
+  // 6. Else (all other methods require a session):
+  //    - Extract mcp-session-id from request headers
+  //    - If missing, return sendError(400, "Missing session ID")
+  //    - Get session via mcpServer.getSession(sessionId); if not found return sendError(400, "Invalid session")
+  //    - If method === "notifications/initialized":
+  //        set session.readyForOperation = true; res.writeHead(202); res.end()
+  //    - Else if !session.readyForOperation: return sendError(400, "Session not ready")
+  //    - Else dispatch:
+  //        tools/list  → mcpServer.handleToolsList(request)
+  //        tools/call  → await mcpServer.handleToolsCall(request)
+  //        unknown     → MCPResponse with error -32601 "Method not found"
+  //    - Call sendSseResponse(res, sessionId, mcp_response)
 });
 
 server.listen(PORT, () => {

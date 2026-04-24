@@ -9,29 +9,16 @@ export class HttpMCPClient extends MCPClient {
     this.serverUrl = mcpServerUrl;
   }
 
-  /**
-   * Connects to the MCP server over HTTP using StreamableHTTPClientTransport.
-   *
-   * Steps:
-   * 1. Create a `StreamableHTTPClientTransport` using `new URL(this.serverUrl)`.
-   * 2. Call `await this.client.connect(transport)` to establish the connection.
-   * 3. Log: `Connected to MCP server at ${this.serverUrl}`
-   */
   async connect(): Promise<void> {
-    // TODO: Create a StreamableHTTPClientTransport using new URL(this.serverUrl).
-    //   Call await this.client.connect(transport).
-    //   Log: `Connected to MCP server at ${this.serverUrl}`
+    // TODO:
+    // 1. Create a StreamableHTTPClientTransport using new URL(this.serverUrl)
+    // 2. Call await this.client.connect(transport)
+    // 3. Log: `Connected to MCP server at ${this.serverUrl}`
     throw new Error("Not implemented");
   }
 
-  /**
-   * Closes the connection to the MCP server.
-   *
-   * Steps:
-   * 1. Call `await this.client.close()` to close the connection.
-   */
   async disconnect(): Promise<void> {
-    // TODO: Call await this.client.close() to close the connection.
+    // TODO: Call await this.client.close()
     throw new Error("Not implemented");
   }
 

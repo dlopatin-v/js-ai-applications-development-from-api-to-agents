@@ -21,20 +21,6 @@ export class StdioMCPClient extends MCPClient {
     this.options = options;
   }
 
-  /**
-   * Connects to the MCP server over STDIO by spawning a subprocess.
-   *
-   * Steps:
-   * 1. Resolve the command and args to run:
-   *    - If `this.options.dockerImage` is set:
-   *        `command = "docker"`, `args = ["run", "--rm", "-i", this.options.dockerImage]`
-   *    - Else if `this.options.command` is set:
-   *        `command = this.options.command`, `args = this.options.args ?? []`
-   *    - Else throw: `new Error("StdioMCPClient requires either dockerImage or command")`
-   * 2. Create: `this.transport = new StdioClientTransport({ command, args, env: this.options.env })`
-   * 3. Call: `await this.client.connect(this.transport)`
-   * 4. Log: `Connected via stdio to: ${command} ${args.join(" ")}`
-   */
   async connect(): Promise<void> {
     // TODO: Resolve the command and args to run:
     //   If this.options.dockerImage is set:
@@ -49,14 +35,8 @@ export class StdioMCPClient extends MCPClient {
     throw new Error("Not implemented");
   }
 
-  /**
-   * Closes the connection to the MCP server.
-   *
-   * Steps:
-   * 1. Call `await this.client.close()` to close the connection.
-   */
   async disconnect(): Promise<void> {
-    // TODO: Call await this.client.close() to close the connection.
+    // TODO: Call await this.client.close()
     throw new Error("Not implemented");
   }
 

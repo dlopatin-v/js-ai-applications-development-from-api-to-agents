@@ -1,12 +1,13 @@
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
+import { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 
 export type ToolSchema = {
   type: "function";
   function: {
     name: string;
     description: string;
-    parameters: Record<string, any>;
+    parameters: Record<string, unknown>;
   };
 };
 
@@ -25,33 +26,35 @@ export class MCPClient {
     return instance;
   }
 
-  /**
-   * Establishes the MCP connection via StreamableHTTPClientTransport.
-   * @returns Promise that resolves when the connection handshake is complete.
-   * Hint: create a new StreamableHTTPClientTransport(new URL(serverUrl)) and call
-   * this.client.connect(transport).
-   */
   private async connect(): Promise<void> {
-    // TODO
+    const transport = new StreamableHTTPClientTransport(new URL(this.serverUrl));
+    await this.client.connect(transport);
+    const initResult = await this.client.getServerCapabilities();
+    console.log(JSON.stringify(initResult, null, 2));
   }
 
-  /**
-   * Retrieves all tools exposed by the server and converts them to ToolSchema format.
-   * @returns Array of ToolSchema objects suitable for the OpenAI tools parameter.
-   * Hint: call this.client.listTools(); map each tool to { type: "function", function: {...} }.
-   */
   async getTools(): Promise<ToolSchema[]> {
-    // TODO
+    const result = await this.client.listTools();
+    return result.tools.map((tool) => ({
+      type: "function" as const,
+      function: {
+        name: tool.name,
+        description: tool.description ?? "",
+        parameters: tool.inputSchema as Record<string, unknown>,
+      },
+    }));
   }
 
-  /**
-   * Invokes a tool by name and returns its text result.
-   * @param toolName - The name of the tool to call.
-   * @param toolArgs - Argument object forwarded to the tool.
-   * @returns The text content of the first result item as a string.
-   * Hint: call this.client.callTool({ name, arguments }); extract content[0].text.
-   */
-  async callTool(toolName: string, toolArgs: Record<string, any>): Promise<string> {
-    // TODO
+  async callTool(toolName: string, toolArgs: Record<string, unknown>): Promise<string> {
+    console.log(`    Calling \`${toolName}\` with`, toolArgs);
+    const result = await this.client.callTool({ name: toolName, arguments: toolArgs }) as CallToolResult;
+    const content = result.content;
+    if (Array.isArray(content) && content.length > 0) {
+      const item = content[0] as { type: string; text?: string };
+      const text = item.text ?? String(item);
+      console.log(`    ⚙️: ${text}\n`);
+      return text;
+    }
+    return "Unexpected error occurred!";
   }
 }

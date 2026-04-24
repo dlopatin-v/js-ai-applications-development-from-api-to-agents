@@ -6,57 +6,55 @@ import { ANTHROPIC_API_KEY } from "../commons/constants.js";
 
 const SKILLS_VERSION = "skills-2025-10-02";
 
-/**
- * Reads all files in a skill directory and returns them as File objects for upload.
- * @param skillDir - Absolute path to the skill directory.
- * @returns Array of File objects, each named relative to skillDir's parent
- *          (e.g. "style-guide/SKILL.md"), to match Anthropic's expected path structure.
- * Hint: use fs.readdirSync + fs.readFileSync; infer MIME from extension
- * (e.g. ".md" → "text/markdown", ".ts" → "text/plain");
- * use path.relative(path.dirname(skillDir), fullPath) as the File name;
- * create each entry as new File([buf], relativePath, { type: mimeType }).
- */
 function filesFromDir(skillDir: string): Array<File> {
-  // TODO
+  //TODO:
+  // 1. Use fs.readdirSync to list files in skillDir
+  // 2. For each file, read with fs.readFileSync; infer MIME from extension
+  //    (".md" → "text/markdown", others → "text/plain")
+  // 3. Use path.relative(path.dirname(skillDir), fullPath) as the File name
+  // 4. Create each entry as new File([buf], relativePath, { type: mimeType })
+  // 5. Return the array of File objects
+  throw new Error("Not implemented");
 }
 
-/**
- * Uploads a skill to Anthropic if it doesn't already exist, otherwise reuses the existing one.
- * @param skillTitle - The display name / title of the skill.
- * @param skillDir - Directory containing the skill files to upload.
- * @param client - Authenticated Anthropic client.
- * @returns The skill_id string of the created or existing skill.
- * Hint: list existing skills with (client.beta as any).skills.list({ source: "custom", betas: [SKILLS_VERSION] });
- * match by display_title; if not found, gather files with filesFromDir() and create via
- * (client.beta as any).skills.create({ display_title, files, betas: [SKILLS_VERSION] }).
- */
 async function getOrCreateSkill(skillTitle: string, skillDir: string, client: Anthropic): Promise<string> {
-  // TODO
+  //TODO:
+  // 1. Call (client.beta as any).skills.list({ source: "custom", betas: [SKILLS_VERSION] }), print result
+  // 2. Iterate over skills.data; if skill.display_title === skillTitle, print and return skill.id
+  // 3. Gather files with filesFromDir(skillDir)
+  // 4. Call (client.beta as any).skills.create({ display_title: skillTitle, files, betas: [SKILLS_VERSION] })
+  // 5. Print f"Skill uploaded: {skill.id}", return skill.id
+  throw new Error("Not implemented");
 }
 
-/**
- * Deletes all uploaded Anthropic skills and their associated files.
- * @param client - Authenticated Anthropic client.
- * Hint: list all skills; for each skill, delete associated files, then delete the skill.
- */
 async function deleteSkills(client: Anthropic): Promise<void> {
-  // TODO
+  //TODO:
+  // 1. Call (client.beta as any).skills.list({ source: "custom", betas: [SKILLS_VERSION] })
+  // 2. For each skill:
+  //       a. List versions with (client.beta as any).skills.versions.list(skill.id, { betas: [SKILLS_VERSION] })
+  //       b. Delete each version; then delete the skill itself
+  //       c. Print confirmation for each deletion
+  throw new Error("Not implemented");
 }
 
-/**
- * Starts an interactive chat loop that uses the given Anthropic skill.
- * @param client - Authenticated Anthropic client.
- * @param skillId - The skill_id to attach to every message request.
- * @param logRequest - Whether to log the request payload.
- * @param logResponse - Whether to log the response payload.
- * Hint: use readline for user input; call (client.beta as any).messages.create with
- * { model: "claude-sonnet-4-6", max_tokens: 4096, messages, betas: ["code-execution-2025-08-25", SKILLS_VERSION],
- *   tools: [{ type: "code_execution_20250825", name: "code_execution" }],
- *   container: { skills: [{ type: "custom", skill_id, version: "latest" }], id? } };
- * reuse container.id across turns for session continuity.
- */
 function chat(client: Anthropic, skillId: string, logRequest = true, logResponse = true): void {
-  // TODO
+  //TODO:
+  // 1. Initialize messages = [] and containerId = null
+  // 2. Print agent ready message
+  // 3. Start readline loop:
+  //       a. Read user input; break on "exit"
+  //       b. Append { role: "user", content: userInput } to messages
+  //       c. Build container = { skills: [{ type: "custom", skill_id: skillId, version: "latest" }] }
+  //          If containerId is set, add container.id = containerId
+  //       d. Build requestPayload: model="claude-sonnet-4-6", max_tokens=4096, messages, container,
+  //          betas=["code-execution-2025-08-25", SKILLS_VERSION],
+  //          tools=[{ type: "code_execution_20250825", name: "code_execution" }]
+  //       e. If logRequest, print request payload as JSON
+  //       f. Call (client.beta as any).messages.create(requestPayload), assign to response
+  //       g. If logResponse, print full response JSON; else print text blocks
+  //       h. If response.container exists, update containerId = response.container.id
+  //       i. Append { role: "assistant", content: response.content } to messages
+  throw new Error("Not implemented");
 }
 
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
@@ -68,12 +66,12 @@ const STYLE_SKILL_DIR = path.join(__dirname, "_skills", STYLE_SKILL_TITLE);
 // const CALCULATOR_SKILL_DIR = path.join(__dirname, "_skills", CALCULATOR_SKILL_TITLE);
 
 async function main(): Promise<void> {
-  const client = new Anthropic({ apiKey: ANTHROPIC_API_KEY });
-  const skillId = await getOrCreateSkill(STYLE_SKILL_TITLE, STYLE_SKILL_DIR, client);
-  chat(client, skillId);
-  // Note: deleteSkills is called after chat() exits (on readline close)
-  // For cleanup after session, uncomment:
-  // await deleteSkills(client);
+  //TODO:
+  // 1. Create new Anthropic({ apiKey: ANTHROPIC_API_KEY }), assign to client
+  // 2. Call getOrCreateSkill(STYLE_SKILL_TITLE, STYLE_SKILL_DIR, client), assign to skillId
+  // 3. Call chat(client, skillId)
+  // 4. Optionally call deleteSkills(client) for cleanup after session
+  throw new Error("Not implemented");
 }
 
 main();

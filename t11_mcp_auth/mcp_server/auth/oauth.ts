@@ -16,32 +16,21 @@ const JWKS_URL = new URL(`${ISSUER}/protocol/openid-connect/certs`);
 // This avoids a round-trip to Keycloak on every MCP request.
 let _jwks: ReturnType<typeof createRemoteJWKSet> | null = null;
 
-/**
- * Returns the cached JWKS key set, creating it on first call.
- * @returns A RemoteJWKSet instance pointed at the Keycloak JWKS endpoint.
- * Hint: lazy-initialize _jwks with createRemoteJWKSet(JWKS_URL).
- */
 function getJwks() {
-  // TODO
+  //TODO:
+  // Lazy-initialize _jwks: if null, create with createRemoteJWKSet(JWKS_URL)
+  // Return _jwks
 }
 
 // ==================== MIDDLEWARE ====================
 
-/**
- * JWT/OAuth authentication check.
- *   1. Extracts the Bearer token from the Authorization header
- *   2. Validates JWT signature using Keycloak public keys (JWKS)
- *   3. Verifies token issuer and expiry
- *   4. Checks that the user has the required realm role
- *
- * Returns true if authenticated and authorised.
- * Sends a 401/403 JSON response and returns false otherwise.
- * @param req - The incoming HTTP request.
- * @param res - The HTTP server response used to send error responses.
- * @returns Promise<true> if the JWT is valid and the user has REQUIRED_ROLE.
- * Hint: extract Bearer token; call jwtVerify(token, getJwks(), { issuer: ISSUER });
- * check payload.realm_access.roles includes REQUIRED_ROLE; send 401/403 on failure.
- */
 export async function checkOAuth(req: http.IncomingMessage, res: http.ServerResponse): Promise<boolean> {
-  // TODO
+  //TODO:
+  // 1. Extract Authorization header; if missing or not starting with "Bearer ", send 401 and return false
+  // 2. Extract token = header.replace("Bearer ", "")
+  // 3. Try: call jwtVerify(token, getJwks(), { issuer: ISSUER })
+  //    On JWTError: send 401 JSON { error: "Unauthorized", detail: `Invalid token: ${e}` } and return false
+  // 4. Extract realm roles: payload.realm_access?.roles ?? []
+  // 5. If REQUIRED_ROLE not in roles: send 403 JSON { error: "Forbidden", detail: `Role '${REQUIRED_ROLE}' required` } and return false
+  // 6. Log authenticated user and return true
 }

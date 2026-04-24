@@ -1,10 +1,6 @@
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 import { T11MCPClient } from "./_base.js";
 
-/**
- * MCP client that authenticates with the server using an API key.
- * Adds the X-API-Key header to every HTTP request via a custom fetch wrapper.
- */
 export class ApiKeyMCPClient extends T11MCPClient {
   private readonly serverUrl: string;
   private readonly apiKey: string;
@@ -16,23 +12,17 @@ export class ApiKeyMCPClient extends T11MCPClient {
     this.apiKey = apiKey;
   }
 
-  /**
-   * Creates a StreamableHTTPClientTransport with a custom fetch function that injects
-   * the X-API-Key header, then connects this.client to the MCP server.
-   * @returns Promise that resolves when the MCP handshake is complete.
-   * Hint: pass a `fetch` override to StreamableHTTPClientTransport options that
-   * merges { "X-API-Key": this.apiKey } into every request's headers.
-   */
   async connect(): Promise<void> {
-    // TODO
+    //TODO:
+    // 1. Create a StreamableHTTPClientTransport with a custom fetch that injects
+    //    { "X-API-Key": this.apiKey } into every request's headers
+    //    Assign to this.transport
+    // 2. Call await this.client.connect(this.transport)
+    // 3. Log: `Connected to API Key MCP server at ${this.serverUrl}`
   }
 
-  /**
-   * Closes the transport connection and cleans up resources.
-   * @returns Promise that resolves when disconnection is complete.
-   * Hint: call this.transport?.close() if transport is set.
-   */
   async disconnect(): Promise<void> {
-    // TODO
+    //TODO:
+    // 1. Call await this.transport?.close() if transport is set
   }
 }

@@ -38,44 +38,37 @@ export class UmsMCPServer {
     }
   }
 
-  /**
-   * Looks up an existing session by its session ID.
-   * @param sessionId - The session ID string to look up.
-   * @returns The MCPSession if found, or undefined.
-   */
   getSession(sessionId: string): MCPSession | undefined {
-    // TODO
+    //TODO:
+    // 1. Look up sessionId in this.sessions and return the MCPSession (or undefined if not found)
+    // 2. If found, update session.lastActivity = Date.now()
   }
 
-  /**
-   * Handles the "initialize" JSON-RPC method: creates a new session and returns server capabilities.
-   * @param request - The parsed MCPRequest for the initialize call.
-   * @returns An object containing the MCPResponse (capabilities, serverInfo, protocolVersion)
-   *          and the newly generated sessionId string.
-   * Hint: generate a UUID for the sessionId; store a new MCPSession in this.sessions.
-   */
   handleInitialize(request: MCPRequest): { response: MCPResponse; sessionId: string } {
-    // TODO
+    //TODO:
+    // 1. Generate sessionId = randomUUID().replace(/-/g, "")
+    // 2. Create and store a new MCPSession in this.sessions: { sessionId, readyForOperation: false, createdAt: Date.now(), lastActivity: Date.now() }
+    // 3. Build MCPResponse using createResponse(request.id, {
+    //      protocolVersion: this.protocolVersion,
+    //      capabilities: { tools: {}, resources: {}, prompts: {} },
+    //      serverInfo: this.serverInfo
+    //    })
+    // 4. Return { response, sessionId }
   }
 
-  /**
-   * Handles the "tools/list" JSON-RPC method: returns metadata for all registered tools.
-   * @param request - The parsed MCPRequest for the tools/list call.
-   * @returns An MCPResponse whose result contains { tools: McpTool[] }.
-   * Hint: call tool.toMcpTool() on each entry in this.tools; wrap in createResponse().
-   */
   handleToolsList(request: MCPRequest): MCPResponse {
-    // TODO
+    //TODO:
+    // 1. Build toolsList by calling tool.toMcpTool() on each entry in this.tools
+    // 2. Return createResponse(request.id, { tools: toolsList })
   }
 
-  /**
-   * Handles the "tools/call" JSON-RPC method: finds and executes the requested tool.
-   * @param request - The MCPRequest containing params.name and params.arguments.
-   * @returns An MCPResponse whose result contains { content: [{ type: "text", text: string }] }.
-   *          Returns an error response if the tool is not found or throws.
-   * Hint: look up the tool by name; call tool.execute(params.arguments); catch errors.
-   */
   async handleToolsCall(request: MCPRequest): Promise<MCPResponse> {
-    // TODO
+    //TODO:
+    // 1. If !request.params, return createResponse with error: ErrorResponse(-32602, "Missing parameters")
+    // 2. Extract toolName = request.params.name, arguments = request.params.arguments ?? {}
+    // 3. If !toolName, return createResponse with error: ErrorResponse(-32602, "Missing required parameter: name")
+    // 4. Look up tool by toolName; if not found return error: ErrorResponse(-32601, `Tool '${toolName}' not found`)
+    // 5. Try: result = await tool.execute(arguments); return createResponse(request.id, { content: [{ type: "text", text: result }] })
+    //    Catch: return createResponse(request.id, { content: [{ type: "text", text: `Tool execution error: ${e}` }], isError: true })
   }
 }

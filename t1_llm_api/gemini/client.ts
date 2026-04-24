@@ -19,7 +19,7 @@ export class GeminiAICLient extends AIClient {
   constructor(...args: ConstructorParameters<typeof AIClient>) {
     super(...args);
     //TODO:
-    // https://ai.google.dev/gemini-api/docs/text-generation
+    // https://ai.google.dev/gemini-api/docs/text-generation#javascript
     // 1. Initialize GoogleGenAI client: `this.client = new GoogleGenAI({ apiKey: this.apiKey })`
     throw new Error("Not implemented.");
   }
@@ -53,7 +53,7 @@ export class GeminiAICLient extends AIClient {
    */
   response = async (messages: Array<Message>): Promise<Message> => {
     //TODO:
-    // https://ai.google.dev/gemini-api/docs/text-generation
+    // https://ai.google.dev/gemini-api/docs/text-generation#javascript
     // 0. Make a request in Postman to see the request and response
     // 1. Call client, use `await this.client.models.generateContent()` with such params:
     //   - model: this.modelName
@@ -79,7 +79,7 @@ export class GeminiAICLient extends AIClient {
    */
   streamResponse = async (messages: Array<Message>): Promise<Message> => {
     //TODO:
-    // https://ai.google.dev/gemini-api/docs/text-generation
+    // https://ai.google.dev/gemini-api/docs/text-generation#javascript
     // 0. Make a request in Postman to see the request and response
     // 1. Initialize empty responseText string to collect streamed chunks
     // 2. Call client, use `await this.client.models.generateContentStream()` with such params:

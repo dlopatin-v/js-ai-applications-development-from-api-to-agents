@@ -40,7 +40,7 @@ export class CustomGeminiAIClient extends AIClient {
    */
   response = async (messages: Array<Message>): Promise<Message> => {
     //TODO:
-    // https://ai.google.dev/gemini-api/docs/text-generation
+    // https://ai.google.dev/gemini-api/docs/text-generation#javascript
     // 0. Make a request in Postman to see the request and response
     // 1. Construct URL: `const url = \`${this.endpoint}/${this.modelName}:generateContent\``
     // 2. Prepare headers object with:
@@ -76,7 +76,7 @@ export class CustomGeminiAIClient extends AIClient {
    */
   streamResponse = async (messages: Array<Message>): Promise<Message> => {
     //TODO:
-    // https://ai.google.dev/gemini-api/docs/text-generation
+    // https://ai.google.dev/gemini-api/docs/text-generation#javascript
     // 0. Make a request in Postman to see the request and response
     // 1. Construct URL: `const url = \`${this.endpoint}/${this.modelName}:streamGenerateContent?alt=sse\``
     // 2. Prepare headers object with:

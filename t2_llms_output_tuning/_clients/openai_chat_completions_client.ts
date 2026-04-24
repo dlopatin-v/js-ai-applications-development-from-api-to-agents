@@ -54,7 +54,6 @@ export class OpenAIClient extends AIClient {
       } else {
         this._printResponse(JSON.stringify(result, null, 2));
       }
-  // @TODO Add error handling for no Value "No Choice has been present in the response"
       return new Message(Role.ASSISTANT, message);
     } else {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);

@@ -2,15 +2,13 @@
 
 TypeScript implementation for securing the Users Management MCP Server with two authentication strategies: **API Key** and **OAuth 2.0 + PKCE via Keycloak**.
 
-## Learning Goals
+**Run from the repository root:**
 
-By exploring and working with this project, you will learn:
-
-- Why authentication matters for MCP servers exposed over HTTP
-- How to protect an MCP server with a simple API Key middleware
-- How to integrate OAuth 2.0 Authorization Code + PKCE flow with Keycloak
-- How to validate JWT tokens (signature, issuer, expiry, roles) on the server side
-- How to build an MCP client that transparently handles token refresh
+| Component | Command |
+|---|---|
+| API Key MCP Server | `npm run t11:server-apikey` |
+| OAuth MCP Server | `npm run t11:server-oauth` |
+| Agent | `npm run t11:agent` |
 
 ---
 

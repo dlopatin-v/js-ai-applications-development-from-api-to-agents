@@ -26,13 +26,7 @@ export class SearchUsersTool extends BaseUserServiceTool {
     };
   }
 
-  /**
-   * Searches for users in the User Service matching the provided filters.
-   * @param arguments_ - Object with optional fields: name, surname, email, gender.
-   * @returns A string representation of the matching user list.
-   * Hint: call this.userClient.searchUsers(arguments_) and stringify the result.
-   */
   async execute(arguments_: Record<string, any>): Promise<string> {
-    // TODO
+    return this.userClient.searchUsers(arguments_);
   }
 }

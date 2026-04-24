@@ -22,15 +22,8 @@ export class GetUserByIdTool extends BaseUserServiceTool {
     };
   }
 
-  /**
-   * Fetches a single user record from the User Service by their numeric ID.
-   * @param arguments_ - Object with an `id` field (number) for the user to retrieve.
-   * @returns A string representation of the full user record.
-   * TODO:
-   *  1. Extract the user ID from arguments_["id"] — cast it to Number (e.g. Number(arguments_["id"]))
-   *  2. Call this.userClient.getUser() with the numeric ID and return the result
-   */
   async execute(arguments_: Record<string, any>): Promise<string> {
-    // TODO
+    const id = Number(arguments_["id"]);
+    return this.userClient.getUser(id);
   }
 }

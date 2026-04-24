@@ -28,13 +28,8 @@ export class CreateUserTool extends BaseUserServiceTool {
     };
   }
 
-  /**
-   * Creates a new user in the User Service.
-   * @param arguments_ - Object containing the fields defined in inputSchema (name, surname, email required).
-   * @returns A string with the API response confirming the created user.
-   * Hint: cast arguments_ to UserCreate and call this.userClient.addUser().
-   */
   async execute(arguments_: Record<string, any>): Promise<string> {
-    // TODO
+    const user = arguments_ as UserCreate;
+    return this.userClient.addUser(user);
   }
 }

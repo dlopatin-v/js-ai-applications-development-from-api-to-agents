@@ -26,34 +26,30 @@ export class UmsMCPServer {
   }
 
   private _registerTools(): void {
-    const toolList: BaseTool[] = [
-      new GetUserByIdTool(),
-      new SearchUsersTool(),
-      new CreateUserTool(),
-      new UpdateUserTool(),
-      new DeleteUserTool(),
-    ];
-    for (const tool of toolList) {
-      this.tools.set(tool.name, tool);
-    }
+    //TODO:
+    // 1. Create instances of all 5 tools: GetUserByIdTool, SearchUsersTool, CreateUserTool, UpdateUserTool, DeleteUserTool
+    // 2. Iterate through the list and add each to this.tools with tool.name as the key
   }
 
   getSession(sessionId: string): MCPSession | undefined {
-    //TODO:
-    // 1. Look up sessionId in this.sessions and return the MCPSession (or undefined if not found)
-    // 2. If found, update session.lastActivity = Date.now()
+    const session = this.sessions.get(sessionId);
+    if (session) {
+      session.lastActivity = Date.now();
+    }
+    return session;
   }
 
   handleInitialize(request: MCPRequest): { response: MCPResponse; sessionId: string } {
     //TODO:
     // 1. Generate sessionId = randomUUID().replace(/-/g, "")
     // 2. Create and store a new MCPSession in this.sessions: { sessionId, readyForOperation: false, createdAt: Date.now(), lastActivity: Date.now() }
-    // 3. Build MCPResponse using createResponse(request.id, {
-    //      protocolVersion: this.protocolVersion,
+    // 3. Extract protocolVersion from request.params?.protocolVersion ?? this.protocolVersion
+    // 4. Build MCPResponse using createResponse(request.id, {
+    //      protocolVersion,
     //      capabilities: { tools: {}, resources: {}, prompts: {} },
     //      serverInfo: this.serverInfo
     //    })
-    // 4. Return { response, sessionId }
+    // 5. Return { response, sessionId }
   }
 
   handleToolsList(request: MCPRequest): MCPResponse {

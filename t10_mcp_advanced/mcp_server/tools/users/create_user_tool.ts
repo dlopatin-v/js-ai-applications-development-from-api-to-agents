@@ -3,32 +3,26 @@ import { BaseUserServiceTool } from "./base.js";
 
 export class CreateUserTool extends BaseUserServiceTool {
   get name(): string {
-    return "add_user";
+    //TODO: Provide tool name as `add_user`
+    throw new Error("Not implemented");
   }
 
   get description(): string {
-    return "Adds new user into the system";
+    //TODO: Provide description of this tool
+    throw new Error("Not implemented");
   }
 
   get inputSchema(): Record<string, any> {
-    return {
-      type: "object",
-      properties: {
-        name: { type: "string", description: "User name" },
-        surname: { type: "string", description: "User surname" },
-        email: { type: "string", description: "User email" },
-        about_me: { type: "string", description: "About the user" },
-        phone: { type: "string", description: "Phone number" },
-        date_of_birth: { type: "string", description: "Date of birth" },
-        gender: { type: "string", description: "Gender" },
-        company: { type: "string", description: "Company name" },
-        salary: { type: "number", description: "Salary" },
-      },
-      required: ["name", "surname", "email"],
-    };
+    //TODO:
+    // Provide tool params Schema with the fields from UserCreate:
+    // name, surname, email (required), about_me, phone, date_of_birth, gender, company, salary
+    throw new Error("Not implemented");
   }
 
   async execute(arguments_: Record<string, any>): Promise<string> {
-    // TODO
+    //TODO:
+    // 1. Construct a UserCreate object from arguments_
+    // 2. Call this.userClient.addUser(user) and return its result
+    throw new Error("Not implemented");
   }
 }

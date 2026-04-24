@@ -3,39 +3,28 @@ import { BaseUserServiceTool } from "./base.js";
 
 export class UpdateUserTool extends BaseUserServiceTool {
   get name(): string {
-    return "update_user";
+    //TODO: Provide tool name as `update_user`
+    throw new Error("Not implemented");
   }
 
   get description(): string {
-    return "Updates user info";
+    //TODO: Provide description of this tool
+    throw new Error("Not implemented");
   }
 
   get inputSchema(): Record<string, any> {
-    return {
-      type: "object",
-      properties: {
-        id: { type: "number", description: "User ID that should be updated." },
-        new_info: {
-          type: "object",
-          description: "Fields to update",
-          properties: {
-            name: { type: "string" },
-            surname: { type: "string" },
-            email: { type: "string" },
-            about_me: { type: "string" },
-            phone: { type: "string" },
-            date_of_birth: { type: "string" },
-            gender: { type: "string" },
-            company: { type: "string" },
-            salary: { type: "number" },
-          },
-        },
-      },
-      required: ["id"],
-    };
+    //TODO:
+    // Provide tool params Schema:
+    // - id: number, required, User ID that should be updated
+    // - new_info: object with UserUpdate fields (name, surname, email, about_me, phone, date_of_birth, gender, company, salary)
+    throw new Error("Not implemented");
   }
 
   async execute(arguments_: Record<string, any>): Promise<string> {
-    // TODO
+    //TODO:
+    // 1. Get `id` (number) from arguments_
+    // 2. Get `new_info` from arguments_ and construct a UserUpdate object from it
+    // 3. Call this.userClient.updateUser(id, newInfo) and return its result
+    throw new Error("Not implemented");
   }
 }

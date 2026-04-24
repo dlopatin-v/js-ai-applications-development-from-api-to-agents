@@ -2,31 +2,29 @@ import { BaseUserServiceTool } from "./base.js";
 
 export class SearchUsersTool extends BaseUserServiceTool {
   get name(): string {
-    return "search_users";
+    //TODO: Provide tool name as `search_users`
+    throw new Error("Not implemented");
   }
 
   get description(): string {
-    return "Searches users by name, surname, email, and gender";
+    //TODO: Provide description of this tool
+    throw new Error("Not implemented");
   }
 
   get inputSchema(): Record<string, any> {
-    return {
-      type: "object",
-      properties: {
-        name: { type: "string", description: "User name" },
-        surname: { type: "string", description: "User surname" },
-        email: { type: "string", description: "User email" },
-        gender: {
-          type: "string",
-          description: "User gender",
-          enum: ["male", "female"],
-        },
-      },
-      required: [],
-    };
+    //TODO:
+    // Provide tool params Schema:
+    // - name: string
+    // - surname: string
+    // - email: string
+    // - gender: string (enum: "male" | "female")
+    // None of them are required (see UserClient.searchUsers method)
+    throw new Error("Not implemented");
   }
 
   async execute(arguments_: Record<string, any>): Promise<string> {
-    // TODO
+    //TODO:
+    // Call this.userClient.searchUsers({ ...arguments_ }) and return its result
+    throw new Error("Not implemented");
   }
 }

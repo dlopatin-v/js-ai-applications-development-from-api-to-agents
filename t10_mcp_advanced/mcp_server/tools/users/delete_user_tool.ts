@@ -2,24 +2,24 @@ import { BaseUserServiceTool } from "./base.js";
 
 export class DeleteUserTool extends BaseUserServiceTool {
   get name(): string {
-    return "delete_user";
+    //TODO: Provide tool name as `delete_user`
+    throw new Error("Not implemented");
   }
 
   get description(): string {
-    return "Deletes user by user_id";
+    //TODO: Provide description of this tool
+    throw new Error("Not implemented");
   }
 
   get inputSchema(): Record<string, any> {
-    return {
-      type: "object",
-      properties: {
-        id: { type: "number", description: "User ID" },
-      },
-      required: ["id"],
-    };
+    //TODO: Provide tool params Schema. This tool applies user `id` (number) as a parameter and it is required
+    throw new Error("Not implemented");
   }
 
   async execute(arguments_: Record<string, any>): Promise<string> {
-    // TODO
+    //TODO:
+    // 1. Get `id` (number) from arguments_
+    // 2. Call this.userClient.deleteUser(id) and return its result
+    throw new Error("Not implemented");
   }
 }

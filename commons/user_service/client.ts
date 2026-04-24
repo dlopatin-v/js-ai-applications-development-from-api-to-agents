@@ -13,7 +13,7 @@ export class UserServiceClient {
     return '```\n' + lines.join('\n') + '\n```\n';
   }
 
-  private usersToString = (users: any[]): string => {
+  private usersToString = (users: Array<any>): string => {
     return users.map(this.userToString).join("") + "\n";
   }
 
@@ -25,7 +25,7 @@ export class UserServiceClient {
       return this.userToString(result);
     }
 
-    throw new Error(`HTTP ${response.status}: ${response.statusText}}`);
+    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
 
   }
 
@@ -34,7 +34,7 @@ export class UserServiceClient {
     const response = await fetch(`${USER_SERVICE_PATH}/search?${params.toString()}`, { headers: DEFAULT_HEADERS })
 
     if (response.status === 200) {
-      const result = await response.json() as unknown as any[];
+      const result = await response.json();
       console.info(`Get: ${result.length} users successfuly`);
       return this.usersToString(result);
     }
@@ -55,7 +55,7 @@ export class UserServiceClient {
       return `User successfully added: ${response.text}`;
     }
 
-    throw new Error(`HTTP ${response.status}: ${response.statusText}}`);
+    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
   }
   updateUser = async (userId: number, user: UserUpdate): Promise<string> => {
     const response = await fetch(`${USER_SERVICE_PATH}/${userId}`, {
@@ -77,7 +77,9 @@ export class UserServiceClient {
 
     if (response.status === 200) {
       await response.json();
+
       console.info("User successfully deleted");
+
       return "User successfully deleted";
     }
 

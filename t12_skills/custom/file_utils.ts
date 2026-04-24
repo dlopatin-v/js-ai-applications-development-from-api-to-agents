@@ -1,12 +1,10 @@
 import * as fs from "fs";
 import * as path from "path";
 
-/**
- * Reads the full text content of a file from disk.
- * @param filePath - Absolute or relative path to the file.
- * @returns The file content as a UTF-8 string.
- * Hint: use fs.readFileSync(filePath, "utf-8").
- */
 export function getFileContent(filePath: string): string {
-  // TODO
+  // TODO:
+  // 1. If the file does not exist (use fs.existsSync), return `"ERROR: File not found: ${filePath}"`
+  // 2. If the path is not a file (use fs.statSync(...).isFile()), return `"ERROR: Not a file: ${filePath}"`
+  // 3. Return the file contents as a UTF-8 string (use fs.readFileSync with "utf-8")
+  throw new Error("Not implemented");
 }

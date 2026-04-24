@@ -12,65 +12,54 @@ export class JsCodeInterpreterTool extends BaseTool {
     super();
   }
 
-  /**
-   * Factory method: connect to the node-code-sandbox MCP server and return
-   * a ready-to-use JsCodeInterpreterTool instance.
-   * @param skillsDir - Path to the skills directory (for script_path resolution).
-   * @returns A fully initialised JsCodeInterpreterTool.
-   * Hint: use T12MCPClient.create() (no arguments — it launches the Docker container
-   * automatically via STDIO).
-   */
-  static async create(
-    skillsDir: string,
-  ): Promise<JsCodeInterpreterTool> {
-    // TODO
+  static async create(skillsDir: string): Promise<JsCodeInterpreterTool> {
+    // TODO:
+    // 1. Call `await T12MCPClient.create()` (no arguments — launches Docker via STDIO), assign to `mcpClient`
+    // 2. Return `new JsCodeInterpreterTool(mcpClient, skillsDir)`
+    throw new Error("Not implemented");
   }
 
-  /**
-   * The tool name exposed to the LLM.
-   * @returns `"execute_code"` (fixed — wraps the underlying `run_js` tool)
-   */
   get name(): string {
-    // TODO
+    // TODO: Return the fixed string "execute_code"
+    throw new Error("Not implemented");
   }
 
-  /**
-   * A description of what this tool does, for the LLM.
-   * Describe: persistent Node.js sandbox, container_id lifecycle, script_path support.
-   */
   get description(): string {
-    // TODO
+    // TODO: Return a description for the LLM explaining:
+    //   - runs JavaScript code in a persistent Node.js sandbox container (via mcp/node-code-sandbox)
+    //   - pass container_id = "" on the first call; reuse the returned container_id on subsequent calls
+    //   - optional script_path prepends a skill script (relative to skills root) before the code
+    throw new Error("Not implemented");
   }
 
-  /**
-   * JSON Schema for the tool's inputs.
-   * Properties:
-   *   - `code` (string, required): JavaScript code to execute.
-   *   - `container_id` (string, default ""): empty on first call; reuse on subsequent calls.
-   *   - `script_path` (string, optional): skill script path prepended to `code`.
-   */
   get parameters(): Record<string, unknown> {
-    // TODO
+    // TODO: Return a JSON Schema object with these properties:
+    //   - code (string, required): "JavaScript code to execute (ESModules syntax)"
+    //   - container_id (string, default ""): "Sandbox container ID. Empty string on first call; reuse on subsequent calls"
+    //   - script_path (string, optional): "Path to a skill script relative to the skills root, prepended to code"
+    // required: ["code"]
+    throw new Error("Not implemented");
   }
 
-  /**
-   * Execute JavaScript code in the Node.js sandbox.
-   * @param args - May include `script_path`, `code`, and `container_id`.
-   *
-   * Steps:
-   * 1. Read `container_id` from args (default "").
-   * 2. Build the code string: if `script_path` is provided, resolve it against
-   *    `this.skillsDir`, read the file, and prepend its content to `code`
-   *    (separated by "\n\n").
-   * 3. If `container_id` is empty, call `this.mcpClient.callTool("sandbox_initialize", {})`
-   *    and parse the result to get the new `container_id`.
-   * 4. Call `this.mcpClient.callTool("run_js", { container_id, code })` and parse
-   *    the result as `{ stdout?: string; stderr?: string; error?: string }`.
-   * 5. Build an ExecutionResult: success = !error, output = [stdout, stderr] filtered,
-   *    error = error message, session_info = { container_id }.
-   * 6. Return JSON.stringify(result).
-   */
   protected async _execute(args: Record<string, unknown>): Promise<string> {
-    // TODO
+    // TODO:
+    // 1. Read `containerId` from args["container_id"] as string (default to "")
+    // 2. Read `code` from args["code"] as string
+    // 3. If args["script_path"] is a non-empty string:
+    //       a. Resolve the full path: path.resolve(this.skillsDir, (args["script_path"] as string).replace(/^\//, ""))
+    //       b. Read the script content using getFileContent(fullPath)
+    //       c. Set code = `${scriptContent}\n\n${code}`
+    // 4. If containerId is empty:
+    //       a. Call `await this.mcpClient.callTool("sandbox_initialize", {})`, assign to `initResult`
+    //       b. Parse initResult as JSON and extract container_id: `containerId = JSON.parse(initResult).container_id`
+    // 5. Call `await this.mcpClient.callTool("run_js", { container_id: containerId, code })`, assign to `runResult`
+    // 6. Parse runResult as `{ stdout?: string; stderr?: string; error?: string }`
+    // 7. Build an ExecutionResult:
+    //       - success: !parsed.error
+    //       - output: [parsed.stdout, parsed.stderr].filter(Boolean) as string[]
+    //       - error: parsed.error (if present)
+    //       - session_info: { container_id: containerId }
+    // 8. Return JSON.stringify(result)
+    throw new Error("Not implemented");
   }
 }

@@ -10,69 +10,59 @@ import { ReadSkillTool } from "./tools/skills/read_skill_tool.js";
 import { JsCodeInterpreterTool } from "./tools/jsInterpreter/jsCodeInterpreterTool.js";
 import { T12Agent } from "./agent.js";
 
-const SKILLS_DIR = path.join(path.dirname(new URL(import.meta.url).pathname), "_skills");
+const SKILLS_DIR = path.join(__dirname, "_skills");
 const MCP_TOOL_NAME = "execute_code";
 
-/**
- * Builds an XML snippet listing all available skill names and descriptions.
- * @param skills - Array of SkillMetadata objects loaded from the skills directory.
- * @returns An XML string with a <skills> root element and one <skill> per entry.
- * Hint: map each skill to <skill name="..." description="..."/>.
- */
+
 function buildAvailableSkillsXml(skills: SkillMetadata[]): string {
-  // TODO
+  // TODO:
+  // 1. Initialize `parts: string[] = ["<available_skills>"]`
+  // 2. For each skill in skills:
+  //       a. Push `  <skill name="${skill.name}">`
+  //       b. Push `    <description>${skill.description}</description>`
+  //       c. If skill.license, push `    <license>${skill.license}</license>`
+  //       d. If skill.compatibility, push `    <compatibility>${skill.compatibility}</compatibility>`
+  //       e. If skill.metadata, push `    <metadata>`, then for each [k, v] push `      <${k}>${v}</${k}>`, then push `    </metadata>`
+  //       f. If skill.allowedTools, push `    <allowed-tools>${skill.allowedTools.join(" ")}</allowed-tools>`
+  //       g. Push `  </skill>`
+  // 3. Push `"</available_skills>"`
+  // 4. Return parts.join("\n")
+  throw new Error("Not implemented");
 }
 
-/**
- * Builds the system prompt that tells the agent how to use the available skills.
- * @param skills - Array of SkillMetadata objects to embed in the prompt.
- * @returns A multi-line system prompt string containing the XML skills list.
- * Hint: embed the result of buildAvailableSkillsXml; instruct the agent to call
- * read_skill before executing code for a skill.
- */
 function buildSystemPrompt(skills: SkillMetadata[]): string {
-  // TODO
+  // TODO:
+  // 1. Call buildAvailableSkillsXml(skills), assign to `skillsXml`
+  // 2. Return a template-literal system prompt that:
+  //    - Declares "You are an AI assistant with access to agent skills."
+  //    - Embeds the skillsXml block
+  //    - Explains "How to use skills" workflow:
+  //      * Call `read_skill` with the skill's SKILL.md path (e.g. path="/<skill-name>/SKILL.md")
+  //      * Follow the instructions in the loaded SKILL.md precisely
+  //      * If instructions reference additional files, read them using `read_skill`
+  //      * If the skill requires running a script, execute it with `${MCP_TOOL_NAME}`
+  //    - Ends with "Always read the relevant SKILL.md before performing the task."
+  throw new Error("Not implemented");
 }
+
 
 async function main(): Promise<void> {
-  const skills = loadSkills(SKILLS_DIR);
-  if (skills.length === 0) {
-    console.error(`ERROR: no valid skills found in ${SKILLS_DIR}`);
-    return;
-  }
-  console.log(`Loaded ${skills.length} skill(s): ${skills.map((s) => s.name).join(", ")}`);
-
-  const systemPrompt = buildSystemPrompt(skills);
-  console.log(`System prompt:\n${systemPrompt}`);
-
-  const messages: Message[] = [new Message(Role.SYSTEM, systemPrompt)];
-
-  const tools: BaseTool[] = [
-    new ReadSkillTool(SKILLS_DIR),
-    await JsCodeInterpreterTool.create(SKILLS_DIR),
-  ];
-
-  const agent = new T12Agent(
-    new OpenAI({ apiKey: OPENAI_API_KEY }),
-    "gpt-5.2",
-    tools,
-  );
-
-  const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
-  const prompt = (q: string) => new Promise<string>((resolve) => rl.question(q, resolve));
-
-  console.log("\nAgent is ready. Type your query or 'exit' to quit.\n");
-
-  while (true) {
-    const userInput = (await prompt("➡️: ")).trim();
-    if (userInput.toLowerCase() === "exit") break;
-
-    messages.push(new Message(Role.USER, userInput));
-    const assistantMessage = await agent.chatCompletion(messages, true);
-    messages.push(assistantMessage);
-  }
-
-  rl.close();
+  // TODO:
+  // 1. Call loadSkills(SKILLS_DIR), assign to `skills`
+  // 2. If skills.length === 0, print error and return
+  // 3. Print loaded skill names
+  // 4. Call buildSystemPrompt(skills), assign to `systemPrompt`; print it
+  // 5. Initialize `messages: Message[] = [new Message(Role.SYSTEM, systemPrompt)]`
+  // 6. Build tools list:
+  //       - new ReadSkillTool(SKILLS_DIR)
+  //       - await JsCodeInterpreterTool.create(SKILLS_DIR)
+  // 7. Create `agent = new T12Agent(new OpenAI({ apiKey: OPENAI_API_KEY }), "gpt-4o", tools)`
+  // 8. Start a readline loop:
+  //       - Read user input; break on "exit"
+  //       - Push new Message(Role.USER, input) to messages
+  //       - Call await agent.chatCompletion(messages), assign to assistantMessage
+  //       - Push assistantMessage to messages
+  throw new Error("Not implemented");
 }
 
 main().catch(console.error);

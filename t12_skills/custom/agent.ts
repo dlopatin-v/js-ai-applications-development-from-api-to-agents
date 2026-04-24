@@ -17,39 +17,45 @@ export class T12Agent {
     console.log(JSON.stringify(this.toolsSchemas, null, 4));
   }
 
-  /**
-   * Public entry point for a single conversational turn. Calls _chatCompletion and loops
-   * until the model returns a response without tool calls.
-   * @param messages - Full conversation history (mutated with tool results).
-   * @param logMessages - Whether to log messages for debugging.
-   * @returns The final assistant Message after all tool calls are resolved.
-   */
   async chatCompletion(messages: Message[], logMessages = false): Promise<Message> {
-    // TODO
+    // TODO:
+    // 1. If logMessages, print "\n--- REQUEST ---" and JSON.stringify the serialised messages (indent 2)
+    // 2. Return await this._chatCompletion(messages, logMessages)
+    throw new Error("Not implemented");
   }
 
-  /**
-   * Makes a single Chat Completions API call and returns the assistant message.
-   * @param messages - Current conversation history.
-   * @param logMessages - Whether to log the request/response.
-   * @returns The assistant Message (may contain tool_calls).
-   * Hint: call client.chat.completions.create({ model, messages, tools: toolsSchemas });
-   * construct a Message from the response, preserving tool_calls.
-   */
   private async _chatCompletion(messages: Message[], logMessages = false): Promise<Message> {
-    // TODO
+    // TODO:
+    // 1. Build `request` with model, messages serialised to plain objects, and this.toolsSchemas as tools
+    // 2. Call `this.client.chat.completions.create(request)` and get `choice = response.choices[0]`
+    // 3. Create `assistantMsg = new Message(Role.ASSISTANT, "")`
+    // 4. If `choice.message.content` is set, assign it to `assistantMsg.content`
+    // 5. If `choice.message.tool_calls` is set, build and assign `assistantMsg.tool_calls` as:
+    //    [{ id, type, function: { name, arguments } }] for each tool call
+    // 6. If `choice.finish_reason === "tool_calls"`:
+    //       a. Push `assistantMsg` onto `messages`
+    //       b. Call `await this._dispatchToolCalls(choice.message.tool_calls!)`, assign to `toolMessages`
+    //       c. Push all toolMessages onto messages
+    //       d. If logMessages, print the serialised assistantMsg and toolMessages
+    //       e. Return `await this._chatCompletion(messages, logMessages)`
+    // 7. If logMessages, print "---------------\n"
+    // 8. Print `🤖: ${assistantMsg.content}`
+    // 9. Return assistantMsg
+    throw new Error("Not implemented");
   }
 
-  /**
-   * Executes all tool calls from the model response and returns the result messages.
-   * @param toolCalls - Array of tool call objects from the assistant message.
-   * @returns Array of TOOL Messages, one per tool call, with the stringified result.
-   * Hint: look up each tool by name in toolsMap; call tool.execute(toolCallId, args);
-   * run in parallel with Promise.all.
-   */
   private async _dispatchToolCalls(
     toolCalls: OpenAI.Chat.Completions.ChatCompletionMessageToolCall[],
   ): Promise<Message[]> {
-    // TODO
+    // TODO:
+    // 1. Initialize `toolMessages: Message[] = []`
+    // 2. For each `tc` in toolCalls:
+    //       a. Look up `tool = this.toolsMap.get(tc.function.name)`
+    //       b. If not found, set `content = "ERROR: unknown tool '${tc.function.name}'"`
+    //       c. Else call `await tool.execute(tc.id, JSON.parse(tc.function.arguments))`,
+    //          assign to `resultMsg`, set `content = resultMsg.content`
+    //       d. Push `new Message(Role.TOOL, content, tc.id, tc.function.name)` to toolMessages
+    // 3. Return toolMessages
+    throw new Error("Not implemented");
   }
 }

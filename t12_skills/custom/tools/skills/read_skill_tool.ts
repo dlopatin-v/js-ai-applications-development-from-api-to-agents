@@ -16,10 +16,9 @@ export class ReadSkillTool extends BaseTool {
 
   get description(): string {
     return (
-      "Read a skill file by its path. Use this to access skill instructions, " +
-      "scripts, references, or any other skill resource. " +
-      "Paths are relative to the skills root, e.g. /calculator/SKILL.md " +
-      "or /calculator/scripts/calculate.ts"
+      "Reads a skill file by path from the local skills directory. " +
+      "Use this to access skill instructions, scripts, references, or any other skill resource. " +
+      "Paths are relative to the skills root, e.g. /unit-converter/SKILL.md or /unit-converter/scripts/convert.ts"
     );
   }
 
@@ -30,8 +29,7 @@ export class ReadSkillTool extends BaseTool {
         path: {
           type: "string",
           description:
-            "Path to the skill file relative to the skills root. " +
-            "E.g. /calculator/SKILL.md or /calculator/scripts/calculate.ts",
+            "Path to the skill file relative to the skills root. E.g. /unit-converter/SKILL.md or /unit-converter/scripts/convert.ts",
         },
       },
       required: ["path"],

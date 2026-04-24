@@ -59,78 +59,75 @@ function parseFrontmatter(block: string): Record<string, unknown> {
 
   while (i < lines.length) {
     const line = lines[i];
-    // Match key: value
-    const m = line.match(/^([a-zA-Z0-9_-]+):\s*(.*)/);
-    if (!m) { i++; continue; }
+    if (!line.trim()) { i++; continue; }
 
-    const key = m[1];
-    const rest = m[2].trim();
+    const match = line.match(/^(\w[\w-]*):\s*(.*)$/);
+    if (!match) { i++; continue; }
 
-    if (rest === ">") {
-      // Folded block scalar — collect indented continuation lines
-      const parts: string[] = [];
+    const key = match[1];
+    const rawVal = match[2].trim();
+
+    if (rawVal === ">") {
+      // Folded block scalar: collect indented continuation lines
+      const chunks: string[] = [];
       i++;
-      while (i < lines.length && (lines[i].startsWith("  ") || lines[i].trim() === "")) {
-        parts.push(lines[i].trim());
+      while (i < lines.length && (lines[i].startsWith(" ") || lines[i].startsWith("\t"))) {
+        chunks.push(lines[i].trim());
         i++;
       }
-      result[key] = parts.join(" ").trim();
-    } else if (rest === "") {
-      // Mapping value — parse sub-keys
-      const subObj: Record<string, string> = {};
-      i++;
-      while (i < lines.length && lines[i].match(/^\s+[a-zA-Z0-9_-]+:/)) {
-        const subM = lines[i].trim().match(/^([a-zA-Z0-9_-]+):\s*(.*)/);
-        if (subM) subObj[subM[1]] = subM[2].replace(/^["']|["']$/g, "").trim();
-        i++;
-      }
-      result[key] = subObj;
-    } else {
-      // Scalar — strip optional surrounding quotes
-      result[key] = rest.replace(/^["']|["']$/g, "");
-      i++;
+      result[key] = chunks.join(" ").trim();
+      continue;
     }
+
+    if (rawVal.startsWith('"') || rawVal.startsWith("'")) {
+      result[key] = rawVal.slice(1, -1);
+      i++;
+      continue;
+    }
+
+    result[key] = rawVal;
+    i++;
   }
+
   return result;
 }
 
 export function loadSkills(skillsDir: string): SkillMetadata[] {
   const skills: SkillMetadata[] = [];
 
-  if (!fs.existsSync(skillsDir) || !fs.statSync(skillsDir).isDirectory()) {
-    return skills;
-  }
+  if (!fs.existsSync(skillsDir)) return skills;
 
   const entries = fs.readdirSync(skillsDir).sort();
-  for (const entry of entries) {
-    const skillDir = path.join(skillsDir, entry);
-    if (!fs.statSync(skillDir).isDirectory()) continue;
 
-    const skillMd = path.join(skillDir, "SKILL.md");
-    if (!fs.existsSync(skillMd)) {
+  for (const entry of entries) {
+    const skillDirPath = path.join(skillsDir, entry);
+    if (!fs.statSync(skillDirPath).isDirectory()) continue;
+
+    const skillMdPath = path.join(skillDirPath, "SKILL.md");
+    if (!fs.existsSync(skillMdPath)) {
       console.warn(`WARN: skipping '${entry}' — no SKILL.md`);
       continue;
     }
 
-    const content = fs.readFileSync(skillMd, "utf-8");
+    const content = fs.readFileSync(skillMdPath, "utf-8");
     if (!content.startsWith("---")) {
       console.warn(`WARN: skipping '${entry}' — missing YAML frontmatter`);
       continue;
     }
 
-    let fm: Record<string, unknown>;
-    try {
-      const endIdx = content.indexOf("---", 3);
-      if (endIdx === -1) throw new Error("closing --- not found");
-      fm = parseFrontmatter(content.slice(3, endIdx));
-    } catch (e) {
-      console.warn(`WARN: skipping '${entry}' — frontmatter parse error: ${(e as Error).message}`);
+    const endIdx = content.indexOf("---", 3);
+    if (endIdx === -1) {
+      console.warn(`WARN: skipping '${entry}' — unclosed frontmatter`);
       continue;
     }
 
+    const fm = parseFrontmatter(content.slice(3, endIdx));
+
     const name = String(fm["name"] ?? "");
     const description = String(fm["description"] ?? "").trim();
-    const compatibility = fm["compatibility"] ? String(fm["compatibility"]).trim() : undefined;
+    const compatibility = fm["compatibility"] !== undefined
+      ? String(fm["compatibility"]).trim()
+      : undefined;
 
     const errors = validate(name, description, compatibility, entry);
     if (errors.length > 0) {
@@ -138,8 +135,8 @@ export function loadSkills(skillsDir: string): SkillMetadata[] {
       continue;
     }
 
-    let allowedTools: string[] | undefined;
     const rawAt = fm["allowed-tools"];
+    let allowedTools: string[] | undefined;
     if (typeof rawAt === "string") {
       allowedTools = rawAt.split(/\s+/).filter(Boolean) || undefined;
     } else if (Array.isArray(rawAt)) {
@@ -149,8 +146,8 @@ export function loadSkills(skillsDir: string): SkillMetadata[] {
     skills.push({
       name,
       description,
-      skillDir,
-      license: fm["license"] ? String(fm["license"]) : undefined,
+      skillDir: skillDirPath,
+      license: fm["license"] !== undefined ? String(fm["license"]) : undefined,
       compatibility,
       metadata: fm["metadata"] as Record<string, string> | undefined,
       allowedTools,

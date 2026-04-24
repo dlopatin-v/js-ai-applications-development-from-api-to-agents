@@ -1,10 +1,9 @@
-import * as path from "path";
 import * as readline from "readline";
-
+import * as path from "path";
 import OpenAI from "openai";
-import { OPENAI_API_KEY } from "commons/constants";
-import { Message } from "commons/models/message";
-import { Role } from "commons/models/role";
+import { OPENAI_API_KEY } from "../../commons/constants.js";
+import { Message } from "../../commons/models/message.js";
+import { Role } from "../../commons/models/role.js";
 import { BaseTool } from "./tools/base.js";
 import { SkillMetadata, loadSkills } from "./models.js";
 import { ReadSkillTool } from "./tools/skills/read_skill_tool.js";
@@ -13,6 +12,7 @@ import { T12Agent } from "./agent.js";
 
 const SKILLS_DIR = path.join(__dirname, "_skills");
 const MCP_TOOL_NAME = "execute_code";
+
 
 function buildAvailableSkillsXml(skills: SkillMetadata[]): string {
   const parts: string[] = ["<available_skills>"];
@@ -38,9 +38,10 @@ function buildAvailableSkillsXml(skills: SkillMetadata[]): string {
 }
 
 function buildSystemPrompt(skills: SkillMetadata[]): string {
+  const skillsXml = buildAvailableSkillsXml(skills);
   return `You are an AI assistant with access to agent skills.
 
-${buildAvailableSkillsXml(skills)}
+${skillsXml}
 
 ## How to use skills
 
@@ -49,11 +50,12 @@ When the user's request matches a skill, activate it:
    its full instructions.
 2. Follow the instructions in the loaded SKILL.md precisely.
 3. If the instructions reference additional files (scripts, references, assets), read them on demand
-   using \`read_skill\` (e.g. path="/<skill-name>/scripts/calculate.ts").
+   using \`read_skill\` (e.g. path="/<skill-name>/scripts/convert.ts").
 4. If the skill requires running a script, execute it with \`${MCP_TOOL_NAME}\`.
 
 Always read the relevant SKILL.md before performing the task.`;
 }
+
 
 async function main(): Promise<void> {
   const skills = loadSkills(SKILLS_DIR);
@@ -73,23 +75,17 @@ async function main(): Promise<void> {
     await JsCodeInterpreterTool.create(SKILLS_DIR),
   ];
 
-  const agent = new T12Agent(
-    new OpenAI({ apiKey: OPENAI_API_KEY }),
-    "gpt-5.2",
-    tools,
-  );
+  const agent = new T12Agent(new OpenAI({ apiKey: OPENAI_API_KEY }), "gpt-4o", tools);
 
   const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
-  const prompt = (q: string) => new Promise<string>((resolve) => rl.question(q, resolve));
-
-  console.log("\nAgent is ready. Type your query or 'exit' to quit.\n");
+  const ask = (prompt: string) => new Promise<string>((resolve) => rl.question(prompt, resolve));
 
   while (true) {
-    const userInput = (await prompt("➡️: ")).trim();
-    if (userInput.toLowerCase() === "exit") break;
+    const userInput = (await ask("➡️: ")).trim();
+    if (userInput === "exit") break;
 
     messages.push(new Message(Role.USER, userInput));
-    const assistantMessage = await agent.chatCompletion(messages, true);
+    const assistantMessage = await agent.chatCompletion(messages);
     messages.push(assistantMessage);
   }
 

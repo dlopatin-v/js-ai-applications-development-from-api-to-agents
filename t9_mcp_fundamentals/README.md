@@ -63,14 +63,13 @@ Service.
 
 1. Open [STDIO mcp_client](agent/mcp_clients/stdio.ts) and implement all ***TODO***
 2. Open [app](agent/app.ts) and instead of HttpMCPClient client use this one:
-    ```python
-        async with StdioMCPClient(
-                command=sys.executable,          # use the same venv Python, not bare "python"
-                args=[str(STDIO_SERVER_PATH)],
-                env={**os.environ, "PYTHONPATH": str(PROJECT_ROOT)}  # inherit env + add project root
-        ) as mcp_client:
+    ```ts
+    new StdioMCPClient({
+        command: "npx",
+        args: ["tsx", "t9_mcp_fundamentals/mcp_server/stdio_server.ts"]
+    });
     ```
-3. Run application [app.py](agent/app.ts) and test that it is connecting to STDIO MCP Server and works properly
+3. Run application [app.ts](agent/app.ts) and test that it is connecting to STDIO MCP Server and works properly
 
 <details> 
 <summary><b>Connecting Your STDIO MCP Server to Claude Desktop</b></summary>
@@ -92,12 +91,13 @@ Open the file (create it if it doesn't exist) and add your server:
 {
   "mcpServers": {
     "users-management": {
-      "command": "{ABSOLUTE_PATH}/ai-applications-development-from-api-to-agents/.venv/bin/python",
+      "command": "npx",
       "args": [
-        "{ABSOLUTE_PATH}/ai-applications-development-from-api-to-agents/t9_mcp_fundamentals/mcp_server/stdio_server.ts"
+        "tsx",
+        "{ABSOLUTE_PATH}/js-ai-applications-development-from-api-to-agents/t9_mcp_fundamentals/mcp_server/stdio_server.ts"
       ],
       "env": {
-        "PYTHONPATH": "{ABSOLUTE_PATH}/ai-applications-development-from-api-to-agents"
+        "OPENAI_API_KEY": "<your-openai-api-key>"
       }
     }
   }
@@ -106,28 +106,25 @@ Open the file (create it if it doesn't exist) and add your server:
 
 **Important notes:**
 
-- Don't forget to replace `{ABSOLUTE_PATH}` with absolute path to the project on your local machine
-- Set `PYTHONPATH` to your project root so imports like `t9_mcp_fundamentals` resolve correctly
-- If you're using a virtual environment, point to its Python binary instead:
-  ```json
-  "command": "/path/to/your/venv/bin/python"
-  ```
-  On Windows: `"C:\\Users\\you\\project\\.venv\\Scripts\\python.exe"`
+- Don't forget to replace `{ABSOLUTE_PATH}` with the absolute path to the project on your local machine
+- Make sure `npx` and `tsx` are available (they are — `tsx` is a dev dependency in this project)
+- Pass any required environment variables (e.g. `OPENAI_API_KEY`) in the `env` block
 
 
 <details> 
-<summary><b>Sample how it is done on my Mac:</b></summary>
+<summary><b>Sample how it is done on a Mac:</b></summary>
 
 ```json
 {
   "mcpServers": {
     "users-management": {
-      "command": "/Users/pavlokhshanovskyi/dialx/courses/ai-applications-development-from-api-to-agents/.venv/bin/python",
+      "command": "npx",
       "args": [
-        "/Users/pavlokhshanovskyi/dialx/courses/ai-applications-development-from-api-to-agents/t9_mcp_fundamentals/mcp_server/stdio_server.py"
+        "tsx",
+        "/Users/yourname/projects/js-ai-applications-development-from-api-to-agents/t9_mcp_fundamentals/mcp_server/stdio_server.ts"
       ],
       "env": {
-        "PYTHONPATH": "/Users/pavlokhshanovskyi/dialx/courses/ai-applications-development-from-api-to-agents"
+        "OPENAI_API_KEY": "sk-..."
       }
     }
   }
@@ -156,8 +153,8 @@ Configuration is the same as you have for Claude 👆
 ### 2. Play with STDIO MCP Servers from docker images:
 
 1. Use such mcp_client:
-    ```python
-    async with StdioMCPClient(docker_image="mcp/duckduckgo:latest") as mcp_client:
+    ```ts
+    new StdioMCPClient({ dockerImage: "mcp/duckduckgo:latest" });
     ```
 2. It is an MCP Server with WEB Search capabilities, [source code](https://github.com/khshanovskyi/duckduckgo-mcp-server)
 3. Try to search `Wthat is the weather in Kyiv now?`

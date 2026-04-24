@@ -93,51 +93,52 @@ What is 2^10 + sqrt(144)?
 ### Custom Agent Skills
 
 Instead of relying on a managed VM provided by Anthropic or OpenAI, the custom agent loads skills from the **local
-filesystem** and executes Python code via an external **MCP Python Code Interpreter**.
+filesystem** and executes JavaScript code via an external **Node.js MCP Code Sandbox**.
 
 **How it works:**
 
 - `read_skill` tool: reads any skill file (SKILL.md, scripts, references) directly from disk. The agent calls it to
   load skill instructions before acting.
-- `execute_code` tool (via MCP): runs Python code in a persistent session managed by the MCP server.
+- `execute_code` tool (via MCP): runs JavaScript code in a persistent Node.js sandbox container managed by the MCP server.
 
-### Setup: MCP Python Code Interpreter
+### Setup: Node.js Code Sandbox
 
-The custom agent requires the MCP Python Code Interpreter server running locally. Start it with [Docker Compose](docker-compose.yml):
+The custom agent launches the sandbox automatically via Docker — no persistent service needs to be started.
 
+Pull the image once before running:
+
+```bash
+docker pull mcp/node-code-sandbox
 ```
-MCP_URL = "http://localhost:8050/mcp"
-```
 
-Python Code Interpreter will provide only one tool:
+The `execute_code` tool exposed to the agent has these parameters:
+
 ```json
-    {
-        "type": "function",
-        "function": {
-            "name": "execute_code",
-            "description": "Execute Python code in a persistent Jupyter kernel environment.\n\nMaintains stateful execution where variables, imports, and state persist across multiple calls in the same session.\n\nArgs:\n    code: Python code to execute (multi-line supported)\n    session_id: Session identifier (empty string or \"0\" for first call, then reuse returned ID)\n\nReturns:\n    dict with:\n        - success (bool): Execution status\n        - output (list): stdout/stderr text\n        - result (str|None): Last expression value\n        - error (str|None): Error message if failed\n        - traceback (list): Full traceback if error\n        - files (list): File references with URIs\n        - session_info (dict|None): Session info for new sessions (includes session_id)",
-            "parameters": {
-                "properties": {
-                    "code": {
-                        "title": "Code",
-                        "type": "string"
-                    },
-                    "session_id": {
-                        "default": "",
-                        "title": "Session Id",
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "code"
-                ],
-                "type": "object"
-            }
-        }
-    }
+{
+  "name": "execute_code",
+  "description": "Execute JavaScript code in a persistent Node.js sandbox container.",
+  "parameters": {
+    "properties": {
+      "code": {
+        "type": "string",
+        "description": "JavaScript code to execute (ESModules syntax)."
+      },
+      "container_id": {
+        "type": "string",
+        "description": "Sandbox container ID. Empty string on first call; reuse on subsequent calls.",
+        "default": ""
+      },
+      "script_path": {
+        "type": "string",
+        "description": "Path to a skill script relative to the skills root — prepended to code."
+      }
+    },
+    "required": ["code"]
+  }
+}
 ```
 
-> Source code: https://github.com/khshanovskyi/mcp-python-code-interpreter
+> Source code: https://github.com/alfonsograziano/node-code-sandbox-mcp
 
 ### Task
 
@@ -145,10 +146,10 @@ Python Code Interpreter will provide only one tool:
 
 1. Implement all TODO in [custom/_skills/SKILL.md](custom/_skills/unit-converter/SKILL.md)
 2. Open [custom/tools/skills/readSkillTool.ts](custom/tools/skills/readSkillTool.ts) and implement all `TODO`
-3. Open [custom/tools/pyInterpreter/pythonCodeInterpreterTool.ts](custom/tools/pyInterpreter/pythonCodeInterpreterTool.ts) and implement all `TODO` 
+3. Open [custom/tools/jsInterpreter/jsCodeInterpreterTool.ts](custom/tools/jsInterpreter/jsCodeInterpreterTool.ts) and implement all `TODO`
 4. Open [custom/agent.ts](custom/agent.ts) and implement all `TODO`
 5. Open [custom/customApp.ts](custom/customApp.ts) and implement all `TODO`
-6. Make sure the MCP server is running, then run [custom/customApp.ts](custom/customApp.ts) and test it using the **Convertor** sample
+6. Make sure Docker is running, then run [custom/customApp.ts](custom/customApp.ts) and test it using the **Convertor** sample
    requests below.
 
 ### Sample Requests: Convertor

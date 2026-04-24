@@ -1,16 +1,14 @@
-# MCP Python Code Interpreter
+# Node.js Code Sandbox (node-code-sandbox MCP Server)
 
-A stateful Python code execution environment with Jupyter kernel support, built on the Model Context Protocol (MCP). Execute Python code with persistent state, automatic visualization handling, and secure session management.
+A stateful JavaScript execution environment built on the Model Context Protocol (MCP). The JS agent launches disposable Docker containers on demand and runs JavaScript code inside them via the `run_js` tool — all managed transparently through the `execute_code` tool wrapper.
 
 ## Features
 
-- **Stateful Execution**: Variables, imports, and state persist across multiple code executions within a session
-- **Jupyter Kernel Backend**: Full Jupyter kernel support with IPython features
-- **Session Management**: Secure session IDs with automatic 30-minute timeout
-- **Visualization Support**: Automatic capture and export of matplotlib, seaborn, and Plotly figures
-- **File Generation**: Access generated files (images, data files, plots) via MCP resources
-- **Scientific Computing**: Pre-configured with pandas, numpy, matplotlib, seaborn, plotly, and sympy
-- **Automatic Cleanup**: Background task removes expired sessions and orphaned files
+- **Stateful Execution**: Variables and state persist across multiple code executions within the same container session
+- **Isolated Containers**: Each conversation gets its own Docker container (started on first call, reused for follow-up calls)
+- **npm Dependency Support**: Install packages on demand before running code
+- **ESModules**: Code must use ESModules syntax (`import`/`export`)
+- **Automatic Cleanup**: Containers are removed (`--rm`) when the agent stops or the session ends
 
 ---
 
@@ -18,48 +16,59 @@ A stateful Python code execution environment with Jupyter kernel support, built 
 
 ```
 ┌─────────────────┐
-│  MCP Client     │
-│  (Claude, etc)  │
+│  JS Agent       │
+│  (TypeScript)   │
 └────────┬────────┘
          │
-         │ MCP Protocol
+         │ execute_code tool call
+         │
+┌────────▼─────────────────┐
+│  JsCodeInterpreterTool   │
+│  (wraps sandbox tools)   │
+└────────┬─────────────────┘
+         │
+         │ MCP Protocol (STDIO)
+         │
+┌────────▼────────────────────────┐
+│  mcp/node-code-sandbox          │
+│  (Docker container, STDIO MCP)  │
+└────────┬────────────────────────┘
+         │
+         │ docker run --rm -i
          │
 ┌────────▼────────┐
-│    MCP Server   │
-│  (server.py)    │
-└────────┬────────┘
-         │
-         │ Manages
-         │
-┌────────▼────────┐
-│ Session Manager │
-│ - Create/Track  │
-│ - Cleanup       │
-└────────┬────────┘
-         │
-         │ Controls
-         │
-┌────────▼────────┐
-│ Jupyter Kernels │
-│ (per session)   │
+│  Sandbox        │
+│  Containers     │
+│  (per session)  │
 └─────────────────┘
 ```
+
+The agent calls `execute_code`. `JsCodeInterpreterTool` translates that into two underlying MCP operations: `sandbox_initialize` (first call only) and `run_js` (every call). The MCP server itself is launched via `docker run --rm -i mcp/node-code-sandbox` — no persistent service required.
 
 ---
 
 ## Usage
 
-The server exposes three tools and a resource endpoint for file access.
+The tool is exposed to the agent as `execute_code` with these parameters:
 
-### 1. Execute Code
+| Parameter | Type | Description |
+|---|---|---|
+| `code` | `string` | JavaScript code to run (ESModules syntax) |
+| `container_id` | `string` | Sandbox container ID. Empty string on first call; reuse on subsequent calls |
+| `script_path` | `string` (optional) | Path to a skill script relative to the skills root. Its content is prepended to `code` |
 
-Execute Python code in a persistent Jupyter kernel environment.
+### First call — initialize sandbox and run code
 
-**First execution (creates new session):**
-```python
+Pass `container_id = ""`. The tool will:
+1. Call `sandbox_initialize` to start a fresh Node.js Docker container
+2. Call `run_js` with the full code (script content + your call)
+3. Return the result including `session_info.container_id` — **save this for reuse**
+
+```json
 {
-  "code": "import pandas as pd\nx = 42\nprint('Hello, World!')",
-  "session_id": ""  # Empty string or "0" for new session
+  "code": "const [result, category] = convertUnits(100, 'km', 'miles');\nconsole.log(`Category: ${category}`);\nconsole.log(`Input:    ${fmt(100)} km`);\nconsole.log(`Result:   ${fmt(result)} miles`);",
+  "container_id": "",
+  "script_path": "unit-converter/scripts/convert.ts"
 }
 ```
 
@@ -67,175 +76,93 @@ Execute Python code in a persistent Jupyter kernel environment.
 ```json
 {
   "success": true,
-  "output": ["Hello, World!\n"],
-  "result": null,
+  "output": ["Category: length\nInput:    100 km\nResult:   62.1371 miles\n"],
   "session_info": {
-    "session_id": "abc123xyz456",
-    "instructions": "Use this `session_id` in subsequent requests..."
+    "container_id": "abc123def456"
   }
 }
 ```
 
-**Subsequent executions (reuse session):**
-```python
-{
-  "code": "print(x * 2)  # Variable persists from previous execution",
-  "session_id": "abc123xyz456"
-}
-```
+### Subsequent calls — reuse the container
 
-### 2. Create Visualizations
+Pass the saved `container_id`. The script is already in memory — omit `script_path` and just send the conversion call:
 
-Matplotlib, seaborn, and Plotly figures are automatically captured and saved.
-
-```python
-{
-  "code": """
-import matplotlib.pyplot as plt
-import numpy as np
-
-x = np.linspace(0, 10, 100)
-plt.plot(x, np.sin(x))
-plt.title('Sine Wave')
-plt.savefig('sine_wave.png')
-plt.show()
-""",
-  "session_id": "abc123xyz456"
-}
-```
-
-**Response includes file references:**
 ```json
 {
-  "success": true,
-  "output": ["📊 File created: sine_wave.png (image/png, 45231 bytes)"],
-  "files": [
-    {
-      "uri": "kernel://abc123xyz456/sine_wave.png",
-      "mime_type": "image/png",
-      "name": "sine_wave.png",
-      "size": 45231
-    }
-  ]
+  "code": "const [result, category] = convertUnits(5, 'kg', 'lbs');\nconsole.log(`Category: ${category}`);\nconsole.log(`Input:    ${fmt(5)} kg`);\nconsole.log(`Result:   ${fmt(result)} lbs`);",
+  "container_id": "abc123def456"
 }
 ```
-
-### 3. List Session Files
-
-```python
-{
-  "session_id": "abc123xyz456"
-}
-```
-
-### 4. Clear Session
-
-Manually remove a session and all its files:
-
-```python
-{
-  "session_id": "abc123xyz456"
-}
-```
-
-### 5. Access Files
-
-Files are accessed via the MCP resource protocol:
-
-```
-kernel://{session_id}/{filename}
-```
-
-Example: `kernel://abc123xyz456/sine_wave.png`
 
 ---
 
-## Session Management
+## How `script_path` Works
 
-### Session Lifecycle
+When `script_path` is provided, `JsCodeInterpreterTool` reads the file from the local skills directory and prepends its content to `code`, separated by a blank line:
 
-1. **Creation**: First call with empty `session_id` generates a secure 16-character ID
-2. **Active**: Session remains active while being used
-3. **Timeout**: Sessions expire after **30 minutes of inactivity**
-4. **Cleanup**: Expired sessions are automatically removed (background task runs every 5 minutes)
+```
+<contents of convert.ts>
 
-### Session Expiration
+<your conversion call code>
+```
 
-If you try to use an expired session, you'll receive a `SessionExpiredError`:
+This means the functions defined in `convert.ts` (`convertUnits`, `fmt`) are available in the same execution context as your call code — without needing to copy the entire script into the request.
+
+---
+
+## Session Lifecycle
+
+1. **Creation**: First call with `container_id = ""` starts a new Docker container
+2. **Active**: The same container is reused for every subsequent call in the conversation
+3. **End of session**: The container is stopped and removed when the agent or process exits
+
+### Container not found
+
+If a container ID is no longer valid (container was stopped externally), you will see an error in the output:
 
 ```json
 {
   "success": false,
-  "error": "SessionExpiredError: Session abc123xyz456 not found or has expired...",
-  "traceback": []
+  "output": [],
+  "error": "Container not found: abc123def456"
 }
 ```
 
-**Solution**: Create a new session and re-execute your setup code.
+**Solution**: Restart from Step 1 — pass `container_id = ""` to create a new sandbox and reload the script.
 
 ---
 
-## Available Libraries
+## Prerequisites
 
-The following libraries are pre-installed:
+The `mcp/node-code-sandbox` Docker image must be available locally:
 
-- **Data Science**: pandas, numpy
-- **Visualization**: matplotlib, seaborn, plotly, kaleido
-- **Mathematics**: sympy
-- **Jupyter**: ipykernel, jupyter-client
+```bash
+docker pull mcp/node-code-sandbox
+```
+
+No `docker compose up` is required — the agent launches containers on demand.
 
 ---
 
 ## API Reference
 
-### Tools
+### `execute_code` (agent-facing tool)
 
-#### `execute_code`
-
-Execute Python code in a persistent Jupyter kernel environment.
+Execute JavaScript code in a persistent Node.js sandbox container.
 
 **Parameters:**
-- `code` (str): Python code to execute (multi-line supported)
-- `session_id` (str, optional): Session identifier (empty or "0" for new session)
+- `code` (string): JavaScript code to execute (ESModules syntax, multi-line supported)
+- `container_id` (string, optional): Container identifier. Empty or omitted for a new sandbox; reuse the returned ID for subsequent calls
+- `script_path` (string, optional): Skill script path relative to the skills root — prepended to `code`
 
 **Returns:**
-- `success` (bool): Execution status
-- `output` (list): stdout/stderr text
-- `result` (str|None): Last expression value
-- `error` (str|None): Error message if failed
-- `traceback` (list): Full traceback if error
-- `files` (list): File references with URIs
-- `session_info` (dict|None): Session info for new sessions
-
-#### `list_session_files`
-
-List all files generated in a session.
-
-**Parameters:**
-- `session_id` (str): Session identifier
-
-**Returns:**
-- `session_id` (str): The session ID
-- `files` (list): List of file references
-- `error` (str): Error message if session not found
-
-#### `clear_session`
-
-Manually clear a session and shutdown its kernel.
-
-**Parameters:**
-- `session_id` (str): Session identifier to clear
-
-**Returns:**
-- `success` (bool): Operation status
-- `message` (str): Status message
-
-### Resources
-
-#### `kernel://{session_id}/{filename}`
-
-Retrieve file content from a session.
-
-**URI Format:** `kernel://session_id/filename`
-
-**Returns:** File content (binary for images, text for text files)
+```json
+{
+  "success": true,
+  "output": ["...stdout/stderr..."],
+  "error": "...error message if failed...",
+  "session_info": {
+    "container_id": "abc123def456"
+  }
+}
+```

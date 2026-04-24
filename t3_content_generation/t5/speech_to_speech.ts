@@ -2,7 +2,7 @@ import { OPENAI_API_KEY, OPENAI_HOST } from "../../commons";
 import * as fs from "node:fs";
 import * as path from "node:path";
 
-// https://platform.openai.com/docs/guides/audio#add-audio-to-your-existing-application
+// https://developers.openai.com/api/docs/guides/audio#add-audio-to-your-existing-application
 
 // @TODO:
 // You need to generate an answer in audio format based on an audio message:

@@ -15,7 +15,7 @@ enum Voice {
   SHIMMER = 'shimmer'
 }
 
-// https://platform.openai.com/docs/guides/text-to-speech
+// https://developers.openai.com/api/docs/guides/text-to-speech
 // Request:
 // curl https://api.openai.com/v1/audio/speech \
 //   -H "Authorization: Bearer $OPENAI_API_KEY" \

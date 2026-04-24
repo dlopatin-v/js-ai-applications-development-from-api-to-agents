@@ -25,33 +25,8 @@ const PROFILE = `
 **Annual Income:** $112,800
 `;
 
-// TODO: Write VALIDATION_PROMPT for an output PII leak detector.
-// The prompt should instruct the LLM to:
-//   - Act as a security validator that scans AI responses for leaked PII
-//   - Define what counts as PII (SSN, credit card numbers, CVV, card expiry,
-//     driver's license numbers, bank account numbers, home address, date of birth, income/salary)
-//   - Define what is NOT PII and is allowed (name, phone, email, job title, company)
-//   - Set valid=true if the response contains no PII
-//   - Set valid=false + description of leaked PII types if any PII is detected
-//   - Warn to also detect PII hidden inside structured formats (JSON, XML, HTML, tables)
-// Note: Response is structured via zodResponseFormat — only write system instructions.
 const VALIDATION_PROMPT = "NEED TO WRITE IT";
 
-// TODO: Write FILTER_SYSTEM_PROMPT for a PII redaction filter.
-// The prompt should instruct the LLM to:
-//   - Remove all PII from the provided text, replacing each type with a labeled placeholder:
-//       credit card      → [CREDIT CARD REDACTED]
-//       CVV              → [CVV REDACTED]
-//       expiration date  → [CARD EXP DATE REDACTED]
-//       SSN              → [SSN REDACTED]
-//       driver's license → [LICENSE REDACTED]
-//       bank account     → [ACCOUNT REDACTED]
-//       home address     → [ADDRESS REDACTED]
-//       date of birth    → [DOB REDACTED]
-//       income/salary    → [INCOME REDACTED]
-//   - Keep allowed info intact: names, phone numbers, emails, job titles, company names
-//   - Preserve original formatting and structure
-//   - If no PII is found, return the text unchanged
 const FILTER_SYSTEM_PROMPT = "NEED TO WRITE IT";
 
 const ValidationSchema = z.object({
@@ -65,51 +40,22 @@ const ValidationSchema = z.object({
 
 type Validation = z.infer<typeof ValidationSchema>;
 
-const client = new OpenAI({ apiKey: OPENAI_API_KEY });
+// TODO 1:
+// Create OpenAI client
 
-async function validate(aiResponse: string): Promise<Validation> {
-  // TODO: Call client.chat.completions.parse() with VALIDATION_PROMPT as the system message
-  // and aiResponse as the user message.
-  // Use zodResponseFormat(ValidationSchema, "validation").
-  // Return the parsed Validation result.
-  throw new Error("Not implemented");
-}
-
-async function filter(aiResponse: string): Promise<string> {
-  // TODO: Call client.chat.completions.create() with FILTER_SYSTEM_PROMPT and aiResponse.
-  // Return the filtered response content string.
+function validate(aiResponse: string): Promise<Validation> {
+  // TODO 2:
+  // Make validation of LLM output to check leaks of PII, similar to what you've done in the input_llm_based_validation.ts
   throw new Error("Not implemented");
 }
 
 async function main(softResponse: boolean): Promise<void> {
-  const messages: { role: string; content: string }[] = [
-    { role: Role.SYSTEM, content: SYSTEM_PROMPT },
-    { role: Role.USER, content: PROFILE },
-  ];
-
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  });
-
-  console.log("Type your question or 'exit' to quit.");
-  while (true) {
-    const userInput = (await rl.question("> ")).trim();
-    if (userInput.toLowerCase() === "exit") {
-      console.log("Exiting the chat. Goodbye!");
-      rl.close();
-      process.exit(0);
-    }
-
-    // TODO:
-    // 1. Append userInput as a user message.
-    // 2. Call the assistant (gpt-4.1-nano, temperature 0) to get aiContent.
-    // 3. Call validate(aiContent).
-    // 4. If valid: append assistant reply and print it.
-    //    If not valid AND softResponse: call filter(), append filtered reply and print with ⚠️ prefix.
-    //    If not valid AND !softResponse: append blocked message and print the PII description with 🚫 prefix.
-    throw new Error("Not implemented");
-  }
+  // TODO 3:
+  // Create console chat with LLM, preserve history there.
+  // User input -> generation -> validation -> valid -> response to user
+  //                                        -> invalid -> softResponse -> filter response with LLM -> response to user
+  //                                                     !softResponse -> reject with description
+  throw new Error("Not implemented");
 }
 
 main(true);

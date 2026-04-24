@@ -1,7 +1,7 @@
 import { OpenAIClientT3 } from "../_openai_client";
 import { OPENAI_HOST } from "../../commons";
 
-// https://platform.openai.com/docs/guides/image-generation?image-generation-model=gpt-image-1&api=image&multi-turn=imageid
+// https://developers.openai.com/api/reference/resources/images/methods/generate
 // ---
 // Request:
 // curl -X POST "https://api.openai.com/v1/images/generations" \

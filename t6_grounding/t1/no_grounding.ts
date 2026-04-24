@@ -1,81 +1,83 @@
 import { OpenAI } from "openai";
-import { OPENAI_API_KEY, Role } from "../../commons";
+import { OPENAI_API_KEY } from "../../commons";
 import { UserServiceClient } from "../user_service_client";
 import * as readline from "node:readline/promises";
 
-const BATCH_SYSTEM_PROMPT = `You are a user search assistant. Your task is to find users from the provided list that match the search criteria.
+// TODO:
+// Define BATCH_SYSTEM_PROMPT - instructs the LLM to act as a user search assistant:
+//   - Analyze the search criteria from the user question
+//   - Examine each user in the provided list and determine if they match
+//   - Return full details of matching users in their original format
+//   - Return exactly "NO_MATCHES_FOUND" if no users match
+const BATCH_SYSTEM_PROMPT = null;
 
-INSTRUCTIONS:
-1. Analyze the user question to understand what attributes/characteristics are being searched for
-2. Examine each user in the context and determine if they match the search criteria
-3. For matching users, extract and return their complete information
-4. Be inclusive - if a user partially matches or could potentially match, include them
+// TODO:
+// Define FINAL_SYSTEM_PROMPT - instructs the LLM to compile final search results:
+//   - Review all batch search results
+//   - Combine and deduplicate matching users found across batches
+//   - Present results in a clear, organized manner
+const FINAL_SYSTEM_PROMPT = null;
 
-OUTPUT FORMAT:
-- If you find matching users: Return their full details exactly as provided, maintaining the original format
-- If no users match: Respond with exactly "NO_MATCHES_FOUND"
-- If uncertain about a match: Include the user with a note about why they might match`;
+// TODO:
+// Define USER_PROMPT template with two placeholders:
+//   - {context} - the formatted user data
+//   - {query}   - the user's search question
+const USER_PROMPT = null;
 
-const FINAL_SYSTEM_PROMPT = `You are a helpful assistant that provides comprehensive answers based on user search results.
-
-INSTRUCTIONS:
-1. Review all the search results from different user batches
-2. Combine and deduplicate any matching users found across batches
-3. Present the information in a clear, organized manner
-4. If multiple users match, group them logically
-5. If no users match, explain what was searched for and suggest alternatives`;
-
-const getUserPrompt = (context: string, query: string) => (`## USER DATA:
-${context}
-
-## SEARCH QUERY: 
-${query}`);
 
 class TokenTracker {
-  private totalTokens = 0;
-  private batchTokens = [];
+  // TODO:
+  // - Initialize totalTokens counter to 0
+  // - Initialize batchTokens as an empty array to store per-batch token counts
 
   addTokens(tokens: number) {
-    this.totalTokens += tokens;
-    this.batchTokens.push(tokens);
+    // TODO:
+    // - Add tokens to the totalTokens counter
+    // - Append tokens to the batchTokens array
+    throw new Error("Not implemented");
   }
 
   getSummary() {
-    return {
-      totalTokens: this.totalTokens,
-      batchCount: this.batchTokens.length,
-      batchTokens: this.batchTokens
-    }
+    // TODO:
+    // - Return an object with:
+    //   - totalTokens: total accumulated tokens
+    //   - batchCount: number of batches processed (length of batchTokens array)
+    //   - batchTokens: array of tokens per batch
+    throw new Error("Not implemented");
   }
 }
 
-const llmClient = new OpenAI({apiKey: OPENAI_API_KEY});
+
+const llmClient = new OpenAI({ apiKey: OPENAI_API_KEY });
 const tokenTracker = new TokenTracker();
 const userService = new UserServiceClient();
 
 
-// @TODO User type
-function joinContext(context: Array<any>) {
-  // TODO: Map each user object to a formatted string block:
-  //   "User:\n  key: value\n  key: value\n\n"
-  // and join all blocks into a single string.
+function joinContext(context: Array<Record<string, unknown>>): string {
+  // TODO:
+  // - Initialize an empty string for the result
+  // - Iterate through each user in the context array
+  // - For each user, add a "User:" header line
+  // - For each key-value pair in the user object, add an indented "  key: value" line
+  // - Add a blank line after each user for readability
+  // - Return the formatted string
   throw new Error("Not implemented");
 }
 
-function chunkArray(array, size) {
-  // TODO: Split array into chunks of the given size.
-  // Return: Array<Array<any>>
-  throw new Error("Not implemented");
-}
-
-async function generateResponse(systemPrompt: string, userMessage: string) {
+async function generateResponse(systemPrompt: string, userMessage: string): Promise<string> {
   console.log("Processing...");
 
-  // TODO: Build messages array with systemPrompt and userMessage.
-  // POST to OpenAI Chat Completions (gpt-4.1-nano, temperature 0).
-  // Track token usage with tokenTracker.addTokens().
-  // Log the response content and tokens used.
-  // Return the content string.
+  // TODO:
+  // - Build a messages array with systemPrompt as system and userMessage as user
+  // - Call llmClient.chat.completions.create with:
+  //   - model: 'gpt-4.1-nano'
+  //   - temperature: 0
+  //   - messages
+  // - Extract total_tokens from response.usage (default to 0 if usage is null)
+  // - Track tokens using tokenTracker.addTokens(...)
+  // - Extract the content string from response.choices[0].message.content (default to "")
+  // - Print the response content and token count to console
+  // - Return the content string
   throw new Error("Not implemented");
 }
 
@@ -88,20 +90,44 @@ async function main() {
   console.log("Query samples:");
   console.log(" - Do we have someone with name John that loves traveling?");
 
-  const userQuestion = await rl.question(`➡️. `);
+  const userQuestion = await rl.question(`➡️ `);
   if (!userQuestion) return;
 
-  console.log("\n--- Searching user database ---");
-
   // TODO:
-  // 1. Fetch all users via userService.getAllUsers().
-  // 2. Split into batches of 100 with chunkArray().
-  // 3. Send each batch in parallel to generateResponse() with BATCH_SYSTEM_PROMPT.
-  // 4. Filter out "NO_MATCHES_FOUND" results.
-  // 5. If any matches exist, combine them and call generateResponse() with FINAL_SYSTEM_PROMPT.
-  //    Otherwise print "No users found matching '{user_question}'".
-  // 6. Print the performance summary from tokenTracker.getSummary().
+  // - Check if userQuestion is not empty, then:
+  // 1. FETCH & BATCH USERS:
+  //    - Print "\n--- Searching user database ---"
+  //    - Fetch all users via userService.getAllUsers()
+  //    - Split users into batches of 100 using list slicing
+  //      Hint: [users[i:i + 100] for i in range(0, len(users), 100)]
+  // 2. PARALLEL BATCH SEARCH:
+  //    - Build a list of promises: for each batch call generateResponse(...)
+  //      with BATCH_SYSTEM_PROMPT and USER_PROMPT formatted with joinContext(batch) and userQuestion
+  //    - Run all promises IN PARALLEL using Promise.all(...)
+  //    - Store results in batchResults
+  // 3. FILTER RESULTS:
+  //    - Print "\n--- Compiling results ---"
+  //    - Filter batchResults to keep only results where result.trim() !== "NO_MATCHES_FOUND"
+  //    - Store filtered results in relevantResults
+  // 4. FINAL GENERATION:
+  //    - Print "\n=== SEARCH RESULTS ==="
+  //    - If relevantResults is not empty:
+  //      - Join relevantResults with "\n\n" into combinedResults
+  //      - Call generateResponse with FINAL_SYSTEM_PROMPT and a message combining
+  //        combinedResults and userQuestion
+  //    - Otherwise:
+  //      - Print a "No users found" message and suggest refining the search
+  // 5. PRINT PERFORMANCE SUMMARY:
+  //    - Get the token usage summary from tokenTracker.getSummary()
+  //    - Print "\n=== Performance ===" with total API calls (batchCount) and total tokens
   throw new Error("Not implemented");
 }
 
 main();
+
+
+// The problems with No Grounding approach are:
+//   - If we load whole users as context in one request to LLM we will hit context window
+//   - Huge token usage == Higher price per request
+//   - Added + one chain in flow where original user data can be changed by LLM (before final generation)
+// User Question -> Get all users -> ‼️parallel search of possible candidates‼️ -> probably changed original context -> final generation

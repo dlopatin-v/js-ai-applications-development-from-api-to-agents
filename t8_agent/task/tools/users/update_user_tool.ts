@@ -1,40 +1,30 @@
-import { UserUpdate } from "../../../../commons";
 import { BaseUserServiceTool } from "./base";
 
 export class UpdateUserTool extends BaseUserServiceTool {
-  get name() { return "update_user"; }
-  get description() { return "Updates user info"; }
-  get inputSchema() {
-    return {
-      type: "object",
-      properties: {
-        id: { type: "number", description: "User ID that should be updated" },
-        new_info: {
-          type: "object",
-          properties: {
-            name:          { type: "string" },
-            surname:       { type: "string" },
-            email:         { type: "string" },
-            about_me:      { type: "string" },
-            phone:         { type: "string" },
-            date_of_birth: { type: "string" },
-            gender:        { type: "string" },
-            company:       { type: "string" },
-            salary:        { type: "number" },
-          },
-        },
-      },
-      required: ["id"],
-    };
+  // TODO: Provide tool name as `update_user`
+  get name(): string {
+    throw new Error("Not implemented");
   }
 
+  // TODO: Provide description of this tool
+  get description(): string {
+    throw new Error("Not implemented");
+  }
+
+  // TODO: Provide tool params Schema.
+  //   Properties: id (number, required, User ID that should be updated),
+  //   new_info (object with optional fields: name, surname, email, about_me, phone,
+  //   date_of_birth, gender, company, salary)
+  get inputSchema(): Record<string, unknown> {
+    throw new Error("Not implemented");
+  }
+
+  // TODO:
+  // 1. Get `id` from args
+  // 2. Get `new_info` from args
+  // 3. Call this.userClient.updateUser and return its result
+  // 4. Optional: wrap with try/catch and return error as string `Error while updating a user: ${e.message}`
   async execute(args: Record<string, unknown>): Promise<string> {
-    try {
-      const userId = Number(args["id"]);
-      const newInfo = args["new_info"] as unknown as UserUpdate;
-      return await this.userClient.updateUser(userId, newInfo);
-    } catch (e: any) {
-      return `Error while updating a user: ${e.message}`;
-    }
+    throw new Error("Not implemented");
   }
 }

@@ -22,17 +22,6 @@ const PROFILE = `
 **Annual Income:** $58,900
 `;
 
-// TODO: Write VALIDATION_PROMPT for an LLM-based prompt injection detector.
-// The prompt should instruct the LLM to:
-//   - Act as a security validator that analyzes user input for prompt injection attempts
-//   - Detect attempts to: override system instructions, change the assistant's role/persona,
-//     leak system prompts, use jailbreak patterns (e.g. "ignore previous instructions",
-//     "pretend you are", "DAN", "as a developer mode"), or inject new instructions via
-//     special formatting (e.g. "###", "---", "System:", "Assistant:")
-//   - Set valid=true if the input looks like a normal, legitimate user question
-//   - Set valid=false and provide a short description if a prompt injection is detected
-// Note: The LLM response is already structured via zodResponseFormat (see ValidationSchema below),
-//       so you only need to write the system-level instructions — no need to describe the output format.
 const VALIDATION_PROMPT = "NEED TO WRITE IT";
 
 const ValidationSchema = z.object({
@@ -46,43 +35,26 @@ const ValidationSchema = z.object({
 
 type Validation = z.infer<typeof ValidationSchema>;
 
-const client = new OpenAI({ apiKey: OPENAI_API_KEY });
+// TODO 1:
+// Create OpenAI client
 
-async function validate(userInput: string): Promise<Validation> {
-  // TODO: Call client.chat.completions.parse() with:
-  //   model: "gpt-4.1-nano", temperature: 0
-  //   messages: [{ role: "system", content: VALIDATION_PROMPT }, { role: "user", content: userInput }]
-  //   response_format: zodResponseFormat(ValidationSchema, "validation")
-  // Return response.choices[0].message.parsed as Validation.
+function validate(userInput: string): Promise<Validation> {
+  // TODO 2:
+  // Make validation of user input on possible manipulations, jailbreaks, prompt injections, etc.
+  // ---
+  // Hint 1: You need to write properly VALIDATION_PROMPT
+  // Hint 2: Use zodResponseFormat with ValidationSchema to get validation results
   throw new Error("Not implemented");
 }
 
 async function main(): Promise<void> {
-  const messages: { role: string; content: string }[] = [
-    { role: Role.SYSTEM, content: SYSTEM_PROMPT },
-    { role: Role.USER, content: PROFILE },
-  ];
-
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  });
-
-  console.log("Type your question or 'exit' to quit.");
-  while (true) {
-    const userInput = (await rl.question("> ")).trim();
-    if (userInput.toLowerCase() === "exit") {
-      console.log("Exiting the chat. Goodbye!");
-      rl.close();
-      process.exit(0);
-    }
-
-    // TODO: Call validate(userInput).
-    // If validation.valid is false, print the block reason and continue.
-    // Otherwise, append userInput, call the assistant (gpt-4.1-nano, temperature 0),
-    // append the reply, and print it.
-    throw new Error("Not implemented");
-  }
+  // TODO 1:
+  // 1. Create messages array with system prompt as 1st message and user message with PROFILE info (we emulate the
+  //    flow when we retrieved PII from some DB and put it as user message).
+  // 2. Create console chat with LLM, preserve history there. In chat there should be preserved such flow:
+  //    -> user input -> validation of user input -> valid -> generation -> response to user -> invalid -> reject with reason
+  // 3. Use `gpt-4.1-nano` (or any other mini or nano models)
+  throw new Error("Not implemented");
 }
 
 main();

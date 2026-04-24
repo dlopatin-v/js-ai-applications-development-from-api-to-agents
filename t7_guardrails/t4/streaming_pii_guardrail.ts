@@ -5,7 +5,7 @@ import * as readline from "node:readline/promises";
 // Note: JavaScript has no direct equivalent of Microsoft Presidio + spaCy.
 //       The PresidioStreamingPIIGuardrail class below delegates NLP-based PII detection
 //       to a lightweight FastAPI microservice (pii_service/) that runs Presidio in Docker.
-//       Start it with: docker-compose up  (in the t4/ directory, port 8060)
+//       Start it with: docker-compose up  (in t4/ directory, port 8060)
 
 const MODEL = "gpt-4.1-nano";
 
@@ -28,68 +28,6 @@ const PROFILE = `
 **Annual Income:** $112,800
 `;
 
-/**
- * Regex-based streaming PII guardrail.
- *
- * Buffers incoming LLM chunks and flushes safe content once the buffer
- * exceeds `bufferSize`. A `safetyMargin` is withheld at the tail of each
- * flush window to avoid emitting PII that spans a chunk boundary.
- */
-export class StreamingPIIGuardrail {
-  buffer: string = "";
-  bufferSize: number;
-  safetyMargin: number;
-
-  constructor(bufferSize: number = 100, safetyMargin: number = 20) {
-    this.bufferSize = bufferSize;
-    this.safetyMargin = safetyMargin;
-  }
-
-  private get piiPatterns(): Record<string, [RegExp, string]> {
-    // TODO: Return a map of named PII patterns to their [RegExp, replacement] tuples.
-    // Required patterns: ssn, credit_card, license, bank_account, date, cvv,
-    //   card_exp, address, currency
-    throw new Error("Not implemented");
-  }
-
-  private detectAndRedactPii(text: string): string {
-    // TODO: Apply all piiPatterns to `text` and return the redacted result.
-    throw new Error("Not implemented");
-  }
-
-  private hasPotentialPiiAtEnd(text: string): boolean {
-    // TODO: Return true if `text` ends with a partial token that could be PII
-    // (e.g. an incomplete credit card number, partial SSN, etc.).
-    throw new Error("Not implemented");
-  }
-
-  processChunk(chunk: string): string {
-    // TODO: Append `chunk` to this.buffer.
-    // When buffer.length > bufferSize, find a safe split point (word boundary that
-    // doesn't end in potential PII), run detectAndRedactPii on the safe portion,
-    // update this.buffer to the remainder, and return the redacted safe output.
-    // Return "" if the buffer has not yet reached bufferSize.
-    throw new Error("Not implemented");
-  }
-
-  finalize(): string {
-    // TODO: Flush any remaining content in this.buffer through detectAndRedactPii
-    // and return the result. Return "" if buffer is empty.
-    throw new Error("Not implemented");
-  }
-}
-
-// ─── PresidioStreamingPIIGuardrail ────────────────────────────────────────────
-
-/**
- * NLP-based streaming PII guardrail backed by Microsoft Presidio.
- *
- * Buffer management is identical to StreamingPIIGuardrail, but instead of
- * applying regex patterns locally, each flush POSTs the text to the Presidio
- * microservice (pii_service/) which returns the anonymised result.
- *
- * Start the service before running: docker-compose up  (port 8060)
- */
 export class PresidioStreamingPIIGuardrail {
   buffer: string = "";
   bufferSize: number;
@@ -101,46 +39,111 @@ export class PresidioStreamingPIIGuardrail {
     safetyMargin: number = 20,
     endpoint: string = "http://localhost:8060"
   ) {
-    this.bufferSize = bufferSize;
-    this.safetyMargin = safetyMargin;
-    this.endpoint = endpoint;
+    // TODO:
+    // 1. Store bufferSize and safetyMargin as instance attributes
+    // 2. Store endpoint as instance attribute
+    // 3. Initialize buffer as empty string
+    throw new Error("Not implemented");
   }
 
   private async redact(text: string): Promise<string> {
-    // TODO: POST `{ text }` to `${this.endpoint}/redact` as JSON.
+    // TODO:
+    // POST `{ text }` to `${this.endpoint}/redact` as JSON.
     // Parse the response as `{ redacted: string }` and return `data.redacted`.
     throw new Error("Not implemented");
   }
 
   async processChunk(chunk: string): Promise<string> {
-    // TODO: Same buffer logic as StreamingPIIGuardrail.processChunk, but call
-    // await this.redact(textToProcess) instead of detectAndRedactPii.
+    // TODO:
+    // 1. Check if chunk is present, if not then return chunk itself
+    // 2. Accumulate chunk to buffer
+    // 3. If buffer length > bufferSize, find safe split point, call await this.redact(textToProcess),
+    //    update buffer to remainder, and return the redacted safe output
+    // 4. Return "" if the buffer has not yet reached bufferSize
     throw new Error("Not implemented");
   }
 
   async finalize(): Promise<string> {
-    // TODO: Flush remaining buffer content through this.redact and return the result.
-    // Return "" if buffer is empty.
+    // TODO:
+    // 1. Check if buffer is present, otherwise return empty string
+    // 2. Call await this.redact(buffer)
+    // 3. Reset buffer to empty string
+    // 4. Return redacted text
     throw new Error("Not implemented");
   }
 }
 
-const client = new OpenAI({ apiKey: OPENAI_API_KEY });
+export class StreamingPIIGuardrail {
+  buffer: string = "";
+  bufferSize: number;
+  safetyMargin: number;
+
+  constructor(bufferSize: number = 100, safetyMargin: number = 20) {
+    // TODO:
+    // 1. Store bufferSize and safetyMargin as instance attributes
+    // 2. Initialize buffer as empty string
+    throw new Error("Not implemented");
+  }
+
+  private get piiPatterns(): Record<string, [RegExp, string]> {
+    // TODO:
+    // Return a dict mapping pattern names to (RegExp, replacement) tuples.
+    // Include patterns for at least: ssn, credit_card, license, bank_account,
+    // date, cvv, card_exp, address, currency
+    throw new Error("Not implemented");
+  }
+
+  private detectAndRedactPii(text: string): string {
+    // TODO:
+    // Apply all piiPatterns to `text` and return the redacted version.
+    throw new Error("Not implemented");
+  }
+
+  private hasPotentialPiiAtEnd(text: string): boolean {
+    // TODO:
+    // Check whether `text` ends with a partial PII token that could be completed by the next chunk.
+    // Return true if a partial pattern is found at the end of text, false otherwise.
+    throw new Error("Not implemented");
+  }
+
+  processChunk(chunk: string): string {
+    // TODO:
+    // 1. Check if chunk is present, if not then return chunk itself
+    // 2. Accumulate chunk to buffer
+    // 3. If buffer length > bufferSize, find safe split point (word boundary that
+    //    does not end in potential PII), run detectAndRedactPii on the safe portion,
+    //    update buffer to the remainder, and return the redacted safe output
+    // 4. Return "" if the buffer has not yet reached bufferSize
+    throw new Error("Not implemented");
+  }
+
+  finalize(): string {
+    // TODO:
+    // 1. Check if buffer is present, otherwise return empty string
+    // 2. Call detectAndRedactPii on the remaining buffer
+    // 3. Reset buffer to empty string
+    // 4. Return redacted text
+    throw new Error("Not implemented");
+  }
+}
+
+// TODO:
+// Create OpenAI client
 
 async function main(): Promise<void> {
   // TODO:
-  // - Create presidioGuardrail = new PresidioStreamingPIIGuardrail(50)
-  // - Create regexGuardrail = new StreamingPIIGuardrail(50)
-  //   Note: switch between the two to compare implementations
-  // - Initialize messages with SYSTEM_PROMPT as system and PROFILE as user message
-  // - Print a few example PII-leaking queries the user can try
-  // - Console chat loop:
-  //   - Read user input; exit on "exit"
-  //   - Append user message to messages
-  //   - Call client.chat.completions.create(..., stream: true) with MODEL, temperature 0
-  //   - For each chunk: call guardrail.processChunk(content), print any returned safe text
-  //   - After the stream: call guardrail.finalize(), print any remaining safe text
-  //   - Append the accumulated fullResponse as an assistant message
+  // 1. Create instances of both guardrails with bufferSize=50:
+  //      presidioGuardrail = new PresidioStreamingPIIGuardrail(50)
+  //      guardrail         = new StreamingPIIGuardrail(50)
+  // 2. Initialize messages list: system prompt first, then PROFILE as a user message
+  // 3. Print a few example PII-leaking queries the user can try
+  // 4. Console chat loop:
+  //    - Read user input; exit on "exit"
+  //    - Append user message to messages
+  //    - Call client.chat.completions.create(..., stream: true) with MODEL, temperature 0
+  //    - For each chunk: call guardrail.processChunk(content), print any returned safe text
+  //    - After the stream: call guardrail.finalize(), print any remaining safe text
+  //    - Append the accumulated fullResponse as an assistant message to preserve history
   throw new Error("Not implemented");
 }
 

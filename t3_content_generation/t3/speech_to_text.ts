@@ -2,7 +2,7 @@ import { OPENAI_HOST, OPENAI_API_KEY } from "../../commons";
 import * as fs from "node:fs";
 import * as path from "node:path";
 
-// https://platform.openai.com/docs/guides/speech-to-text
+// https://developers.openai.com/api/docs/guides/speech-to-text
 
 // @TODO:
 // You need to transcribe 'audio_sample.mp3':

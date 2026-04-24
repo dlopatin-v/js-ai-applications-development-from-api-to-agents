@@ -1,27 +1,27 @@
-import { UserSearchRequest } from "../../../../commons";
 import { BaseUserServiceTool } from "./base";
 
 export class SearchUsersTool extends BaseUserServiceTool {
-  get name() { return "search_users"; }
-  get description() { return "Searches users by name, surname, email, and gender"; }
-  get inputSchema() {
-    return {
-      type: "object",
-      properties: {
-        name:    { type: "string", description: "User name" },
-        surname: { type: "string", description: "User surname" },
-        email:   { type: "string", description: "User email" },
-        gender:  { type: "string", description: "User gender", enum: ["male", "female"] },
-      },
-      required: [],
-    };
+  // TODO: Provide tool name as `search_users`
+  get name(): string {
+    throw new Error("Not implemented");
   }
 
+  // TODO: Provide description of this tool
+  get description(): string {
+    throw new Error("Not implemented");
+  }
+
+  // TODO: Provide tool params Schema.
+  //   Properties: name (str), surname (str), email (str), gender (str)
+  //   None of them are required
+  get inputSchema(): Record<string, unknown> {
+    throw new Error("Not implemented");
+  }
+
+  // TODO:
+  // 1. Call this.userClient.searchUsers with args and return its result
+  // 2. Optional: wrap with try/catch and return error as string `Error while searching users: ${e.message}`
   async execute(args: Record<string, unknown>): Promise<string> {
-    try {
-      return await this.userClient.searchUsers(args as unknown as UserSearchRequest);
-    } catch (e: any) {
-      return `Error while searching users: ${e.message}`;
-    }
+    throw new Error("Not implemented");
   }
 }

@@ -29,7 +29,7 @@ enum Quality {
   HD = 'hd'
 }
 
-// https://platform.openai.com/docs/guides/image-generation
+// https://developers.openai.com/api/reference/resources/images/methods/generate
 // Request:
 // curl https://api.openai.com/v1/images/generations \
 //   -H "Content-Type: application/json" \

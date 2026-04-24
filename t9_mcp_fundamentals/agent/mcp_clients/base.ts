@@ -21,50 +21,56 @@ export abstract class MCPClient {
   abstract disconnect(): Promise<void>;
 
   async getTools(): Promise<ToolSchema[]> {
-    const result = await this.client.listTools();
-    return result.tools.map((tool) => ({
-      type: "function",
-      function: {
-        name: tool.name,
-        description: tool.description ?? "",
-        parameters: tool.inputSchema as Record<string, unknown>,
-      },
-    }));
+    // TODO:
+    // 1. Call this.client.listTools() and get the tools list
+    // 2. Return it mapped to OpenAI tool schema format:
+    //    { type: "function", function: { name, description, parameters: tool.inputSchema } }
+    // https://platform.openai.com/docs/guides/function-calling
+    throw new Error("Not implemented");
   }
 
   async callTool(toolName: string, toolArgs: Record<string, unknown>): Promise<unknown> {
-    console.log(`    Calling \`${toolName}\` with`, toolArgs);
-    const result = await this.client.callTool({ name: toolName, arguments: toolArgs });
-    const content = result.content[0];
-    console.log(`    ⚙️:`, content, "\n");
-    if (content && "text" in content) return content.text;
-    return content;
+    // TODO:
+    // 1. Log: `    Calling \`${toolName}\` with` and toolArgs
+    // 2. Call this.client.callTool({ name: toolName, arguments: toolArgs })
+    // 3. Get content at index 0 from result.content
+    // 4. Log: `    ⚙️:` content
+    // 5. If content has a "text" property return content.text, else return content
+    throw new Error("Not implemented");
   }
 
   async getResources(): Promise<Resource[]> {
-    const result = await this.client.listResources();
-    return result.resources;
+    // TODO:
+    // Wrap in try/catch (not all MCP servers have resources):
+    //   Call this.client.listResources() and return result.resources
+    //   On error: print the error and return []
+    throw new Error("Not implemented");
   }
 
   async getResource(uri: string): Promise<string | Uint8Array> {
-    const result = await this.client.readResource({ uri });
-    const content = result.contents[0];
-    if ("text" in content) return content.text;
-    if ("blob" in content) return Buffer.from(content.blob, "base64");
-    throw new Error(`Unexpected resource content type`);
+    // TODO:
+    // 1. Call this.client.readResource({ uri }) and get contents[0]
+    // 2. If content has "text" return content.text
+    // 3. If content has "blob" return Buffer.from(content.blob, "base64")
+    // 4. Otherwise throw an error
+    throw new Error("Not implemented");
   }
 
   async getPrompts(): Promise<Prompt[]> {
-    const result = await this.client.listPrompts();
-    return result.prompts;
+    // TODO:
+    // Wrap in try/catch (not all MCP servers have prompts):
+    //   Call this.client.listPrompts() and return result.prompts
+    //   On error: print the error and return []
+    throw new Error("Not implemented");
   }
 
   async getPrompt(name: string): Promise<string> {
-    const result = await this.client.getPrompt({ name });
-    const msg = result.messages[0];
-    if (msg && typeof msg.content === "object" && "text" in msg.content) {
-      return msg.content.text;
-    }
-    return String(msg?.content ?? "");
+    // TODO:
+    // 1. Call this.client.getPrompt({ name })
+    // 2. Iterate through result.messages and build a combined string:
+    //    - if message.content has a "text" property: append content.text + "\n"
+    //    - otherwise: append String(message.content) + "\n"
+    // 3. Return the combined string
+    throw new Error("Not implemented");
   }
 }

@@ -27,14 +27,11 @@ export abstract class BaseAgent {
     tools: BaseTool[] = [],
     systemPrompt?: string,
   ) {
-    if (!apiKey || apiKey.trim() === "") {
-      throw new Error("API key cannot be null or empty");
-    }
-
-    this._model = model;
-    this._apiKey = apiKey;
-    this._systemPrompt = systemPrompt;
-    this._toolsDict = Object.fromEntries(tools.map((t) => [t.name, t]));
+    //TODO:
+    // 1. Validate `apiKey` — throw Error("API key cannot be null or empty") if it is empty or blank
+    // 2. Assign this._model, this._apiKey, this._systemPrompt
+    // 3. Build this._toolsDict as { tool.name: tool } for each tool in tools
+    throw new Error("Not implemented");
   }
 
   /**

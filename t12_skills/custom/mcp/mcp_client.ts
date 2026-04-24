@@ -17,18 +17,28 @@ export class T12MCPClient {
   }
 
   async connect(): Promise<void> {
-    // TODO
+    this.transport = new StreamableHTTPClientTransport(new URL(this.mcpServerUrl));
+    await this.client.connect(this.transport);
   }
 
   async getTools(): Promise<MCPToolModel[]> {
-    // TODO
+    const result = await this.client.listTools();
+    return result.tools.map((tool) => ({
+      name: tool.name,
+      description: tool.description ?? "",
+      parameters: tool.inputSchema as Record<string, unknown>,
+    }));
   }
 
   async callTool(name: string, args: Record<string, unknown>): Promise<string> {
-    // TODO
+    const result = await this.client.callTool({ name, arguments: args }) as { content: { type: string; text?: string }[] };
+    if (!result.content || result.content.length === 0) return "";
+    const content = result.content[0];
+    if (content.type === "text") return content.text ?? "";
+    return JSON.stringify(content);
   }
 
   async close(): Promise<void> {
-    // TODO
+    await this.client.close();
   }
 }

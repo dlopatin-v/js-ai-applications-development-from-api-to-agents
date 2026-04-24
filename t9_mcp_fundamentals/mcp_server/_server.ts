@@ -1,104 +1,11 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import * as fs from "fs";
-import * as path from "path";
 import { UserServiceClient } from "../../commons/user_service/client.js";
 import { userSearchSchema } from "../../commons/user_service/user_info.js";
 
 const userClient = new UserServiceClient();
 
-export function createServer(): McpServer {
-  const server = new McpServer({
-    name: "users-management-mcp-server",
-    version: "1.0.0",
-  });
-
-// ==================== EXISTING TOOLS ====================
-
-server.registerTool(
-  "get_user_by_id",
-  {
-    description: "Provides full user information by user_id",
-    inputSchema:
-      { user_id: z.number().int().describe("The user ID to look up") },
-  },
-  async ({ user_id }) => {
-    const result = await userClient.getUser(user_id);
-    return { content: [{ type: "text", text: String(result) }] };
-  }
-);
-
-server.registerTool(
-  "delete_user",
-  {
-    description: "Deletes user by user_id",
-    inputSchema:
-      { user_id: z.number().int().describe("The user ID to delete") },
-  },
-  async ({ user_id }) => {
-    const result = await userClient.deleteUser(user_id);
-    return { content: [{ type: "text", text: String(result) }] };
-  }
-);
-
-// ==================== TODO: Implement the remaining tools ====================
-
-// TODO: Register the "search_user" tool
-//       - Description: "Searches for users by name, surname, email and gender"
-//       - Input schema: use userSearchSchema.shape from user_info.ts
-//       - Handler: call userClient.searchUsers(args) and return { content: [{ type: "text", text: String(result) }] }
-
-// TODO: Register the "add_user" tool
-//       - Description: "Adds new user into the system"
-//       - Input schema: name, surname, email (required); about_me, phone, date_of_birth, gender, company, salary (optional)
-//       - Handler: call userClient.addUser(args) and return { content: [{ type: "text", text: String(result) }] }
-
-// TODO: Register the "update_user" tool
-//       - Description: "Updates user by user_id"
-//       - Input schema: user_id (required int); plus the same optional fields as add_user
-//       - Handler: destructure user_id from args, call userClient.updateUser(user_id, updateData)
-//                  and return { content: [{ type: "text", text: String(result) }] }
-
-// ==================== MCP RESOURCES ====================
-
-server.registerResource(
-  "flow-diagram",
-  "users-management://flow-diagram",
-  { mimeType: "image/png", description: "The Users Management Service flow diagram as PNG image" },
-  async () => {
-    const imagePath = path.join(__dirname, "..", "flow.png");
-
-    if (!fs.existsSync(imagePath)) {
-      throw new Error("flow.png not found");
-    }
-
-    const imageBytes = fs.readFileSync(imagePath);
-    return {
-      contents: [
-        {
-          uri: "users-management://flow-diagram",
-          mimeType: "image/png",
-          blob: imageBytes.toString("base64"),
-        },
-      ],
-    };
-  }
-);
-
-// ==================== MCP PROMPTS ====================
-
-server.registerPrompt(
-  "user_search_assistant_prompt",
-  {
-    description: "Helps users formulate effective search queries",
-  },
-  async () => ({
-    messages: [
-      {
-        role: "user",
-        content: {
-          type: "text",
-          text: `
+const USER_SEARCH_ASSISTANT_PROMPT = `
 You are helping users search through a dynamic user database. The database contains 
 realistic synthetic user profiles with the following searchable fields:
 
@@ -130,12 +37,10 @@ realistic synthetic user profiles with the following searchable fields:
 - Partial names: Cast wider nets for common names
 
 ## Example Search Patterns
-\`\`\`
 "Find all Johns" → name="john"
 "Gmail users named Smith" → email="gmail" + surname="smith"  
 "Female users with company emails" → gender="female" + email="company"
 "Users with Johnson surname" → surname="johnson"
-\`\`\`
 
 ## Tips for Better Results
 1. Start broad, then narrow down
@@ -146,25 +51,9 @@ realistic synthetic user profiles with the following searchable fields:
 
 When helping users search, suggest multiple search strategies and explain 
 why certain approaches might be more effective for their goals.
-`,
-        },
-      },
-    ],
-  })
-);
+`;
 
-server.registerPrompt(
-  "user_profile_creation_prompt",
-  {
-    description: "Guides creation of realistic user profiles",
-  },
-  async () => ({
-    messages: [
-      {
-        role: "user",
-        content: {
-          type: "text",
-          text: `
+const USER_PROFILE_CREATION_PROMPT = `
 You are helping create realistic user profiles for the system. Follow these guidelines 
 to ensure data consistency and realism.
 
@@ -232,13 +121,68 @@ When creating profiles, aim for diversity in:
 - Age distribution  
 - Interest variety
 - Socioeconomic backgrounds
-- Cultural backgrounds
-`,
-        },
-      },
-    ],
-  })
-);
+- Cultural backgrounds`;
 
-  return server;
+export function createServer(): McpServer {
+// TODO:
+// 1. Create instance of FastMCP as `mcp` (or another name if you wish) with:
+//       - name is "users-management-mcp-server",
+//       - host is "0.0.0.0",
+//       - port is 8005,
+// 2. Create UserServiceClient
+
+// ==================== TODO: Implement the tools ====================
+
+// TODO: Register the "get_user_by_id" tool
+//       - Description: "Provides full user information by user_id"
+//       - Input schema: user_id (required int)
+//       - Handler: call userClient.getUser(user_id) and return { content: [{ type: "text", text: String(result) }] }
+
+// TODO: Register the "delete_user" tool
+//       - Description: "Deletes user by user_id"
+//       - Input schema: user_id (required int)
+//       - Handler: call userClient.deleteUser(user_id) and return { content: [{ type: "text", text: String(result) }] }
+
+// TODO: Register the "search_user" tool
+//       - Description: "Searches for users by name, surname, email and gender"
+//       - Input schema: use userSearchSchema.shape from user_info.ts
+//       - Handler: call userClient.searchUsers(args) and return { content: [{ type: "text", text: String(result) }] }
+
+// TODO: Register the "add_user" tool
+//       - Description: "Adds new user into the system"
+//       - Input schema: name, surname, email (required); about_me, phone, date_of_birth, gender, company, salary (optional)
+//       - Handler: call userClient.addUser(args) and return { content: [{ type: "text", text: String(result) }] }
+
+// TODO: Register the "update_user" tool
+//       - Description: "Updates user by user_id"
+//       - Input schema: user_id (required int); plus the same optional fields as add_user
+//       - Handler: destructure user_id from args, call userClient.updateUser(user_id, updateData)
+//                  and return { content: [{ type: "text", text: String(result) }] }
+
+// ==================== MCP RESOURCES ====================
+
+// TODO: Register a resource that provides the flow diagram image.
+//       https://modelcontextprotocol.io/docs/concepts/resources
+//       - Resource name: "flow-diagram"
+//       - URI: "users-management://flow-diagram"
+//       - mimeType: "image/png"
+//       - Description: "The Users Management Service flow diagram as PNG image"
+//       - Handler: read flow.png from the mcp_server folder and return it as base64 blob
+
+// ==================== MCP PROMPTS ====================
+
+// TODO: Register two static prompts that clients can fetch.
+//       https://modelcontextprotocol.io/docs/concepts/prompts
+//       - Prompts are already prepared below — return them with appropriate descriptions.
+//
+// Prompt 1 — "user_search_assistant_prompt"
+//   Description: "Helps users formulate effective search queries"
+//   Text: use const USER_SEARCH_ASSISTANT_PROMPT.
+//
+// Prompt 2 — "user_profile_creation_prompt"
+//   Description: "Guides creation of realistic user profiles"
+//   Text: use const user_profile_creation_prompt
+//
+
+  throw Error('Not implemented');
 }

@@ -6,63 +6,17 @@ import { MCPClient, ToolSchema } from "./clients/mcp_client.js";
 import { CustomMCPClient } from "./clients/custom_mcp_client.js";
 import { CustomAgentMCP } from "./agent.js";
 
-async function collectTools(
-  client: MCPClient | CustomMCPClient,
-  tools: ToolSchema[],
-  toolNameClientMap: Map<string, MCPClient | CustomMCPClient>
-): Promise<void> {
-  const clientTools = await client.getTools();
-  for (const tool of clientTools) {
-    tools.push(tool);
-    toolNameClientMap.set(tool.function.name, client);
-    console.log(JSON.stringify(tool, null, 2));
-  }
-}
-
 async function main(): Promise<void> {
-  const tools: ToolSchema[] = [];
-  const toolNameClientMap = new Map<string, MCPClient | CustomMCPClient>();
-
-  const umsMcpClient = await MCPClient.create("http://localhost:8006/mcp");
-  await collectTools(umsMcpClient, tools, toolNameClientMap);
-
-  const fetchMcpClient = await CustomMCPClient.create("https://remote.mcpservers.org/fetch/mcp");
-  await collectTools(fetchMcpClient, tools, toolNameClientMap);
-
-  const agent = new CustomAgentMCP({
-    apiKey: OPENAI_API_KEY,
-    model: "gpt-4.1",
-    tools,
-    toolNameClientMap,
-  });
-
-  const messages: Message[] = [
-    new Message(
-      Role.SYSTEM,
-      "You are an advanced AI agent. Your goal is to assist user with his questions."
-    ),
-  ];
-
-  const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
-
-  console.log("MCP-based Agent is ready! Type your query or 'exit' to exit.");
-
-  const ask = (): void => {
-    rl.question("\n> ", async (userInput) => {
-      const trimmed = userInput.trim();
-      if (trimmed.toLowerCase() === "exit") {
-        rl.close();
-        return;
-      }
-
-      messages.push(new Message(Role.USER, trimmed));
-      const aiMessage = await agent.getCompletion(messages);
-      messages.push(aiMessage);
-      ask();
-    });
-  };
-
-  ask();
+  // TODO:
+  // 1. Create an empty tools array and an empty toolNameClientMap (tool name → client)
+  // 2. Create UMS MCPClient for "http://localhost:8006/mcp" (use static create(), it's async)
+  //    and collect its tools into tools + toolNameClientMap
+  // 3. Create CustomMCPClient for "https://remote.mcpservers.org/fetch/mcp" (same pattern)
+  //    and collect its tools into tools + toolNameClientMap
+  // 4. Create CustomAgentMCP with apiKey, model, tools, toolNameClientMap
+  // 5. Create messages array with a system Message instructing the LLM to help the user
+  // 6. Run a simple console chat loop (same pattern as previous tasks)
+  throw new Error("Not implemented");
 }
 
 main();

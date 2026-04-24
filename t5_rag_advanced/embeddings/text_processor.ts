@@ -39,10 +39,10 @@ export class TextProcessor {
   //  Hint 1: Euclidean distance `<->`, Cosine distance `<=>`
   //  Hint 2: Filter by distance in WHERE clause; ORDER BY distance LIMIT topK
   //
-  // SELECT text, embedding <-> '[0.23, -0.45, ...]'::vector AS distance
-  // FROM vectors
-  // WHERE embedding <-> '[0.23, -0.45, ...]'::vector <= {maxDistance}
-  // ORDER BY distance
-  // LIMIT {topK};
-
 }
+
+// SELECT text, embedding <-> '[0.23, -0.45, ...]'::vector AS distance
+// FROM vectors
+// WHERE embedding <-> '[0.23, -0.45, ...]'::vector <= {maxDistance}
+// ORDER BY distance
+// LIMIT {topK};

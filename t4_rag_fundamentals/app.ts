@@ -8,16 +8,18 @@ import { TextLoader } from "@langchain/classic/document_loaders/fs/text";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import { OPENAI_API_KEY } from "../commons";
 
-// @TODO:
-// Create a system prompt string that:
-//   1. Defines the assistant's role: a RAG-powered microwave manual assistant
-//   2. Describes the structure of the user message:
-//       - `RAG CONTEXT`: retrieved document chunks relevant to the query
-//       - `USER QUESTION`: the actual user question
-//   3. Instructions:
-//       - Answer ONLY using information from `RAG CONTEXT` and conversation history
-//       - If the answer is not found in `RAG CONTEXT`, clearly say you cannot answer
-const SYSTEM_PROMPT = `NEED_TO_IMPLEMENT`;
+const SYSTEM_PROMPT = `You are a RAG-powered assistant that assists users with their questions about microwave usage.
+            
+## Structure of User message:
+\`RAG CONTEXT\` - Retrieved documents relevant to the query.
+\`USER QUESTION\` - The user's actual question.
+
+## Instructions:
+- Use information from \`RAG CONTEXT\` as context when answering the \`USER QUESTION\`.
+- Cite specific sources when using information from the context.
+- Answer ONLY based on conversation history and RAG context.
+- If no relevant information exists in \`RAG CONTEXT\` or conversation history, state that you cannot answer the question.
+`;
 
 // Template that combines retrieved context and the user question into one string
 const getUserPrompt = (context: string, query: string) => `##RAG CONTEXT:

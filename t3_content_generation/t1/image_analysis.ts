@@ -4,12 +4,12 @@ import { OpenAIClientT3 } from "../_openai_client";
 import { OPENAI_HOST } from "../../commons";
 
 // https://platform.openai.com/docs/guides/vision?format=url
-// https://platform.openai.com/docs/guides/vision?format=base64-encoded
+// https://developers.openai.com/api/docs/guides/images-vision?lang=javascript
 
 function encodeImage(imagePath: string): string {
   // TODO:
   // Function to encode image to base64 you can find in documentation
-  // https://platform.openai.com/docs/guides/vision?format=base64-encoded
+  // https://developers.openai.com/api/docs/guides/images-vision?lang=javascript
   // 1. Read the file as a Buffer using fs.readFileSync(imagePath)
   // 2. Convert to base64 string using buffer.toString("base64")
   // 3. Return the base64 string

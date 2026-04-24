@@ -36,22 +36,14 @@ ${query}
 //  - endpoint: OPENAI_EMBEDDINGS_ENDPOINT
 //  - modelName: 'text-embedding-3-small'
 //  - apiKey: OPENAI_API_KEY
-const embeddingClient = new EmbeddingsClient(
-  OPENAI_EMBEDDINGS_ENDPOINT,
-  'text-embedding-3-small',
-  OPENAI_API_KEY
-);
+const embeddingClient = new EmbeddingsClient();
 
 // TODO:
 //  Initialize ChatCompletionClient with:
 //  - endpoint: OPENAI_CHAT_COMPLETIONS_ENDPOINT
 //  - modelName: 'gpt-5.2'
 //  - apiKey: OPENAI_API_KEY
-const completionClient = new ChatCompletionClient(
-  OPENAI_CHAT_COMPLETIONS_ENDPOINT,
-  'gpt-5.2',
-  OPENAI_API_KEY
-);
+const completionClient = new ChatCompletionClient();
 
 const textProcessor = new TextProcessor(embeddingClient, {
   'host': 'localhost',
@@ -101,7 +93,7 @@ async function main() {
     //  - searchMode: SearchMode.EUCLIDIAN_DISTANCE (or COSINE_DISTANCE — experiment!)
     //  - userRequest: userRequest
     //  - topK: 5 (limit of searched results in VectorDB; experiment with different numbers)
-    //  - scoreThreshold: 0.01 (experiment: 0.1 → 0.99)
+    //  - scoreThreshold: 0.5 (experiment: 0.1 → 0.99)
     //  - dimensions: 384
     const context = null;
 

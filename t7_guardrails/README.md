@@ -10,7 +10,16 @@ break it — and then protect it.
 > of an attack and reduce the attack surface — but a determined attacker with enough creativity can often find
 > a way through. The goal is to make your AI application significantly harder to exploit, not perfectly invulnerable.
 
-**Run any file with:** `npm run ts <path/to/file.ts>`
+**Run from the repository root:**
+
+| Task | Command |
+|---|---|
+| Task 1 — System Prompt Hardening | `npm run t7:prompt-injection` |
+| Task 2 — Input Validation | `npm run t7:input-validation` |
+| Task 3 — Output Validation | `npm run t7:output-validation` |
+| Task 4 — Streaming PII Guardrail | `npm run t7:streaming-pii` |
+
+### If the task in the main branch is hard for you, switch to the `main-detailed` branch
 
 ## Learning Goals
 

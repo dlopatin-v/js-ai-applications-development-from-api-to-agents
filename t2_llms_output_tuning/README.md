@@ -3,9 +3,18 @@
 In this task, you will experiment with output tuning parameters across different AI providers. The goal is to understand
 how parameters like temperature, top_p, structured output, reasoning/thinking, and others affect model responses.
 
+**Run from the repository root:**
+
+| Task | Command |
+|---|---|
+| OpenAI Chat Completions | `npm run t2:openai-chat` |
+| OpenAI Responses API | `npm run t2:openai-responses` |
+| Anthropic | `npm run t2:anthropic` |
+| Gemini | `npm run t2:gemini` |
+
 ---
 
-🚨 The task is the same as in `main` branch 🚨
+### If the task in the main branch is hard for you, switch to the `main-detailed` branch
 
 ---
 

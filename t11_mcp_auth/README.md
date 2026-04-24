@@ -14,6 +14,10 @@ By exploring and working with this project, you will learn:
 
 ---
 
+### If the task in the main branch is hard for you, switch to the `main-detailed` branch
+
+---
+
 ## Infrastructure Setup
 
 ### 1. Stop previous User Service (if running)
@@ -21,7 +25,7 @@ By exploring and working with this project, you will learn:
 If you have the User Service container running from a previous task, **stop it first** to avoid port conflicts:
 
 ```bash
-docker compose down
+docker-compose down
 ```
 
 ### 2. Start services
@@ -29,7 +33,7 @@ docker compose down
 From the `t11_mcp_auth/` directory:
 
 ```bash
-docker compose up
+docker-compose up
 ```
 
 This starts:
@@ -212,7 +216,7 @@ The server listens on **`http://localhost:8008/mcp`**.
 
 ### 3. Implement OAuth MCP Client
 
-Open [`agent/mcp_clients/oauthMcpClient.ts`](agent/mcp_clients/oauthMcpClient.ts) and implement all **TODO**.
+Open [`agent/mcp_clients/oath_mcp_client.ts`](agent/mcp_clients/oauthMcpClient.ts) and implement all **TODO**.
 
 The client should:
 

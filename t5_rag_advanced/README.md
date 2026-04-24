@@ -2,6 +2,14 @@
 
 A JS/TS implementation task to build a complete RAG system for microwave manual assistance using PostgreSQL with pgvector extension and OpenAI API
 
+**Run from the repository root:**
+
+```bash
+npm run t5
+```
+
+---
+
 ## Learning Goals
 
 By completing this task, you will learn:
@@ -172,7 +180,7 @@ volumes:
 #### Step 2: Start all services and pull the model
 
 ```bash
-docker compose down && docker compose up -d
+docker-compose down && docker-compose up -d
 ```
 
 `ollama-init` will automatically pull `nomic-embed-text` after Ollama starts.

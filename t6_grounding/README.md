@@ -3,6 +3,17 @@
 A comprehensive TypeScript implementation demonstrating different approaches to grounding AI systems with external data sources.
 This task explores three distinct grounding strategies for user search and retrieval systems.
 
+**Run from the repository root:**
+
+| Task | Command |
+|---|---|
+| No Grounding | `npm run t6:no-grounding` |
+| Input Grounding — API-based | `npm run t6:input-api` |
+| Input Grounding — Vector-based | `npm run t6:input-vector` |
+| Input-Output Grounding | `npm run t6:in-out` |
+
+---
+
 ## Learning Goals
 
 By exploring this project, you will learn:

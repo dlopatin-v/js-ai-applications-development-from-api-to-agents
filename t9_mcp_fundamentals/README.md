@@ -62,11 +62,12 @@ Service.
 ### 1. Create and run Agent with STDIO MCP Client:
 
 1. Open [STDIO mcp_client](agent/mcp_clients/stdio.ts) and implement all ***TODO***
-2. Open [app](agent/app.ts) and instead of HttpMCPClient client use this one:
-    ```ts
-    new StdioMCPClient({
-        command: "npx",
-        args: ["tsx", "t9_mcp_fundamentals/mcp_server/stdio_server.ts"]
+2. Open [app](agent/app.ts) and instead of `HttpMCPClient` use this one:
+    ```typescript
+    const mcpClient: MCPClient = new StdioMCPClient({
+        command: "npm",
+        args: ["run", "ts", path.join(__dirname, "..", "mcp_server", "stdio_server.ts")],
+        env: { ...process.env } as Record<string, string>,
     });
     ```
 3. Run application [app.ts](agent/app.ts) and test that it is connecting to STDIO MCP Server and works properly
@@ -95,10 +96,7 @@ Open the file (create it if it doesn't exist) and add your server:
       "args": [
         "tsx",
         "{ABSOLUTE_PATH}/js-ai-applications-development-from-api-to-agents/t9_mcp_fundamentals/mcp_server/stdio_server.ts"
-      ],
-      "env": {
-        "OPENAI_API_KEY": "<your-openai-api-key>"
-      }
+      ]
     }
   }
 }
@@ -107,8 +105,7 @@ Open the file (create it if it doesn't exist) and add your server:
 **Important notes:**
 
 - Don't forget to replace `{ABSOLUTE_PATH}` with the absolute path to the project on your local machine
-- Make sure `npx` and `tsx` are available (they are — `tsx` is a dev dependency in this project)
-- Pass any required environment variables (e.g. `OPENAI_API_KEY`) in the `env` block
+- Make sure `npx` resolves to the correct Node.js installation
 
 
 <details> 
@@ -121,11 +118,8 @@ Open the file (create it if it doesn't exist) and add your server:
       "command": "npx",
       "args": [
         "tsx",
-        "/Users/yourname/projects/js-ai-applications-development-from-api-to-agents/t9_mcp_fundamentals/mcp_server/stdio_server.ts"
-      ],
-      "env": {
-        "OPENAI_API_KEY": "sk-..."
-      }
+        "/Users/<your_usrename>/dialx/courses/js-ai-applications-development-from-api-to-agents/t9_mcp_fundamentals/mcp_server/stdio_server.ts"
+      ]
     }
   }
 }
@@ -153,8 +147,8 @@ Configuration is the same as you have for Claude 👆
 ### 2. Play with STDIO MCP Servers from docker images:
 
 1. Use such mcp_client:
-    ```ts
-    new StdioMCPClient({ dockerImage: "mcp/duckduckgo:latest" });
+    ```typescript
+    const mcpClient: MCPClient = new StdioMCPClient({ dockerImage: "mcp/duckduckgo:latest" });
     ```
 2. It is an MCP Server with WEB Search capabilities, [source code](https://github.com/khshanovskyi/duckduckgo-mcp-server)
-3. Try to search `Wthat is the weather in Kyiv now?`
+3. Try to search `What is the weather in Kyiv now?`

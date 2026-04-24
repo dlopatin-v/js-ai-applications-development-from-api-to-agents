@@ -20,27 +20,23 @@ Your implementation will demonstrate the complete RAG workflow:
 
 ## Setup
 
-```bash
-npm install
-```
-
 Run the application:
 
 ```bash
-npm run ts t4_rag_fundamentals/app.ts
+npm run t4
 ```
 
 ---
 
 ## Task
 
-### If the task on the `main` branch is hard, switch to `main-detailed` for step-by-step guidance.
+### If the task in the main branch is hard for you, switch to the `main-detailed` branch
 
-- OpenAI Embeddings API: https://platform.openai.com/docs/guides/embeddings
-- LangChain OpenAI Embeddings: https://js.langchain.com/docs/integrations/text_embedding/openai
-- LangChain ChatOpenAI: https://js.langchain.com/docs/integrations/chat/openai
-- LangChain FAISS: https://js.langchain.com/docs/integrations/vectorstores/faiss
-- LangChain RecursiveCharacterTextSplitter: https://js.langchain.com/docs/concepts/text_splitters
+- OpenAI Embeddings API: https://developers.openai.com/api/docs/guides/embeddings
+- LangChain OpenAI Embeddings: https://docs.langchain.com/oss/javascript/integrations/embeddings
+- LangChain ChatOpenAI: https://docs.langchain.com/oss/javascript/integrations/chat#openai
+- LangChain FAISS: https://docs.langchain.com/oss/javascript/langchain/knowledge-base#faiss
+- LangChain RecursiveCharacterTextSplitter: https://docs.langchain.com/oss/javascript/langchain/knowledge-base#splitting
 
 Complete the implementation in [app.ts](app.ts) by filling in all the `TODO` sections:
 

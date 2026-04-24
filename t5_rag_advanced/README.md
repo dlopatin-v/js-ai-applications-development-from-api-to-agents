@@ -10,6 +10,8 @@ npm run t5
 
 ---
 
+## Learning Goals
+
 By completing this task, you will learn:
 - How to implement the complete RAG pipeline: **Retrieval**, **Augmentation**, and **Generation**
 - How to work with vector embeddings and similarity search using PostgreSQL with pgvector
@@ -178,7 +180,7 @@ volumes:
 #### Step 2: Start all services and pull the model
 
 ```bash
-docker compose down && docker compose up -d
+docker-compose down && docker-compose up -d
 ```
 
 `ollama-init` will automatically pull `nomic-embed-text` after Ollama starts.

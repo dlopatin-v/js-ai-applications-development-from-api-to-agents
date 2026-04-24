@@ -12,6 +12,8 @@ This task demonstrates the full MCP workflow from server implementation to clien
 
 ---
 
+## Learning Goals
+
 By completing this task, you will learn:
 
 - **MCP Protocol Implementation**: Understand the Model Context Protocol specification and JSON-RPC communication

@@ -5,12 +5,16 @@ how parameters like temperature, top_p, structured output, reasoning/thinking, a
 
 **Run from the repository root:**
 
-| Provider | Command |
+| Task | Command |
 |---|---|
 | OpenAI Chat Completions | `npm run t2:openai-chat` |
 | OpenAI Responses API | `npm run t2:openai-responses` |
 | Anthropic | `npm run t2:anthropic` |
 | Gemini | `npm run t2:gemini` |
+
+---
+
+### If the task in the main branch is hard for you, switch to the `main-detailed` branch
 
 ---
 

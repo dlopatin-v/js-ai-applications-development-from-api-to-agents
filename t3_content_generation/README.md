@@ -8,11 +8,15 @@ and audio. The goal is to understand how to work with vision models, image gener
 | Task | Command |
 |---|---|
 | Image Analysis | `npm run t3:image-analysis` |
-| DALL-E Image Generation | `npm run t3:dalle` |
-| GPT Image Generation | `npm run t3:gpt-image` |
+| DALL-E 3 Image Generation | `npm run t3:dalle` |
+| GPT Image 1 Generation | `npm run t3:gpt-image` |
 | Speech to Text | `npm run t3:speech-to-text` |
 | Text to Speech | `npm run t3:text-to-speech` |
 | Speech to Speech | `npm run t3:speech-to-speech` |
+
+---
+
+### If the task in the main branch is hard for you, switch to the `main-detailed` branch
 
 ---
 

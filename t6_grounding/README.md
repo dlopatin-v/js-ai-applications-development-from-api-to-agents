@@ -5,14 +5,16 @@ This task explores three distinct grounding strategies for user search and retri
 
 **Run from the repository root:**
 
-| Strategy | Command |
+| Task | Command |
 |---|---|
 | No Grounding | `npm run t6:no-grounding` |
-| Input — API-based | `npm run t6:input-api` |
-| Input — Vector-based | `npm run t6:input-vector` |
+| Input Grounding — API-based | `npm run t6:input-api` |
+| Input Grounding — Vector-based | `npm run t6:input-vector` |
 | Input-Output Grounding | `npm run t6:in-out` |
 
 ---
+
+## Learning Goals
 
 By exploring this project, you will learn:
 - Different approaches to AI grounding: **No Grounding**, **Input Grounding**, and **Input-Output Grounding**

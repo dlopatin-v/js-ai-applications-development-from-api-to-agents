@@ -14,10 +14,12 @@ break it — and then protect it.
 
 | Task | Command |
 |---|---|
-| Task 1 — Prompt Injection | `npm run t7:prompt-injection` |
+| Task 1 — System Prompt Hardening | `npm run t7:prompt-injection` |
 | Task 2 — Input Validation | `npm run t7:input-validation` |
 | Task 3 — Output Validation | `npm run t7:output-validation` |
-| Task 4 — Streaming PII | `npm run t7:streaming-pii` |
+| Task 4 — Streaming PII Guardrail | `npm run t7:streaming-pii` |
+
+### If the task in the main branch is hard for you, switch to the `main-detailed` branch
 
 ## Learning Goals
 

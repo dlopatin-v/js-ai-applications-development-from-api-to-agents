@@ -9,49 +9,22 @@ import { OauthMCPClient } from "./mcp_clients/oauth_mcp_client.js";
 const MCP_API_KEY = "dev-secret-key";
 
 async function main(): Promise<void> {
-  // const mcpClient = new ApiKeyMCPClient("http://localhost:8007/mcp", MCP_API_KEY);
-  const mcpClient = new OauthMCPClient("http://localhost:8008/mcp");
-  await mcpClient.connect();
-
-  console.log("\n=== Available Tools ===");
-  const tools = await mcpClient.getTools();
-  for (const tool of tools) {
-    console.log(JSON.stringify(tool, null, 2));
-  }
-
-  const agent = new AgentMCPAuth({
-    apiKey: OPENAI_API_KEY,
-    model: "gpt-4o",
-    tools,
-    mcpClient,
-  });
-
-  const messages: Message[] = [
-    new Message(Role.SYSTEM, DEFAULT_SYSTEM_PROMPT),
-  ];
-
-  console.log("MCP-based Agent is ready! Type your query or 'exit' to exit.");
-
-  const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
-
-  const askQuestion = (): void => {
-    rl.question("\n> ", async (userInput) => {
-      userInput = userInput.trim();
-      if (userInput.toLowerCase() === "exit") {
-        rl.close();
-        await mcpClient.disconnect();
-        return;
-      }
-
-      messages.push(new Message(Role.USER, userInput));
-      const aiMessage = await agent.getCompletion(messages);
-      messages.push(aiMessage);
-
-      askQuestion();
-    });
-  };
-
-  askQuestion();
+  //TODO:
+  // 1. Create an mcpClient and connect — choose ONE option (uncomment and use it):
+  //       - new ApiKeyMCPClient("http://localhost:8007/mcp", MCP_API_KEY)
+  //       - new OauthMCPClient("http://localhost:8008/mcp")
+  //    Call await mcpClient.connect()
+  // 2. Print "\n=== Available Tools ===" and fetch tools via mcpClient.getTools(),
+  //    assign to `tools`; iterate and print each with JSON.stringify(tool, null, 2)
+  // 3. Create an AgentMCPAuth instance with:
+  //       apiKey: OPENAI_API_KEY, model: "gpt-4o", tools, mcpClient
+  //    assign to `agent`
+  // 4. Create initial `messages` array with a single new Message(Role.SYSTEM, DEFAULT_SYSTEM_PROMPT)
+  // 5. Print "MCP-based Agent is ready! Type your query or 'exit' to exit."
+  //    Run a readline loop: read user input, break on "exit",
+  //    push new Message(Role.USER, userInput) to messages,
+  //    call await agent.getCompletion(messages), push result to messages
+  throw new Error("Not implemented");
 }
 
 main().catch(console.error);

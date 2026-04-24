@@ -1,6 +1,6 @@
 import OpenAI from "openai";
-import { Message } from "../../commons/models/message.js";
-import { Role } from "../../commons/models/role.js";
+import { Message } from "commons/models/message";
+import { Role } from "commons/models/role";
 import { T11MCPClient, ToolSchema } from "./mcp_clients/_base.js";
 
 interface ToolCallDelta {
@@ -28,43 +28,89 @@ export class AgentMCPAuth {
     this.mcpClient = options.mcpClient;
   }
 
-  /**
-   * Merges streaming tool-call deltas into a complete list of tool calls.
-   * @param toolDeltas - Partial tool-call chunks accumulated during streaming.
-   * @returns Fully assembled array of ChatCompletionMessageToolCall objects.
-   * Hint: bucket by delta.index; concatenate function.arguments; fill id and type.
-   */
-  private _collectToolCalls(toolDeltas: ToolCallDelta[]): OpenAI.Chat.Completions.ChatCompletionMessageToolCall[] {
-    // TODO
+  private _collectToolCalls(toolDeltas: ToolCallDelta[]): OpenAI.ChatCompletionMessageFunctionToolCall[] {
+    const toolMap: Record<number, { id: string; type: string; function: { name: string; arguments: string } }> = {};
+
+    for (const delta of toolDeltas) {
+      const idx = delta.index;
+      if (!toolMap[idx]) {
+        toolMap[idx] = { id: "", type: "function", function: { name: "", arguments: "" } };
+      }
+      if (delta.id) toolMap[idx].id = delta.id;
+      if (delta.type) toolMap[idx].type = delta.type;
+      if (delta.function?.name) toolMap[idx].function.name = delta.function.name;
+      if (delta.function?.arguments) toolMap[idx].function.arguments += delta.function.arguments;
+    }
+
+    return Object.values(toolMap) as OpenAI.ChatCompletionMessageFunctionToolCall[];
   }
 
-  /**
-   * Streams a chat completion and assembles the full assistant response message.
-   * @param messages - Conversation history to send to the model.
-   * @returns A Message with Role.ASSISTANT, accumulated text content, and any tool calls.
-   * Hint: use openai.chat.completions.stream(); collect content chunks and tool-call deltas.
-   */
-  private async _streamResponse(messages: Message[]): Promise<Message> {
-    // TODO
+  private async _streamResponse(messages: Message[]): Promise<Message<OpenAI.ChatCompletionMessageFunctionToolCall>> {
+    const stream = await this.openai.chat.completions.create({
+      model: this.model,
+      messages: messages as OpenAI.ChatCompletionMessageParam[],
+      tools: this.tools as OpenAI.ChatCompletionTool[],
+      temperature: 0.0,
+      stream: true,
+    });
+
+    let content = "";
+    const toolDeltas: ToolCallDelta[] = [];
+
+    process.stdout.write("🤖: ");
+
+    for await (const chunk of stream) {
+      const delta = chunk.choices[0]?.delta;
+      if (!delta) continue;
+
+      if (delta.content) {
+        process.stdout.write(delta.content);
+        content += delta.content;
+      }
+
+      if (delta.tool_calls) {
+        for (const tc of delta.tool_calls) {
+          toolDeltas.push(tc as ToolCallDelta);
+        }
+      }
+    }
+
+    console.log();
+
+    return new Message(
+      Role.ASSISTANT,
+      content,
+      undefined,
+      undefined,
+      toolDeltas.length > 0 ? this._collectToolCalls(toolDeltas) : []
+    );
   }
 
-  /**
-   * Main entry point for a single conversational turn.
-   * Streams a response; if the model requests tool calls, dispatches them and loops.
-   * @param messages - Full conversation history (mutated in-place with tool results).
-   * @returns The final assistant Message after all tool calls are resolved.
-   */
   async getCompletion(messages: Message[]): Promise<Message> {
-    // TODO
+    const aiMessage = await this._streamResponse(messages);
+
+    if (aiMessage.tool_calls && aiMessage.tool_calls.length > 0) {
+      messages.push(aiMessage);
+      await this._callTools(aiMessage as Message<OpenAI.ChatCompletionMessageFunctionToolCall>, messages);
+      return await this.getCompletion(messages);
+    }
+
+    return aiMessage;
   }
 
-  /**
-   * Executes every tool call from an assistant message and appends results to messages.
-   * @param aiMessage - The assistant message containing tool_calls.
-   * @param messages - Conversation history; new TOOL messages are pushed here.
-   * Hint: call this.mcpClient.callTool(name, args); stringify the result; push a TOOL message.
-   */
-  private async _callTools(aiMessage: Message, messages: Message[]): Promise<void> {
-    // TODO
+  private async _callTools(aiMessage: Message<OpenAI.ChatCompletionMessageFunctionToolCall>, messages: Message[]): Promise<void> {
+    for (const toolCall of aiMessage.tool_calls ?? []) {
+      const toolName = toolCall.function.name;
+      const toolArgs = JSON.parse(toolCall.function.arguments);
+
+      try {
+        const toolResult = await this.mcpClient.callTool(toolName, toolArgs);
+        messages.push(new Message(Role.TOOL, String(toolResult), toolCall.id));
+      } catch (err) {
+        const errorMsg = `Error: ${err}`;
+        console.error(errorMsg);
+        messages.push(new Message(Role.TOOL, errorMsg, toolCall.id));
+      }
+    }
   }
 }

@@ -142,8 +142,12 @@ export class OauthMCPClient extends T11MCPClient {
 
   async callTool(toolName: string, toolArgs: Record<string, unknown>): Promise<unknown> {
     //TODO:
-    // 1. If this.tokenManager.isTokenExpired(), await this._reconnectWithFreshToken()
-    // 2. Return await this._doCallTool(toolName, toolArgs)
+    // 1. If this.transport is null, throw Error("MCP client not connected")
+    // 2. Print `    🔧 Calling \`${toolName}\` with ${JSON.stringify(toolArgs)}`
+    // 3. If this.tokenManager.isTokenExpired():
+    //       - Print "    🔄 Token expired — refreshing and reconnecting..."
+    //       - Await this._reconnectWithFreshToken()
+    // 4. Return await this._doCallTool(toolName, toolArgs)
   }
 
   private async _doCallTool(toolName: string, toolArgs: Record<string, unknown>): Promise<unknown> {

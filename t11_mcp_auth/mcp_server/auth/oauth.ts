@@ -26,11 +26,13 @@ function getJwks() {
 
 export async function checkOAuth(req: http.IncomingMessage, res: http.ServerResponse): Promise<boolean> {
   //TODO:
-  // 1. Extract Authorization header; if missing or not starting with "Bearer ", send 401 and return false
-  // 2. Extract token = header.replace("Bearer ", "")
-  // 3. Try: call jwtVerify(token, getJwks(), { issuer: ISSUER })
-  //    On JWTError: send 401 JSON { error: "Unauthorized", detail: `Invalid token: ${e}` } and return false
-  // 4. Extract realm roles: payload.realm_access?.roles ?? []
-  // 5. If REQUIRED_ROLE not in roles: send 403 JSON { error: "Forbidden", detail: `Role '${REQUIRED_ROLE}' required` } and return false
-  // 6. Log authenticated user and return true
+  // 1. Get auth header = req.headers["authorization"]; if missing or not starting with "Bearer ",
+  //    send 401 JSON { error: "Unauthorized", detail: "Missing or malformed Authorization header" } and return false
+  // 2. Extract token = header.replace("Bearer ", "").trim()
+  // 3. Try: call await jwtVerify(token, getJwks(), { issuer: ISSUER })
+  //    Catch JWTError as e: send 401 JSON { error: "Unauthorized", detail: `Invalid token: ${e}` } and return false
+  // 4. Extract realm roles: (payload as any).realm_access?.roles ?? []  (type: string[])
+  // 5. If REQUIRED_ROLE not in roles: send 403 JSON
+  //    { error: "Forbidden", detail: `Role '${REQUIRED_ROLE}' is required. User has roles: ${roles}` } and return false
+  // 6. Print `✅ Authenticated: ${payload.preferred_username} | roles: ${roles}` and return true
 }

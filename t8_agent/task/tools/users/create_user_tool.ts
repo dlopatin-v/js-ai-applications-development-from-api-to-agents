@@ -1,49 +1,29 @@
-import { UserCreate } from "../../../../commons";
 import { BaseUserServiceTool } from "./base";
 
 export class CreateUserTool extends BaseUserServiceTool {
-  get name() { return "add_user"; }
-  get description() { return "Adds new user"; }
-  get inputSchema() {
-    return {
-      type: "object",
-      properties: {
-        name:          { type: "string", description: "First name" },
-        surname:       { type: "string", description: "Last name" },
-        email:         { type: "string", description: "Email address" },
-        about_me:      { type: "string", description: "Short bio" },
-        phone:         { type: "string", description: "Phone number" },
-        date_of_birth: { type: "string", description: "Date of birth" },
-        gender:        { type: "string", description: "Gender" },
-        company:       { type: "string", description: "Company name" },
-        salary:        { type: "number", description: "Salary" },
-        address: {
-          type: "object",
-          properties: {
-            country:    { type: "string" },
-            city:       { type: "string" },
-            street:     { type: "string" },
-            flat_house: { type: "string" },
-          },
-        },
-        credit_card: {
-          type: "object",
-          properties: {
-            num:      { type: "string" },
-            cvv:      { type: "string" },
-            exp_date: { type: "string" },
-          },
-        },
-      },
-      required: ["name", "surname", "email"],
-    };
+  get name(): string {
+    // TODO: Provide tool name as `add_user`
+    throw new Error("Not implemented");
+  }
+
+  get description(): string {
+    // TODO: Provide description of this tool
+    throw new Error("Not implemented");
+  }
+
+  get inputSchema(): Record<string, unknown> {
+    // TODO: Provide tool params Schema for creating a user.
+    // Required fields: name, surname, email
+    // Optional fields: about_me, phone, date_of_birth, gender, company, salary,
+    //   address (object: country, city, street, flat_house),
+    //   credit_card (object: num, cvv, exp_date)
+    throw new Error("Not implemented");
   }
 
   async execute(args: Record<string, unknown>): Promise<string> {
-    try {
-      return await this.userClient.addUser(args as unknown as UserCreate);
-    } catch (e: any) {
-      return `Error while creating a new user: ${e.message}`;
-    }
+    // TODO:
+    // 1. Call this.userClient.addUser(args) and return the result
+    // 2. Optional: wrap with try/catch and return `Error while creating a new user: ${e.message}`
+    throw new Error("Not implemented");
   }
 }

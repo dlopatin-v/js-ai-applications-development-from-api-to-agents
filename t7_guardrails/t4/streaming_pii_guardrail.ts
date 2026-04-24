@@ -45,45 +45,47 @@ export class StreamingPIIGuardrail {
     this.safetyMargin = safetyMargin;
   }
 
-  /**
-   * Returns a map of named PII pattern entries.
-   *
-   * Each key is a human-readable pattern name; the value is a tuple of
-   * `[RegExp, replacementString]`. Required patterns: ssn, credit_card,
-   * license, bank_account, date, cvv, card_exp, address, currency.
-   */
   private get piiPatterns(): Record<string, [RegExp, string]> {
-    // TODO: Return a map of named PII patterns to their [RegExp, replacement] tuples.
-    // Required patterns: ssn, credit_card, license, bank_account, date, cvv,
-    //   card_exp, address, currency
-    throw new Error("Not implemented");
+    return {
+      ssn: [/\b(\d{3}[-\s]?\d{2}[-\s]?\d{4})\b/gi, "[REDACTED-SSN]"],
+      credit_card: [/\b(?:\d{4}[-\s]?){3}\d{4}\b|\b\d{13,19}\b/gi, "[REDACTED-CREDIT-CARD]"],
+      license: [/\b[A-Z]{2}-DL-[A-Z0-9]+\b/gi, "[REDACTED-LICENSE]"],
+      bank_account: [/\b(?:Bank\s+of\s+\w+\s*[-\s]*)?(?<!\d)(\d{10,12})(?!\d)\b/gi, "[REDACTED-ACCOUNT]"],
+      date: [
+        /\b(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},?\s+\d{4}\b|\b\d{1,2}\/\d{1,2}\/\d{4}\b|\b\d{4}-\d{2}-\d{2}\b/gi,
+        "[REDACTED-DATE]",
+      ],
+      cvv: [/CVV:?\s*\d{3,4}/gi, "CVV: [REDACTED]"],
+      card_exp: [/Exp(?:iry)?:?\s*\d{2}\/\d{2}/gi, "Exp: [REDACTED]"],
+      address: [
+        /\b(\d+\s+[A-Za-z\s]+(?:Street|St\.?|Avenue|Ave\.?|Boulevard|Blvd\.?|Road|Rd\.?|Drive|Dr\.?|Lane|Ln\.?|Way|Circle|Cir\.?|Court|Ct\.?|Place|Pl\.))\b/gi,
+        "[REDACTED-ADDRESS]",
+      ],
+      currency: [/\$[\d,]+\.?\d*/g, "[REDACTED-AMOUNT]"],
+    };
   }
 
-  /**
-   * Applies all `piiPatterns` to `text` and returns the redacted result.
-   *
-   * @param text - The raw text to scan and redact.
-   * @returns The text with all matched PII replaced by their configured labels.
-   */
   private detectAndRedactPii(text: string): string {
-    // TODO: Apply all piiPatterns to `text` and return the redacted result.
-    throw new Error("Not implemented");
+    let cleaned = text;
+    for (const [regex, replacement] of Object.values(this.piiPatterns)) {
+      cleaned = cleaned.replace(regex, replacement);
+    }
+    return cleaned;
   }
 
-  /**
-   * Heuristic check: does the tail of `text` look like an incomplete PII token?
-   *
-   * Used to decide where to split the buffer on each flush — the function
-   * returns `true` if the trailing characters could be the beginning of a
-   * credit card number, SSN, etc., so that the flush waits for more chunks.
-   *
-   * @param text - The text to inspect.
-   * @returns `true` if the end of `text` may be a partial PII token.
-   */
   private hasPotentialPiiAtEnd(text: string): boolean {
-    // TODO: Return true if `text` ends with a partial token that could be PII
-    // (e.g. an incomplete credit card number, partial SSN, etc.).
-    throw new Error("Not implemented");
+    const partialPatterns = [
+      /\d{3}[-\s]?\d{0,2}$/,          // Partial SSN
+      /\d{4}[-\s]?\d{0,4}$/,          // Partial credit card
+      /[A-Z]{1,2}-?D?L?-?[A-Z0-9]*$/, // Partial license
+      /\(?\d{0,3}\)?[-.\s]?\d{0,3}$/, // Partial phone
+      /\$[\d,]*\.?\d*$/,               // Partial currency
+      /\b\d{1,4}\/\d{0,2}$/,          // Partial date
+      /CVV:?\s*\d{0,3}$/i,             // Partial CVV
+      /Exp(?:iry)?:?\s*\d{0,2}$/i,    // Partial expiry
+      /\d+\s+[A-Za-z\s]*$/,           // Partial address
+    ];
+    return partialPatterns.some((p) => p.test(text));
   }
 
   /**

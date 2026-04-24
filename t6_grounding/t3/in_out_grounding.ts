@@ -4,9 +4,8 @@ import { Chroma } from "@langchain/community/vectorstores/chroma";
 import { Document } from "@langchain/core/documents";
 import { zodResponseFormat } from "openai/helpers/zod";
 import { z } from "zod";
-import { OPENAI_API_KEY, Role } from "../../commons";
+import { OPENAI_API_KEY } from "../../commons";
 import { UserServiceClient } from "../user_service_client";
-import * as readline from "node:readline/promises";
 
 /*
  HOBBIES SEARCHER:
@@ -18,38 +17,40 @@ import * as readline from "node:readline/promises";
     camping: [{full user info JSON},...]
 */
 
-const SYSTEM_PROMPT = `You are a RAG-powered assistant that groups users by their hobbies.
+// TODO:
+// Define SYSTEM_PROMPT for the hobby-grouping RAG assistant:
+// - Role: RAG-powered assistant that groups users by their hobbies
+// - Describe the flow step by step:
+//   Step 1: User asks to search users by hobbies
+//   Step 2: Vector store search finds the most relevant users
+//   Step 3: Model receives CONTEXT (most relevant users with ID and info) + USER QUESTION
+//   Step 4: Model groups users by hobby and returns response according to Response Format
+const SYSTEM_PROMPT = "";
 
-## Flow:
-Step 1: User will ask to search users by their hobbies etc.
-Step 2: Will be performed search in the Vector store to find most relevant users.
-Step 3: You will be provided with CONTEXT (most relevant users, there will be user ID and information about user), and 
-        with USER QUESTION.
-Step 4: You group by hobby users that have such hobby and return response according to Response Format
+// TODO:
+// Define USER_PROMPT as a template string with two placeholders:
+// - {context} — the formatted retrieved user data
+// - {query}   — the user's question
+// Use markdown-style section headers (## CONTEXT and ## USER QUESTION)
+const USER_PROMPT = "";
 
-`;
-
-const USER_PROMPT = `## CONTEXT:
-{context}
-
-## USER QUESTION: 
-{query}`;
-
-const getUserPrompt = (context: string, query: string) =>
-  USER_PROMPT.replace("{context}", context).replace("{query}", query);
+// TODO:
+// Implement getUserPrompt(context: string, query: string): string
+// Replace {context} and {query} placeholders in USER_PROMPT with the provided values
+const getUserPrompt = (context: string, query: string): string => "";
 
 const llmClient = new OpenAI({ apiKey: OPENAI_API_KEY });
 
-// --- Zod schemas (mirror Python Pydantic models) ---
+// TODO:
+// Define GroupingResultSchema as a Zod object with two fields:
+// - hobby: z.string() — with description "Hobby. Example: football, painting, horsing, photography, bird watching..."
+// - userIds: z.array(z.number().int()) — with description "List of user IDs that have hobby requested by user."
+const GroupingResultSchema = z.object({});
 
-const GroupingResultSchema = z.object({
-  hobby: z.string().describe("Hobby. Example: football, painting, horsing, photography, bird watching..."),
-  userIds: z.array(z.number().int()).describe("List of user IDs that have hobby requested by user."),
-});
-
-const GroupingResultsSchema = z.object({
-  groupingResults: z.array(GroupingResultSchema).describe("List matching search results."),
-});
+// TODO:
+// Define GroupingResultsSchema as a Zod object with one field:
+// - groupingResults: z.array(GroupingResultSchema) — with description "List matching search results."
+const GroupingResultsSchema = z.object({});
 
 type GroupingResult = z.infer<typeof GroupingResultSchema>;
 type GroupingResults = z.infer<typeof GroupingResultsSchema>;
@@ -57,7 +58,10 @@ type GroupingResults = z.infer<typeof GroupingResultsSchema>;
 // ---
 
 function formatUserDocument(user: Record<string, any>): string {
-  return `User:\n id: ${user["id"]},\nAbout user: ${user["about_me"]}\n`;
+  // TODO:
+  // Return a formatted string including only id and about_me:
+  // `User:\n id: ${user["id"]},\nAbout user: ${user["about_me"]}\n`
+  throw new Error("Not implemented");
 }
 
 function chunkArray<T>(array: T[], size: number): T[][] {
@@ -74,48 +78,59 @@ class InputGrounder {
   readonly ready: Promise<void>;
 
   constructor(private embeddings: OpenAIEmbeddings, llmClient: OpenAI) {
-    this.llmClient = llmClient;
-    this.userService = new UserServiceClient();
-    this.ready = this.initializeVectorstore();
+    // TODO:
+    // - Assign this.llmClient = llmClient
+    // - Assign this.userService = new UserServiceClient()
+    // - Assign this.vectorStore = undefined (or leave unset)
+    // - Assign this.ready = this.initializeVectorstore()
+    throw new Error("Not implemented");
   }
 
   /**
    * Bootstraps the Chroma vector store by fetching all users and embedding them.
    *
-   * Called automatically in the constructor via `this.ready`.
-   * Maps each user to a LangChain `Document` (pageContent from `formatUserDocument`,
-   * metadata = `{ user_id: user.id }`) and calls `Chroma.fromDocuments()` with
-   * collectionName `"users"`.
+   * @param batchSize - Number of documents per add batch (default 50).
    */
-  private async initializeVectorstore(): Promise<void> {
-    // TODO: Fetch all users with userService.getAllUsers().
-    // Map each user to a Document: pageContent = formatUserDocument(user), metadata = { user_id: user.id }.
-    // Create this.vectorStore via Chroma.fromDocuments() with collectionName "users".
+  private async initializeVectorstore(batchSize: number = 50): Promise<void> {
+    // TODO:
+    // 1. Print "🔍 Loading all users for initial vectorstore..."
+    // 2. Fetch all users via this.userService.getAllUsers()
+    // 3. Build a Document[] where each Document has:
+    //    - pageContent: formatUserDocument(user)
+    //    - metadata: { user_id: user.id } (or id as string for Chroma compatibility)
+    // 4. Split documents into batches of batchSize using chunkArray()
+    // 5. Print "Setup vectorstore..."
+    // 6. Create this.vectorStore = new Chroma(this.embeddings, { collectionName: "users" })
+    // 7. Run addDocuments for each batch in parallel with Promise.all()
+    // 8. Print "Setup FINISHED"
     throw new Error("Not implemented");
   }
 
   /**
    * Incrementally syncs the Chroma vector store with the current state of the
    * User Service (adds new users, removes deleted ones).
-   *
-   * Fetch all current users, compare with existing Chroma IDs, delete stale
-   * documents, and add new ones (batching if > 50).
    */
   private async updateVectorstore(): Promise<void> {
-    // TODO: Fetch all current users.
-    // Get existing IDs from the Chroma collection via this.vectorStore.ensureCollection() then collection.get().
-    // Compute new user IDs (in fresh list but not in store) and deleted IDs (in store but not in fresh list).
-    // Delete removed docs: this.vectorStore.delete({ ids: idsToDelete }).
-    // Add new docs (batch if > 50): this.vectorStore.addDocuments().
+    // TODO:
+    // 1. Fetch all current users via this.userService.getAllUsers()
+    // 2. Get existing entries from the Chroma collection:
+    //    const collection = await this.vectorStore.ensureCollection()
+    //    const vectorstoreData = await collection.get()
+    // 3. Build vectorstoreIdsSet: Set of string IDs from vectorstoreData.ids
+    // 4. Build usersDict: Map of string user ID → user object
+    // 5. Build usersIdsSet: Set of keys from usersDict
+    // 6. Compute newUserIds = usersIdsSet - vectorstoreIdsSet
+    // 7. Compute idsToDelete = vectorstoreIdsSet - usersIdsSet
+    // 8. Build newDocuments from newUserIds (pageContent + metadata)
+    // 9. If idsToDelete is non-empty: call this.vectorStore.delete({ ids: [...idsToDelete] })
+    // 10. If newDocuments is non-empty:
+    //     - If > 50: split into batches and run addDocuments in parallel
+    //     - Otherwise: await this.vectorStore.addDocuments(newDocuments)
     throw new Error("Not implemented");
   }
 
   /**
    * Performs a semantic similarity search and returns a formatted context string.
-   *
-   * Initialises or updates the vector store as needed, then calls
-   * `similaritySearchWithScore`. Filters by `score` (raw L2 distance — lower
-   * means more similar) and logs each result before returning the joined string.
    *
    * @param query  - The user's natural-language query.
    * @param k      - Maximum number of results to retrieve (default 100).
@@ -123,31 +138,44 @@ class InputGrounder {
    * @returns Joined context string of matching user documents.
    */
   async retrieveContext(query: string, k: number = 100, score: number = 0.2): Promise<string> {
-    // TODO: If vectorStore not initialised, call initializeVectorstore(); otherwise call updateVectorstore().
-    // Call this.vectorStore.similaritySearchWithScore(query, k).
-    // Filter results where distance <= score (JS returns raw L2 distances; lower = more similar).
-    // Log each retrieved doc with its distance.
-    // Return joined context string.
+    // TODO:
+    // 1. If this.vectorStore is not initialised: await this.initializeVectorstore()
+    //    Otherwise: await this.updateVectorstore()
+    // 2. Print "Retrieving context..."
+    // 3. Call this.vectorStore.similaritySearchWithScore(query, k)
+    //    Note: JS Chroma returns raw L2 distances (lower = more similar)
+    // 4. Filter results where distance <= score
+    // 5. For each [doc, distance] in filtered results:
+    //    - Print `Retrieved (Score: ${distance.toFixed(3)}): ${doc.pageContent}`
+    //    - Collect doc.pageContent into a contextParts array
+    // 6. Print "=".repeat(100) + "\n"
+    // 7. Return contextParts.join("\n\n")
     throw new Error("Not implemented");
   }
 
   augmentPrompt(query: string, context: string): string {
-    return getUserPrompt(context, query);
+    // TODO:
+    // Call getUserPrompt(context, query) and return the result
+    throw new Error("Not implemented");
   }
 
   /**
    * Sends the augmented prompt to the LLM and returns a structured grouping result.
    *
-   * Uses `chat.completions.parse` with `zodResponseFormat` so the response is
-   * automatically validated against `GroupingResultsSchema`.
-   *
    * @param augmentedPrompt - Prompt containing the RAG context and user question.
-   * @returns Parsed `GroupingResults` with hobby → userIds mappings.
+   * @returns Parsed GroupingResults with hobby → userIds mappings.
    */
   async generateAnswer(augmentedPrompt: string): Promise<GroupingResults> {
-    // TODO: Call llmClient.chat.completions.parse() with zodResponseFormat(GroupingResultsSchema, 'groupingResults').
-    // Model: gpt-4.1-nano, temperature 0.
-    // Return response.choices[0].message.parsed as GroupingResults.
+    // TODO:
+    // 1. Build a messages array with:
+    //    - { role: "system", content: SYSTEM_PROMPT }
+    //    - { role: "user",   content: augmentedPrompt }
+    // 2. Call this.llmClient.beta.chat.completions.parse() with:
+    //    - model: "gpt-4.1-nano"
+    //    - temperature: 0
+    //    - messages
+    //    - response_format: zodResponseFormat(GroupingResultsSchema, "groupingResults")
+    // 3. Return response.choices[0].message.parsed as GroupingResults
     throw new Error("Not implemented");
   }
 }
@@ -156,76 +184,64 @@ class OutputGrounder {
   private userService: UserServiceClient;
 
   constructor() {
-    this.userService = new UserServiceClient();
+    // TODO:
+    // - Assign this.userService = new UserServiceClient()
+    throw new Error("Not implemented");
   }
 
   /**
    * Fetches full user records for each hobby group and logs the results.
    *
-   * Iterates over `groupingResults.groupingResults`, calls `_findUsers` for
-   * each group's `userIds`, then logs the hobby name and the fetched user JSON.
-   *
    * @param groupingResults - The structured LLM output mapping hobbies to user IDs.
    */
   async groundResponse(groupingResults: GroupingResults): Promise<void> {
-    // TODO: Collect all userIds from groupingResults.groupingResults.
-    // Fetch each user via _findUsers().
-    // Log the hobby and the fetched users JSON.
+    // TODO:
+    // Iterate over groupingResults.groupingResults:
+    // - For each groupingResult:
+    //   - Print `Hobby: ${groupingResult.hobby}`
+    //   - Fetch users: await this._findUsers(groupingResult.userIds)
+    //   - Print `Users: ${JSON.stringify(users)}`
+    //   - Print "----------"
     throw new Error("Not implemented");
   }
 
   /**
    * Fetches user records by ID, tolerating 404 (user not found) errors.
    *
-   * For each id, calls `userService.getUser()`. Swallows 404-like errors by
-   * logging the missing ID; re-throws all other errors.
-   *
    * @param ids - Array of user IDs to look up.
    * @returns Array of successfully fetched user objects (non-null results only).
    */
   private async _findUsers(ids: Array<number>): Promise<Record<string, any>[]> {
-    // TODO: For each id, call userService.getUser() wrapped in a try/catch.
-    // Swallow 404 errors (log the missing ID); re-throw others.
-    // Return an array of the non-null results.
+    // TODO:
+    // 1. For each id, call this.userService.getUser(id) inside a try/catch:
+    //    - On 404-like error: log the missing ID and return null
+    //    - On other errors: re-throw
+    // 2. Run all calls in parallel with Promise.all()
+    // 3. Return only the non-null results
     throw new Error("Not implemented");
   }
 }
 
 async function main() {
-  const embeddings = new OpenAIEmbeddings({
-    model: "text-embedding-3-small",
-    apiKey: OPENAI_API_KEY,
-    dimensions: 384,
-  });
-
-  const outputGrounder = new OutputGrounder();
-  const inputGrounder = new InputGrounder(embeddings, llmClient);
-  await inputGrounder.ready;
-
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  });
-
-  console.log("Query samples:");
-  console.log(" - I need people who love to go to mountains");
-  console.log(" - Find people who love to watch stars and night sky");
-  console.log(" - I need people to go to fishing together");
-
-  while (true) {
-    const userQuestion = await rl.question("> ");
-
-    if (userQuestion.toLowerCase() === "exit") {
-      console.log("👋 Goodbye");
-      rl.close();
-      process.exit(0);
-    }
-
-    const context = await inputGrounder.retrieveContext(userQuestion);
-    const augmentedPrompt = inputGrounder.augmentPrompt(userQuestion, context);
-    const groupingResults = await inputGrounder.generateAnswer(augmentedPrompt);
-    await outputGrounder.groundResponse(groupingResults);
-  }
+  // TODO:
+  // 1. Create OpenAIEmbeddings with:
+  //    - model: "text-embedding-3-small"
+  //    - apiKey: OPENAI_API_KEY
+  //    - dimensions: 384
+  // 2. Create outputGrounder = new OutputGrounder()
+  // 3. Create inputGrounder = new InputGrounder(embeddings, llmClient) and await inputGrounder.ready
+  // 4. Print "Query samples:" and sample queries:
+  //    " - I need people who love to go to mountains"
+  //    " - Find people who love to watch stars and night sky"
+  //    " - I need people to go to fishing together"
+  // 5. Start a while(true) loop:
+  //   5.1. Read userQuestion from stdin (use readline or a simple prompt — "> ")
+  //   5.2. If userQuestion.toLowerCase() is "quit" or "exit": print "👋 Goodbye" and break
+  //   5.3. Call inputGrounder.retrieveContext(userQuestion) → context (await)
+  //   5.4. Call inputGrounder.augmentPrompt(userQuestion, context) → augmentedPrompt
+  //   5.5. Call inputGrounder.generateAnswer(augmentedPrompt) → groupingResults (await)
+  //   5.6. Call outputGrounder.groundResponse(groupingResults) (await)
+  throw new Error("Not implemented");
 }
 
 main();

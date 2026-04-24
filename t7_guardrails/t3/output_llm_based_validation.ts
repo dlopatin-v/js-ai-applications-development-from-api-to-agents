@@ -100,40 +100,26 @@ async function filter(aiResponse: string): Promise<string> {
 }
 
 async function main(softResponse: boolean): Promise<void> {
-  const messages: { role: string; content: string }[] = [
-    { role: Role.SYSTEM, content: SYSTEM_PROMPT },
-    { role: Role.USER, content: PROFILE },
-  ];
-
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  });
-
-  console.log("Type your question or 'exit' to quit.");
-  while (true) {
-    const userInput = (await rl.question("> ")).trim();
-    if (userInput.toLowerCase() === "exit") {
-      console.log("Exiting the chat. Goodbye!");
-      rl.close();
-      process.exit(0);
-    }
-
-    // TODO:
-    // 1. Append userInput as user message: { role: "user", content: userInput }
-    // 2. Call client.chat.completions.create() with MODEL, temperature 0 → get aiContent
-    // 3. Call validate(aiContent) → validation
-    // 4. If validation.valid is true:
-    //    - Append assistant message and print `🤖Response:\n${aiContent}`
-    // 5. Else if softResponse is true (PII found, soft mode — redact instead of block):
-    //    - Call filter(aiContent) → filteredContent
-    //    - Append filtered assistant message
-    //    - Print `⚠️Validated response:\n${filteredContent}`
-    // 6. Else (hard block):
-    //    - Append assistant message "Blocked! Attempt to access PII!"
-    //    - Print `🚫Response contains PII: ${validation.description}`
-    throw new Error("Not implemented");
-  }
+  // TODO:
+  // 1. Initialize messages with system message (SYSTEM_PROMPT) and user message (PROFILE)
+  // 2. Print "Type your question or 'exit' to quit."
+  // 3. Start infinite while loop using readline:
+  //    - Print "=".repeat(100)
+  //    - Get trimmed user input from stdin ("> ")
+  //    - If "exit": print "Exiting the chat. Goodbye!" and exit
+  //    - Append userInput as user message: { role: "user", content: userInput }
+  //    - Call client.chat.completions.create() with MODEL, temperature 0 → get aiContent
+  //    - Call validate(aiContent) → validation
+  //    - If validation.valid is true:
+  //        - Append assistant message and print `🤖Response:\n${aiContent}`
+  //    - Else if softResponse is true (PII found, soft mode — redact instead of block):
+  //        - Call filter(aiContent) → filteredContent
+  //        - Append filtered assistant message
+  //        - Print `⚠️Validated response:\n${filteredContent}`
+  //    - Else (hard block):
+  //        - Append assistant message "Blocked! Attempt to access PII!"
+  //        - Print `🚫Response contains PII: ${validation.description}`
+  throw new Error("Not implemented");
 }
 
 main(true);

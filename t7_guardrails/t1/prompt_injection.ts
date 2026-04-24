@@ -2,7 +2,6 @@ import { OpenAI } from "openai";
 import { OPENAI_API_KEY, Role } from "../../commons";
 import * as readline from "node:readline/promises";
 
-// TODO: You will need to enhance SYSTEM_PROMPT to avoid PII leaks. Follow instructions below and create a strong prompt.
 const SYSTEM_PROMPT = `You are a secure colleague directory assistant designed to help users find contact information for business purposes.
 
 `;
@@ -26,33 +25,18 @@ const PROFILE = `
 const client = new OpenAI({ apiKey: OPENAI_API_KEY });
 
 async function main(): Promise<void> {
-  const messages: { role: string; content: string }[] = [
-    { role: Role.SYSTEM, content: SYSTEM_PROMPT },
-    { role: Role.USER, content: PROFILE },
-  ];
-
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  });
-
-  console.log("Type your question or 'exit' to quit.");
-  while (true) {
-    const userInput = (await rl.question("> ")).trim();
-    if (userInput.toLowerCase() === "exit") {
-      console.log("Exiting the chat. Goodbye!");
-      rl.close();
-      process.exit(0);
-    }
-
-    // TODO:
-    // 1. Append userInput as a user message: { role: "user", content: userInput }
-    // 2. Call client.chat.completions.create() with model "gpt-4.1-nano", temperature 0, messages
-    // 3. Extract aiContent from response.choices[0].message.content
-    // 4. Append assistant message: { role: "assistant", content: aiContent }
-    // 5. Print `🤖Response:\n${aiContent}\n${"=".repeat(100)}`
-    throw new Error("Not implemented");
-  }
+  // TODO:
+  // 1. Initialize messages with system message (SYSTEM_PROMPT) and user message (PROFILE)
+  // 2. Print "Type your question or 'exit' to quit."
+  // 3. Start infinite while loop using readline:
+  //    - Get trimmed user input from stdin ("> ")
+  //    - If "exit": print "Exiting the chat. Goodbye!" and exit
+  //    - Append userInput as user message: { role: "user", content: userInput }
+  //    - Call client.chat.completions.create() with model "gpt-4.1-nano", temperature 0, messages
+  //    - Extract aiContent from response.choices[0].message.content
+  //    - Append assistant message: { role: "assistant", content: aiContent }
+  //    - Print `🤖Response:\n${aiContent}\n${"=".repeat(100)}`
+  throw new Error("Not implemented");
 }
 
 main();

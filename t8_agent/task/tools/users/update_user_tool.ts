@@ -1,40 +1,29 @@
-import { UserUpdate } from "../../../../commons";
 import { BaseUserServiceTool } from "./base";
 
 export class UpdateUserTool extends BaseUserServiceTool {
-  get name() { return "update_user"; }
-  get description() { return "Updates user info"; }
-  get inputSchema() {
-    return {
-      type: "object",
-      properties: {
-        id: { type: "number", description: "User ID that should be updated" },
-        new_info: {
-          type: "object",
-          properties: {
-            name:          { type: "string" },
-            surname:       { type: "string" },
-            email:         { type: "string" },
-            about_me:      { type: "string" },
-            phone:         { type: "string" },
-            date_of_birth: { type: "string" },
-            gender:        { type: "string" },
-            company:       { type: "string" },
-            salary:        { type: "number" },
-          },
-        },
-      },
-      required: ["id"],
-    };
+  get name(): string {
+    // TODO: Provide tool name as `update_user`
+    throw new Error("Not implemented");
+  }
+
+  get description(): string {
+    // TODO: Provide description of this tool
+    throw new Error("Not implemented");
+  }
+
+  get inputSchema(): Record<string, unknown> {
+    // TODO: Provide tool params Schema for updating a user.
+    // Required fields: id (number — the user to update)
+    // Optional nested object `new_info` with updatable fields:
+    //   name, surname, email, about_me, phone, date_of_birth, gender, company, salary
+    throw new Error("Not implemented");
   }
 
   async execute(args: Record<string, unknown>): Promise<string> {
-    try {
-      const userId = Number(args["id"]);
-      const newInfo = args["new_info"] as unknown as UserUpdate;
-      return await this.userClient.updateUser(userId, newInfo);
-    } catch (e: any) {
-      return `Error while updating a user: ${e.message}`;
-    }
+    // TODO:
+    // 1. Extract id (number) and new_info (object) from args
+    // 2. Call this.userClient.updateUser(id, new_info) and return the result
+    // 3. Optional: wrap with try/catch and return `Error while updating a user: ${e.message}`
+    throw new Error("Not implemented");
   }
 }

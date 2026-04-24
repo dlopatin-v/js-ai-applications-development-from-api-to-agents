@@ -2,6 +2,16 @@
 
 TypeScript implementation for building Users Management Agent with MCP tools and MCP server
 
+**Run from the repository root:**
+
+| Component | Command |
+|---|---|
+| HTTP MCP Server | `npm run t9:server` |
+| STDIO MCP Server | `npm run t9:server-stdio` |
+| Agent | `npm run t9:agent` |
+
+---
+
 ## Learning Goals
 
 By exploring and working with this project, you will learn:
@@ -11,7 +21,21 @@ By exploring and working with this project, you will learn:
 - How to create simple Agent with tools from MCP server
 - Key features of MCP
 
+---
+
+**Run from the repository root:**
+
+| Component | Command |
+|---|---|
+| API Key MCP Server | `npm run t11:server-apikey` |
+| OAuth MCP Server | `npm run t11:server-oauth` |
+| Agent | `npm run t11:agent` |
+
+---
+
 ### If the task in the main branch is hard for you, switch to the `main-detailed` branch
+
+---
 
 ![](flow.png)
 

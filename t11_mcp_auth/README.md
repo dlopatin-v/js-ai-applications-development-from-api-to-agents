@@ -1,16 +1,8 @@
 # MCP Auth
 
-Python implementation for securing the Users Management MCP Server with two authentication strategies: **API Key** and **OAuth 2.0 + PKCE via Keycloak**.
+TypeScript implementation for securing the Users Management MCP Server with two authentication strategies: **API Key** and **OAuth 2.0 + PKCE via Keycloak**.
 
-**Run from the repository root:**
-
-| Component | Command |
-|---|---|
-| API Key MCP Server | `npm run t11:server-apikey` |
-| OAuth MCP Server | `npm run t11:server-oauth` |
-| Agent | `npm run t11:agent` |
-
----
+## Learning Goals
 
 By exploring and working with this project, you will learn:
 

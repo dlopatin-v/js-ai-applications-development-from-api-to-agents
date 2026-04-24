@@ -51,14 +51,15 @@ async function main(): Promise<void> {
   // 1. Call loadSkills(SKILLS_DIR), assign to `skills`
   // 2. If skills.length === 0, print error and return
   // 3. Print loaded skill names
-  // 4. Call buildSystemPrompt(skills), assign to `systemPrompt`; print it
+  // 4. Call buildSystemPrompt(skills), assign to `systemPrompt`;
+  //    print `📄 System prompt: \n ${systemPrompt}`
   // 5. Initialize `messages: Message[] = [new Message(Role.SYSTEM, systemPrompt)]`
   // 6. Build tools list:
   //       - new ReadSkillTool(SKILLS_DIR)
   //       - await JsCodeInterpreterTool.create(SKILLS_DIR)
-  // 7. Create `agent = new T12Agent(new OpenAI({ apiKey: OPENAI_API_KEY }), "gpt-4o", tools)`
+  // 7. Create `agent = new T12Agent(new OpenAI({ apiKey: OPENAI_API_KEY }), "gpt-5.2", tools)`
   // 8. Start a readline loop:
-  //       - Read user input; break on "exit"
+  //       - Read user input with prompt "➡️: "; break on "exit"
   //       - Push new Message(Role.USER, input) to messages
   //       - Call await agent.chatCompletion(messages), assign to assistantMessage
   //       - Push assistantMessage to messages

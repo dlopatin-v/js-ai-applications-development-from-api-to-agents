@@ -1,61 +1,49 @@
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
-import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
+import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import { MCPToolModel } from "./mcp_tool_model.js";
+
+const DOCKER_IMAGE = "mcp/node-code-sandbox";
 
 export class T12MCPClient {
   private client: Client;
-  private transport: StreamableHTTPClientTransport | null = null;
+  private transport: StdioClientTransport | null = null;
 
-  constructor(private readonly mcpServerUrl: string) {
+  constructor() {
     this.client = new Client({ name: "t12-mcp-client", version: "1.0.0" });
   }
 
-  /**
-   * Factory method: create and connect a T12MCPClient in one call.
-   * @param mcpServerUrl - Full URL of the MCP server (e.g. http://localhost:8050/mcp)
-   * @returns A connected T12MCPClient instance ready for use.
-   * Hint: construct the instance, call connect(), then return it.
-   */
-  static async create(mcpServerUrl: string): Promise<T12MCPClient> {
-    // TODO
+  static async create(): Promise<T12MCPClient> {
+    const instance = new T12MCPClient();
+    await instance.connect();
+    return instance;
   }
 
-  /**
-   * Connect to the MCP server using StreamableHTTPClientTransport.
-   * Hint: create a new StreamableHTTPClientTransport from `new URL(this.mcpServerUrl)`,
-   * store it in `this.transport`, then call `this.client.connect(transport)`.
-   */
   async connect(): Promise<void> {
-    // TODO
+    this.transport = new StdioClientTransport({
+      command: "docker",
+      args: ["run", "--rm", "-i", DOCKER_IMAGE],
+    });
+    await this.client.connect(this.transport);
   }
 
-  /**
-   * Retrieve the list of tools available on the MCP server.
-   * @returns Array of MCPToolModel with name, description, and parameters.
-   * Hint: use `this.client.listTools()`, then map each tool to an MCPToolModel.
-   * Use `tool.inputSchema` cast to `Record<string, unknown>` for parameters.
-   */
   async getTools(): Promise<MCPToolModel[]> {
-    // TODO
+    const result = await this.client.listTools();
+    return result.tools.map((tool) => ({
+      name: tool.name,
+      description: tool.description ?? "",
+      parameters: tool.inputSchema as Record<string, unknown>,
+    }));
   }
 
-  /**
-   * Invoke a named tool on the MCP server.
-   * @param name - Tool name to call.
-   * @param args - Arguments object to pass to the tool.
-   * @returns The tool's text output as a string. If no content, return "".
-   * Hint: use `this.client.callTool({ name, arguments: args })`.
-   * Check `result.content[0]` — if type is "text", return `.text`; otherwise JSON.stringify it.
-   */
   async callTool(name: string, args: Record<string, unknown>): Promise<string> {
-    // TODO
+    const result = await this.client.callTool({ name, arguments: args }) as { content: { type: string; text?: string }[] };
+    if (!result.content || result.content.length === 0) return "";
+    const content = result.content[0];
+    if (content.type === "text") return content.text ?? "";
+    return JSON.stringify(content);
   }
 
-  /**
-   * Close the MCP client connection gracefully.
-   * Hint: call `this.client.close()`.
-   */
   async close(): Promise<void> {
-    // TODO
+    await this.client.close();
   }
 }

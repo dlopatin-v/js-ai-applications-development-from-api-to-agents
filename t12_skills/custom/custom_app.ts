@@ -7,11 +7,10 @@ import { Role } from "../../commons/models/role.js";
 import { BaseTool } from "./tools/base.js";
 import { SkillMetadata, loadSkills } from "./models.js";
 import { ReadSkillTool } from "./tools/skills/read_skill_tool.js";
-import { PythonCodeInterpreterTool } from "./tools/pyInterpreter/pythonCodeInterpreterTool.js";
+import { JsCodeInterpreterTool } from "./tools/jsInterpreter/jsCodeInterpreterTool.js";
 import { T12Agent } from "./agent.js";
 
 const SKILLS_DIR = path.join(path.dirname(new URL(import.meta.url).pathname), "_skills");
-const MCP_URL = "http://localhost:8050/mcp";
 const MCP_TOOL_NAME = "execute_code";
 
 /**
@@ -50,7 +49,7 @@ async function main(): Promise<void> {
 
   const tools: BaseTool[] = [
     new ReadSkillTool(SKILLS_DIR),
-    await PythonCodeInterpreterTool.create(MCP_URL, MCP_TOOL_NAME, SKILLS_DIR),
+    await JsCodeInterpreterTool.create(SKILLS_DIR),
   ];
 
   const agent = new T12Agent(

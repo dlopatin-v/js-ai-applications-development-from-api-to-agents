@@ -1,6 +1,12 @@
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { Resource, Prompt } from "@modelcontextprotocol/sdk/types.js";
 
+// TODO:
+//  https://github.com/modelcontextprotocol/typescript-sdk/blob/main/docs/client.md
+//  https://github.com/modelcontextprotocol/typescript-sdk/blob/main/docs/client.md#tools
+//  https://github.com/modelcontextprotocol/typescript-sdk/blob/main/docs/client.md#resources
+//  https://github.com/modelcontextprotocol/typescript-sdk/blob/main/docs/client.md#prompts
+
 export interface ToolSchema {
   type: "function";
   function: {

@@ -17,7 +17,7 @@ export class OpenAIClient extends BaseOpenAiClient {
   constructor(...args: ConstructorParameters<typeof BaseOpenAiClient>) {
     super(...args);
     //TODO:
-    // https://github.com/openai/openai-python?tab=readme-ov-file#usage
+    // https://github.com/openai/openai-node#usage
     // 1. Initialize OpenAI client: `this.client = new OpenAI({ apiKey: this.apiKey.replace(/^Bearer /, '') })`
     //    Note: `this.apiKey` already contains the 'Bearer ' prefix (added by BaseOpenAiClient).
     //          The OpenAI SDK adds its own 'Bearer ' prefix, so you must strip it first.

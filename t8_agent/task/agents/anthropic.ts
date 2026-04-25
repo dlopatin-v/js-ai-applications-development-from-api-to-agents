@@ -54,7 +54,7 @@ export class AnthropicBasedAgent extends BaseAgent {
     //
     // Step 5 — Handle tool use.
     //   If data.stop_reason === "tool_use":
-    //     a) Append the assistant Message to `messages` (mutate — same as Python).
+    //     a) Append the assistant Message to `messages`.
     //     b) Call this._processToolCalls(toolUseBlocks) to get tool result Messages.
     //     c) Append all tool result Messages to `messages`.
     //     d) Recurse: return this.getResponse(messages, printRequest).

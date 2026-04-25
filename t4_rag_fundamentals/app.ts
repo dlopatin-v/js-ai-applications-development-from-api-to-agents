@@ -30,7 +30,7 @@ ${context}
 ${query}`;
 
 class MicrowaveRAG {
-  vectorStore: FaissStore;
+  vectorStore!: FaissStore;
 
   /** Resolves when the vector store is fully initialised and ready for queries. */
   readonly ready: Promise<void>;
@@ -52,7 +52,7 @@ class MicrowaveRAG {
   private async setupVectorStore(): Promise<void> {
     console.log("🔄 Initializing Microwave Manual RAG System...");
 
-    // @TODO:
+    //TODO:
     // 1. Build the absolute path to "microwave_faiss_index" using path.join(__dirname, "microwave_faiss_index")
     //    and assign it to `indexPath`
     // 2. Check whether the folder exists using fs.existsSync(indexPath)
@@ -74,7 +74,7 @@ class MicrowaveRAG {
   private async createNewIndex(): Promise<FaissStore> {
     console.log("📖 Loading text document...");
 
-    // @TODO:
+    //TODO:
     // 1. Create a TextLoader pointing to path.join(__dirname, "microwave_manual.txt")
     //    and call await loader.load() — assign the result to `documents`
     // 2. Create a RecursiveCharacterTextSplitter with:
@@ -112,7 +112,7 @@ class MicrowaveRAG {
     console.log(`Query: '${query}'`);
     console.log(`Searching for top ${k} most relevant chunks (L2 distance ≤ ${scoreThreshold}):`);
 
-    // @TODO:
+    //TODO:
     // 1. Call: const results = await this.vectorStore.similaritySearchWithScore(query, k)
     //    This returns [Document, number][] where the number is the L2 distance
     //    (lower distance = more similar to the query)
@@ -155,7 +155,7 @@ class MicrowaveRAG {
     console.log("\n🤖 STEP 3: GENERATION\n");
     console.log("-".repeat(100));
 
-    // @TODO:
+    //TODO:
     // 1. Build the messages array:
     //      const messages = [
     //        new SystemMessage(SYSTEM_PROMPT),
@@ -187,7 +187,7 @@ const main = async (rag: MicrowaveRAG) => {
       process.exit(0);
     }
 
-    // @TODO:
+    //TODO:
     // Execute the 3-step RAG pipeline:
     //   Step 1 (Retrieval):    const context = await rag.retrieveContext(input)
     //                          Here you can also pass custom k and scoreThreshold to tune results
@@ -197,7 +197,7 @@ const main = async (rag: MicrowaveRAG) => {
   }
 };
 
-// @TODO:
+//TODO:
 // 1. Create embeddings:
 //      const embeddings = new OpenAIEmbeddings({ model: "text-embedding-3-small", apiKey: OPENAI_API_KEY })
 // 2. Create LLM client:

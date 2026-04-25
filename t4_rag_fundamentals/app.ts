@@ -8,7 +8,7 @@ import { TextLoader } from "@langchain/classic/document_loaders/fs/text";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import { OPENAI_API_KEY } from "../commons";
 
-// @TODO:
+//TODO:
 // Create a system prompt that:
 //   - Defines the assistant's role (microwave manual expert)
 //   - Describes the structure of the user message:

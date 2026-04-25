@@ -21,7 +21,9 @@ export abstract class MCPClient {
   abstract disconnect(): Promise<void>;
 
   async getTools(): Promise<ToolSchema[]> {
-    // TODO:
+    //TODO:
+    //  https://github.com/modelcontextprotocol/typescript-sdk/blob/main/docs/client.md
+    //  https://github.com/modelcontextprotocol/typescript-sdk/blob/main/docs/client.md#tools
     // 1. Call this.client.listTools() and get the tools list
     // 2. Return it mapped to OpenAI tool schema format:
     //    { type: "function", function: { name, description, parameters: tool.inputSchema } }
@@ -30,7 +32,7 @@ export abstract class MCPClient {
   }
 
   async callTool(toolName: string, toolArgs: Record<string, unknown>): Promise<unknown> {
-    // TODO:
+    //TODO:
     // 1. Log: `    Calling \`${toolName}\` with` and toolArgs
     // 2. Call this.client.callTool({ name: toolName, arguments: toolArgs })
     // 3. Get content at index 0 from result.content
@@ -41,6 +43,7 @@ export abstract class MCPClient {
 
   async getResources(): Promise<Resource[]> {
     // TODO:
+    //  https://github.com/modelcontextprotocol/typescript-sdk/blob/main/docs/client.md#resources
     // Wrap in try/catch (not all MCP servers have resources):
     //   Call this.client.listResources() and return result.resources
     //   On error: print the error and return []
@@ -57,7 +60,8 @@ export abstract class MCPClient {
   }
 
   async getPrompts(): Promise<Prompt[]> {
-    // TODO:
+    //TODO:
+    //  https://github.com/modelcontextprotocol/typescript-sdk/blob/main/docs/client.md#prompts
     // Wrap in try/catch (not all MCP servers have prompts):
     //   Call this.client.listPrompts() and return result.prompts
     //   On error: print the error and return []

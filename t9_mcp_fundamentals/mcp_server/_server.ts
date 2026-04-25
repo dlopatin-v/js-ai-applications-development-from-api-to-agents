@@ -124,7 +124,8 @@ When creating profiles, aim for diversity in:
 - Cultural backgrounds`;
 
 export function createServer(): McpServer {
-// TODO:
+//TODO:
+// https://github.com/modelcontextprotocol/typescript-sdk/blob/main/docs/server.md#building-mcp-servers
 // 1. Create instance of FastMCP as `mcp` (or another name if you wish) with:
 //       - name is "users-management-mcp-server",
 //       - host is "0.0.0.0",
@@ -133,7 +134,8 @@ export function createServer(): McpServer {
 
 // ==================== TODO: Implement the tools ====================
 
-// TODO: Register the "get_user_by_id" tool
+// TODO:Register the "get_user_by_id" tool
+//  https://github.com/modelcontextprotocol/typescript-sdk/blob/main/docs/server.md#tools
 //       - Description: "Provides full user information by user_id"
 //       - Input schema: user_id (required int)
 //       - Handler: call userClient.getUser(user_id) and return { content: [{ type: "text", text: String(result) }] }
@@ -163,6 +165,7 @@ export function createServer(): McpServer {
 
 // TODO: Register a resource that provides the flow diagram image.
 //       https://modelcontextprotocol.io/docs/concepts/resources
+//       https://github.com/modelcontextprotocol/typescript-sdk/blob/main/docs/server.md#resources
 //       - Resource name: "flow-diagram"
 //       - URI: "users-management://flow-diagram"
 //       - mimeType: "image/png"
@@ -173,6 +176,7 @@ export function createServer(): McpServer {
 
 // TODO: Register two static prompts that clients can fetch.
 //       https://modelcontextprotocol.io/docs/concepts/prompts
+//       https://github.com/modelcontextprotocol/typescript-sdk/blob/main/docs/server.md#prompts
 //       - Prompts are already prepared below — return them with appropriate descriptions.
 //
 // Prompt 1 — "user_search_assistant_prompt"

@@ -27,7 +27,7 @@ ${context}
 ${query}`;
 
 class MicrowaveRAG {
-  vectorStore: FaissStore;
+  vectorStore!: FaissStore;
 
   /** Resolves when the vector store is fully initialised and ready for queries. */
   readonly ready: Promise<void>;

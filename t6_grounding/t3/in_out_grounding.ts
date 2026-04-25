@@ -42,8 +42,6 @@ const getUserPrompt = (context: string, query: string) =>
 
 const llmClient = new OpenAI({ apiKey: OPENAI_API_KEY });
 
-// --- Zod schemas (mirror Python Pydantic models) ---
-
 const GroupingResultSchema = z.object({
   hobby: z.string().describe("Hobby. Example: football, painting, horsing, photography, bird watching..."),
   userIds: z.array(z.number().int()).describe("List of user IDs that have hobby requested by user."),

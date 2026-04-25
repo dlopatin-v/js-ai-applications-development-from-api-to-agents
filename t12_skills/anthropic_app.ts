@@ -9,7 +9,7 @@ const SKILLS_VERSION = "skills-2025-10-02";
 function filesFromDir(skillDir: string): File[] {
   const results: File[] = [];
   // Use parent of skillDir as the base for relative paths,
-  // so files are named "style-guide/SKILL.md" (matching Python's anthropic.lib.files_from_dir)
+  // so files are named "style-guide/SKILL.md"
   const parentDir = path.dirname(skillDir);
 
   function walk(dir: string): void {

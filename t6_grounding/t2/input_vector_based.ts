@@ -92,12 +92,6 @@ class UserRAG {
         console.log("Retrieving context...");
         const results = await this.vectorStore.similaritySearchWithScore(query, k);
 
-        // Note: both Python and JS use IndexFlatL2 internally, but the Python course code calls
-        // similarity_search_with_relevance_scores(), which normalises via (1.0 - distance / sqrt(2))
-        // to a 0–1 range where HIGHER = more similar.
-        // LangChain JS similaritySearchWithScore() returns the RAW L2 distance with NO normalisation —
-        // LOWER = more similar, value is unbounded above.
-        // scoreThreshold here acts as a MAXIMUM distance filter (opposite of Python's score_threshold).
         const contextParts: string[] = [];
         for (const [doc, distance] of results) {
             if (distance <= scoreThreshold) {

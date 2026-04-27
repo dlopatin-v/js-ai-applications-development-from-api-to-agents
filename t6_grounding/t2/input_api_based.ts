@@ -45,7 +45,7 @@ const getUserPrompt = (context: string, query: string): string => "";
 
 // TODO:
 // Define SearchField as a Zod enum with three values: "name", "surname", "email"
-const SearchField = z.enum([]);
+const SearchField = z.enum([""]);
 
 // TODO:
 // Define SearchRequest as a Zod object with two fields:

@@ -1,8 +1,8 @@
-import * as http from "http";
+import { Request, Response } from "express";
 
 export const API_KEY = "dev-secret-key";
 
-export function checkApiKey(req: http.IncomingMessage, res: http.ServerResponse): boolean {
+export function checkApiKey(req: Request, res: Response): boolean {
   //TODO:
   // 1. Read req.headers["x-api-key"]
   // 2. If it matches API_KEY, return true

@@ -1,4 +1,4 @@
-import * as http from "http";
+import { Request, Response } from "express";
 
 import { createRemoteJWKSet, jwtVerify, JWTPayload } from "jose";
 
@@ -27,7 +27,7 @@ function getJwks() {
 
 // ==================== MIDDLEWARE ====================
 
-export async function checkOAuth(req: http.IncomingMessage, res: http.ServerResponse): Promise<boolean> {
+export async function checkOAuth(req: Request, res: Response): Promise<boolean> {
   //TODO:
   // 1. Get auth header = req.headers["authorization"]; if missing or not starting with "Bearer ",
   //    send 401 JSON { error: "Unauthorized", detail: "Missing or malformed Authorization header" } and return false

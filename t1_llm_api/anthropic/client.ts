@@ -1,5 +1,4 @@
 import Anthropic from "@anthropic-ai/sdk";
-import { MessageParam } from "@anthropic-ai/sdk/resources";
 
 import AIClient from "../base_client";
 

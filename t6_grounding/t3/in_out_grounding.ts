@@ -1,3 +1,5 @@
+import * as readline from "node:readline/promises";
+
 import { Chroma } from "@langchain/community/vectorstores/chroma";
 import { Document } from "@langchain/core/documents";
 import { OpenAIEmbeddings } from "@langchain/openai";
@@ -7,7 +9,7 @@ import { z } from "zod";
 
 import { UserServiceClient } from "../user_service_client";
 
-import { OPENAI_API_KEY } from "../../commons";
+import { OPENAI_API_KEY, Role, UserInfo } from "../../commons";
 
 /*
  HOBBIES SEARCHER:

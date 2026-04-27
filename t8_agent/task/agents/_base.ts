@@ -1,6 +1,6 @@
 import { BaseTool } from "../tools/base";
 
-import { Message } from "../../../commons/models/message";
+import { Message } from "../../../commons";
 
 /**
  * Abstract base class for LLM-backed agents.

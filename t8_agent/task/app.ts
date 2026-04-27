@@ -1,6 +1,9 @@
 import * as readline from "readline";
 
+import Anthropic from "@anthropic-ai/sdk";
+
 import { AnthropicBasedAgent } from "./agents/anthropic";
+import { OpenAIBasedAgent } from "./agents/openai";
 import { SYSTEM_PROMPT } from "./prompts";
 import { CreateUserTool } from "./tools/users/create_user_tool";
 import { DeleteUserTool } from "./tools/users/delete_user_tool";

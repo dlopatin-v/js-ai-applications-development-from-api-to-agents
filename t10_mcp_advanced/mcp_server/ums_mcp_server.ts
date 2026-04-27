@@ -1,7 +1,7 @@
 import { randomUUID } from "crypto";
 
 import { MCPRequest } from "./models/request";
-import { MCPResponse, ErrorResponse, createResponse } from "./models/response";
+import { MCPResponse, createResponse } from "./models/response";
 import { BaseTool } from "./tools/base";
 import { CreateUserTool } from "./tools/users/create_user_tool";
 import { DeleteUserTool } from "./tools/users/delete_user_tool";

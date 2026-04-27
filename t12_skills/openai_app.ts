@@ -6,7 +6,9 @@ import * as readline from "readline";
 
 import OpenAI from "openai";
 
-import { OPENAI_API_KEY } from "../commons/constants"
+import { BlobPart } from "node:buffer";
+
+import { OPENAI_API_KEY } from "../commons"
 
 function zipSkill(skillDir: string): Buffer {
   //TODO:

@@ -1,6 +1,8 @@
 import * as path from "path";
 import * as readline from "readline";
 
+import { OpenAI } from "openai";
+
 import { AgentMCPFundamentals } from "./agent";
 import { MCPClient, ToolSchema } from "./mcp_clients/base";
 import { HttpMCPClient } from "./mcp_clients/http";

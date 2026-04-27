@@ -1,8 +1,10 @@
+import * as readline from "node:readline/promises";
+
 import { OpenAI } from "openai";
 
 import { UserServiceClient } from "../user_service_client";
 
-import { OPENAI_API_KEY } from "../../commons";
+import { OPENAI_API_KEY, Role, UserInfo } from "../../commons";
 
 // TODO:
 // Define BATCH_SYSTEM_PROMPT for the first LLM pass (batch search):

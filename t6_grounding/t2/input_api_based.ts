@@ -1,10 +1,12 @@
+import * as readline from "node:readline/promises";
+
 import { OpenAI } from "openai";
 import { zodResponseFormat } from 'openai/helpers/zod';
 import { z } from "zod";
 
 import { UserServiceClient } from "../user_service_client";
 
-import { OPENAI_API_KEY } from "../../commons";
+import { OPENAI_API_KEY, Role, UserInfo, UserSearchRequest } from "../../commons";
 
 // TODO:
 // Define QUERY_ANALYSIS_PROMPT for extracting search parameters from user questions:

@@ -5,8 +5,6 @@ import * as path from "path";
 import { UserServiceClient } from "../../commons/user_service/client.js";
 import { userSearchSchema } from "../../commons/user_service/user_info.js";
 
-const userClient = new UserServiceClient();
-
 const USER_SEARCH_ASSISTANT_PROMPT = `
 You are helping users search through a dynamic user database. The database contains 
 realistic synthetic user profiles with the following searchable fields:
@@ -128,110 +126,70 @@ When creating profiles, aim for diversity in:
 - Cultural backgrounds`;
 
 export function createServer(): McpServer {
-  const server = new McpServer({
-    name: "users-management-mcp-server",
-    version: "1.0.0",
-  });
+// TODO:
+// 1. Create instance of McpServer with:
+//       - name: "users-management-mcp-server"
+//       - version: "1.0.0"
+// 2. Create UserServiceClient
 
-// ==================== EXISTING TOOLS ====================
-
-server.registerTool(
-  "get_user_by_id",
-  {
-    description: "Provides full user information by user_id",
-    inputSchema:
-      { user_id: z.number().int().describe("The user ID to look up") },
-  },
-  async ({ user_id }) => {
-    const result = await userClient.getUser(user_id);
-    return { content: [{ type: "text", text: String(result) }] };
-  }
-);
-
-server.registerTool(
-  "delete_user",
-  {
-    description: "Deletes user by user_id",
-    inputSchema:
-      { user_id: z.number().int().describe("The user ID to delete") },
-  },
-  async ({ user_id }) => {
-    const result = await userClient.deleteUser(user_id);
-    return { content: [{ type: "text", text: String(result) }] };
-  }
-);
-
-// ==================== TODO: Implement the remaining tools ====================
-//  https://github.com/modelcontextprotocol/typescript-sdk/blob/main/docs/server.md#building-mcp-servers
-
-// TODO 1: Register the "search_user" tool using server.registerTool()
-//  https://github.com/modelcontextprotocol/typescript-sdk/blob/main/docs/server.md#tools
-//   Step 1: Call server.registerTool() with three arguments:
-//           - tool name: "search_user"
-//           - config object: { description: "Searches for users by name, surname, email and gender",
-//                              inputSchema: userSearchSchema.shape }
-//             Note: userSearchSchema is already imported above — use .shape to pass its
-//             fields directly as Zod schemas to the MCP SDK
-//           - async handler: async (args) => { ... }
-//   Step 2: Inside the handler:
-//           - Call userClient.searchUsers(args)
-//           - Return { content: [{ type: "text", text: String(result) }] }
-
-// TODO 2: Register the "add_user" tool using server.registerTool()
-//   Step 1: Call server.registerTool() with:
-//           - tool name: "add_user"
-//           - config object with description: "Adds new user into the system"
-//           - inputSchema with the following Zod fields:
-//               name: z.string().describe("First name")                               — required
-//               surname: z.string().describe("Last name")                             — required
-//               email: z.string().email().describe("Email address")                   — required
-//               about_me: z.string().optional().describe("Biography")
-//               phone: z.string().optional().describe("Phone number")
-//               date_of_birth: z.string().optional().describe("Date of birth (YYYY-MM-DD)")
-//               gender: z.string().optional().describe("Gender")
-//               company: z.string().optional().describe("Company name")
-//               salary: z.number().optional().describe("Salary")
-//   Step 2: Inside the handler:
-//           - Call userClient.addUser(args)
-//           - Return { content: [{ type: "text", text: String(result) }] }
-
-// TODO 3: Register the "update_user" tool using server.registerTool()
-//   Step 1: Call server.registerTool() with:
-//           - tool name: "update_user"
-//           - config object with description: "Updates user by user_id"
-//           - inputSchema: user_id as z.number().int() plus all the same optional
-//             fields as add_user above
-//   Step 2: Inside the handler:
-//           - Destructure user_id from args: async ({ user_id, ...updateData }) => { ... }
-//           - Call userClient.updateUser(user_id, updateData)
-//           - Return { content: [{ type: "text", text: String(result) }] }
+// ==================== TOOLS ====================
+// TODO:
+// You need to add all the tools here using server.registerTool().
+// https://github.com/modelcontextprotocol/typescript-sdk/blob/main/docs/server.md#tools
+// ---
+// Tools:
+// 1. `get_user_by_id`:
+//       - Description: "Provides full user information by user_id"
+//       - inputSchema: { user_id: z.number().int().describe("The user ID to look up") }
+//       - Handler: call userClient.getUser(user_id) and return { content: [{ type: "text", text: String(result) }] }
+// 2. `delete_user`:
+//       - Description: "Deletes user by user_id"
+//       - inputSchema: { user_id: z.number().int().describe("The user ID to delete") }
+//       - Handler: call userClient.deleteUser(user_id) and return { content: [{ type: "text", text: String(result) }] }
+// 3. `search_user`:
+//       - Description: "Searches for users by name, surname, email and gender"
+//       - inputSchema: use userSearchSchema.shape
+//       - Handler: call userClient.searchUsers(args) and return { content: [{ type: "text", text: String(result) }] }
+// 4. `add_user`:
+//       - Description: "Adds new user into the system"
+//       - inputSchema: name, surname, email (required); about_me, phone, date_of_birth, gender, company, salary (optional)
+//       - Handler: call userClient.addUser(args) and return { content: [{ type: "text", text: String(result) }] }
+// 5. `update_user`:
+//       - Description: "Updates user by user_id"
+//       - inputSchema: user_id (required int) plus the same optional fields as add_user
+//       - Handler: destructure user_id from args, call userClient.updateUser(user_id, updateData)
+//                  and return { content: [{ type: "text", text: String(result) }] }
 
 // ==================== MCP RESOURCES ====================
 
-// TODO: https://github.com/modelcontextprotocol/typescript-sdk/blob/main/docs/server.md#resources
-server.registerResource(
-  "flow-diagram",
-  "users-management://flow-diagram",
-  { mimeType: "image/png", description: "The Users Management Service flow diagram as PNG image" },
-  async () => {
-    const imagePath = path.join(__dirname, "..", "flow.png");
+// TODO: Register a resource that provides the flow diagram image.
+//       Provides the Users Management Service flow diagram as a PNG image — useful for showing
+//       that MCP servers can expose static resources.
+//       https://modelcontextprotocol.io/docs/concepts/resources
+//       https://github.com/modelcontextprotocol/typescript-sdk/blob/main/docs/server.md#resources
+//       ---
+//       Mark with server.registerResource():
+//         - name: "flow-diagram"
+//         - URI: "users-management://flow-diagram"
+//         - metadata: { mimeType: "image/png", description: "The Users Management Service flow diagram as PNG image" }
+async function getFlowDiagram() {
+  const imagePath = path.join(__dirname, "..", "flow.png");
 
-    if (!fs.existsSync(imagePath)) {
-      throw new Error("flow.png not found");
-    }
-
-    const imageBytes = fs.readFileSync(imagePath);
-    return {
-      contents: [
-        {
-          uri: "users-management://flow-diagram",
-          mimeType: "image/png",
-          blob: imageBytes.toString("base64"),
-        },
-      ],
-    };
+  if (!fs.existsSync(imagePath)) {
+    throw new Error("flow.png not found");
   }
-);
+
+  const imageBytes = fs.readFileSync(imagePath);
+  return {
+    contents: [
+      {
+        uri: "users-management://flow-diagram",
+        mimeType: "image/png",
+        blob: imageBytes.toString("base64"),
+      },
+    ],
+  };
+}
 
 // ==================== MCP PROMPTS ====================
 
@@ -248,5 +206,5 @@ server.registerResource(
 //           - config object: { description: "Guides creation of realistic user profiles" }
 //           - async handler returning: { messages: [{ role: "user", content: { type: "text", text: USER_PROFILE_CREATION_PROMPT } }] }
 
-  return server;
+  throw new Error('Not implemented');
 }

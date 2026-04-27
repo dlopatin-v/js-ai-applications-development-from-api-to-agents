@@ -35,7 +35,7 @@ export class UserServiceClient {
     const response = await fetch(`${USER_SERVICE_ENDPOINT}/health`, { headers: this.headers });
 
     if (response.status === 200) {
-      return await response.json();
+      return;
     }
 
     throw new Error(`HTTP ${response.status}: ${response.statusText}`);

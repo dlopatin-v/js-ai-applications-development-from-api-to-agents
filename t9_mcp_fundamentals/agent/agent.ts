@@ -30,7 +30,6 @@ export class AgentMCPFundamentals {
 
   private _collectToolCalls(toolDeltas: ToolCallDelta[]): OpenAI.Chat.Completions.ChatCompletionMessageToolCall[] {
     const toolMap: Record<number, { id: string; type: string; function: { name: string; arguments: string } }> = {};
-    //@TODO Revisit this
 
     for (const delta of toolDeltas) {
       const idx = delta.index;
@@ -90,15 +89,15 @@ export class AgentMCPFundamentals {
 
     if (aiMessage.tool_calls && aiMessage.tool_calls.length > 0) {
       messages.push(aiMessage);
-      await this._callTools(aiMessage, messages);
+      await this._callTools(aiMessage as Message<OpenAI.ChatCompletionMessageFunctionToolCall>, messages);
       return await this.getCompletion(messages);
     }
 
     return aiMessage;
   }
 
-  private async _callTools(aiMessage: Message, messages: Message[]): Promise<void> {
-    for (const toolCall of aiMessage.tool_calls as OpenAI.Chat.Completions.ChatCompletionMessageToolCall[]) {
+  private async _callTools(aiMessage: Message<OpenAI.ChatCompletionMessageFunctionToolCall>, messages: Message[]): Promise<void> {
+    for (const toolCall of aiMessage.tool_calls ?? []) {
       const toolName = toolCall.function.name;
       const toolArgs = JSON.parse(toolCall.function.arguments);
 

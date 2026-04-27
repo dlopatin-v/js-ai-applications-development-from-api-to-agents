@@ -41,6 +41,7 @@ export class CustomMCPClient {
     //    Otherwise: await response.json()
     // 5. If "error" in responseData, throw: new Error(`MCP Error ${error.code}: ${error.message}`)
     // 6. Return responseData
+    throw new Error("Not implemented.");
   }
 
   private async _parseSseResponse(response: Response): Promise<Record<string, any>> {
@@ -51,6 +52,7 @@ export class CustomMCPClient {
     //    If data part !== "[DONE]": return JSON.parse(data part)
     //    (return on first valid data chunk — MCP tool response fits in one chunk)
     // 4. throw new Error("No valid data found in SSE response")
+    throw new Error("Not implemented.");
   }
 
   private async _sendNotification(method: string): Promise<void> {
@@ -59,6 +61,7 @@ export class CustomMCPClient {
     // 2. Build headers: { "Content-Type": "application/json", "Accept": "application/json, text/event-stream" }
     //    If this.sessionId is set, add MCP_SESSION_ID_HEADER header
     // 3. POST to this.serverUrl; if response has MCP_SESSION_ID_HEADER, update this.sessionId
+    throw new Error("Not implemented.");
   }
 
   async connect(): Promise<void> {
@@ -66,6 +69,7 @@ export class CustomMCPClient {
     // 1. Call this._sendRequest("initialize", { protocolVersion: "2024-11-05", capabilities: { tools: {} }, clientInfo: { name: "my-custom-mcp-client", version: "1.0.0" } })
     //    and log the result (server capabilities)
     // 2. Call await this._sendNotification("notifications/initialized")
+    throw new Error("Not implemented.");
   }
 
   async getTools(): Promise<ToolSchema[]> {
@@ -74,6 +78,7 @@ export class CustomMCPClient {
     // 2. Extract tools = response.result.tools
     // 3. Map each tool to ToolSchema: { type: "function", function: { name, description, parameters: tool.inputSchema } }
     // 4. Return the mapped array
+    throw new Error("Not implemented.");
   }
 
   async callTool(toolName: string, toolArgs: Record<string, any>): Promise<string> {
@@ -84,5 +89,6 @@ export class CustomMCPClient {
     // 4. Extract text = content[0]?.text ?? ""
     // 5. Log: `    ⚙️: ${text}\n`
     // 6. Return text (or "Unexpected error occurred!" if no content)
+    throw new Error("Not implemented.");
   }
 }

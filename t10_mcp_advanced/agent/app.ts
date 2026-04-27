@@ -1,10 +1,13 @@
 import * as readline from "readline";
+
+import { OpenAI } from "openai";
+
+import { OPENAI_API_KEY } from "../../commons/constants.js";
 import { Message } from "../../commons/models/message.js";
 import { Role } from "../../commons/models/role.js";
-import { OPENAI_API_KEY } from "../../commons/constants.js";
-import { MCPClient, ToolSchema } from "./clients/mcp_client.js";
-import { CustomMCPClient } from "./clients/custom_mcp_client.js";
 import { CustomAgentMCP } from "./agent.js";
+import { CustomMCPClient } from "./clients/custom_mcp_client.js";
+import { MCPClient, ToolSchema } from "./clients/mcp_client.js";
 
 async function collectTools(
   client: MCPClient | CustomMCPClient,
@@ -36,7 +39,7 @@ async function main(): Promise<void> {
     toolNameClientMap,
   });
 
-  const messages: Message[] = [
+  const messages: Message<OpenAI.ChatCompletionMessageFunctionToolCall>[] = [
     new Message(
       Role.SYSTEM,
       "You are an advanced AI agent. Your goal is to assist user with his questions."

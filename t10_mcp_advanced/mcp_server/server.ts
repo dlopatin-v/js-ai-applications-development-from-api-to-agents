@@ -13,6 +13,7 @@ function validateAcceptHeader(accept: string | undefined): boolean {
   // 1. If accept is falsy, return false
   // 2. Split by comma, strip and lowercase each part
   // 3. Return true only if both "application/json" and "text/event-stream" are present
+  throw new Error("Not implemented.");
 }
 
 function sendSseResponse(
@@ -25,12 +26,14 @@ function sendSseResponse(
   // 2. If sessionId, set MCP_SESSION_ID_HEADER response header
   // 3. Write: `data: ${JSON.stringify(response)}\n\n`
   // 4. End the response
+  throw new Error("Not implemented.");
 }
 
 function sendError(res: http.ServerResponse, status: number, body: string): void {
   //TODO:
   // 1. Set status code and Content-Type: application/json
   // 2. End the response with body
+  throw new Error("Not implemented.");
 }
 
 const server = http.createServer(async (req, res) => {
@@ -60,6 +63,7 @@ const server = http.createServer(async (req, res) => {
   //        tools/call  → await mcpServer.handleToolsCall(request)
   //        unknown     → MCPResponse with error -32601 "Method not found"
   //    - Call sendSseResponse(res, sessionId, mcp_response)
+  throw new Error("Not implemented.");
 });
 
 server.listen(PORT, () => {

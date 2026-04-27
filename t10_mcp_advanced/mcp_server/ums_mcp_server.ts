@@ -1,12 +1,14 @@
 import { randomUUID } from "crypto";
+
 import { MCPRequest } from "./models/request.js";
 import { MCPResponse, ErrorResponse, createResponse } from "./models/response.js";
 import { BaseTool } from "./tools/base.js";
+import { CreateUserTool } from "./tools/users/create_user_tool.js";
+import { DeleteUserTool } from "./tools/users/delete_user_tool.js";
 import { GetUserByIdTool } from "./tools/users/get_user_by_id_tool.js";
 import { SearchUsersTool } from "./tools/users/search_users_tool.js";
-import { CreateUserTool } from "./tools/users/create_user_tool.js";
 import { UpdateUserTool } from "./tools/users/update_user_tool.js";
-import { DeleteUserTool } from "./tools/users/delete_user_tool.js";
+
 
 export interface MCPSession {
   sessionId: string;
@@ -50,12 +52,14 @@ export class UmsMCPServer {
     //      serverInfo: this.serverInfo
     //    })
     // 5. Return { response, sessionId }
+    throw new Error("Not implemented.");
   }
 
   handleToolsList(request: MCPRequest): MCPResponse {
     //TODO:
     // 1. Build toolsList by calling tool.toMcpTool() on each entry in this.tools
     // 2. Return createResponse(request.id, { tools: toolsList })
+    throw new Error("Not implemented.");
   }
 
   async handleToolsCall(request: MCPRequest): Promise<MCPResponse> {
@@ -66,5 +70,6 @@ export class UmsMCPServer {
     // 4. Look up tool by toolName; if not found return error: ErrorResponse(-32601, `Tool '${toolName}' not found`)
     // 5. Try: result = await tool.execute(arguments); return createResponse(request.id, { content: [{ type: "text", text: result }] })
     //    Catch: return createResponse(request.id, { content: [{ type: "text", text: `Tool execution error: ${e}` }], isError: true })
+    throw new Error("Not implemented.");
   }
 }

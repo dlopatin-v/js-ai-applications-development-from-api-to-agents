@@ -1,5 +1,5 @@
-import { OpenAI, ResponseInput } from "openai";
-import { Message, Role } from "../../../commons";
+import { OpenAI } from "openai";
+import { Message, Role } from "commons";
 import { BaseOpenAiClient } from "../base";
 
 /**

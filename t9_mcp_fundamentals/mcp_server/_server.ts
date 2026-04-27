@@ -162,8 +162,10 @@ server.registerTool(
 );
 
 // ==================== TODO: Implement the remaining tools ====================
+//  https://github.com/modelcontextprotocol/typescript-sdk/blob/main/docs/server.md#building-mcp-servers
 
 // TODO 1: Register the "search_user" tool using server.registerTool()
+//  https://github.com/modelcontextprotocol/typescript-sdk/blob/main/docs/server.md#tools
 //   Step 1: Call server.registerTool() with three arguments:
 //           - tool name: "search_user"
 //           - config object: { description: "Searches for users by name, surname, email and gender",
@@ -206,6 +208,7 @@ server.registerTool(
 
 // ==================== MCP RESOURCES ====================
 
+// TODO: https://github.com/modelcontextprotocol/typescript-sdk/blob/main/docs/server.md#resources
 server.registerResource(
   "flow-diagram",
   "users-management://flow-diagram",
@@ -233,6 +236,7 @@ server.registerResource(
 // ==================== MCP PROMPTS ====================
 
 // TODO 4: Register the "user_search_assistant_prompt" prompt using server.registerPrompt()
+//  https://github.com/modelcontextprotocol/typescript-sdk/blob/main/docs/server.md#prompts
 //   Step 1: Call server.registerPrompt() with:
 //           - prompt name: "user_search_assistant_prompt"
 //           - config object: { description: "Helps users formulate effective search queries" }

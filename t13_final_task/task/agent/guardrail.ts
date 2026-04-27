@@ -15,7 +15,7 @@
 
 const REDACTED = "***";
 
-// Credit card number patterns (Python dict, JSON dict, standalone)
+// Credit card number patterns
 // Each regex is constructed fresh per call via a factory to ensure lastIndex resets.
 const CC_PATTERN_SOURCES: Array<[string, string]> = [
   // 'num': '5047-7145-8294-8166'
@@ -34,7 +34,7 @@ const CC_PATTERN_SOURCES: Array<[string, string]> = [
   [String.raw`(?<="exp_date": ")\d{2}\/\d{4}(?=")`, "g"],
 ];
 
-// Salary patterns (YAML, JSON, Python dict, plain text)
+// Salary patterns
 const SALARY_PATTERN_SOURCES: Array<[string, string]> = [
   // salary: 85000
   [String.raw`(?<=salary: )\d[\d,]*(?:\.\d+)?`, "g"],

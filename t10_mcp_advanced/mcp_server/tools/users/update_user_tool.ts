@@ -1,4 +1,4 @@
-import { BaseUserServiceTool } from "./base.js";
+import { BaseUserServiceTool } from "./base";
 
 import { UserUpdate } from "../../../../commons";
 

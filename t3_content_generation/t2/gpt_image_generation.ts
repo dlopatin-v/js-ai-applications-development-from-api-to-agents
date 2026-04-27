@@ -1,5 +1,5 @@
 import * as fs from "fs";
-import path from "node:path";
+import * as path from "node:path";
 
 import { OpenAIClientT3 } from "../_openai_client";
 

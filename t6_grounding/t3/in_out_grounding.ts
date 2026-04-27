@@ -9,7 +9,7 @@ import { z } from "zod";
 
 import { UserServiceClient } from "../user_service_client";
 
-import { OPENAI_API_KEY, Role, UserInfo } from "../../commons/index.js";
+import { OPENAI_API_KEY, Role, UserInfo } from "../../commons";
 
 /*
  HOBBIES SEARCHER:

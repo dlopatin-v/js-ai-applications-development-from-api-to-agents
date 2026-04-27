@@ -3,9 +3,7 @@ import OpenAI from "openai";
 import { BaseAgent } from "./_base";
 import { BaseTool } from "../tools/base";
 
-import { OPENAI_CHAT_COMPLETIONS_ENDPOINT } from "../../../commons/constants.js";
-import { Message } from "../../../commons/models/message.js";
-import { Role } from "../../../commons/models/role.js";
+import { OPENAI_CHAT_COMPLETIONS_ENDPOINT, Message, Role } from "../../../commons";
 
 export class OpenAIBasedAgent extends BaseAgent {
   private readonly _toolsSchemas: Record<string, unknown>[];

@@ -3,9 +3,7 @@ import Anthropic, { ParsedMessage } from "@anthropic-ai/sdk";
 import { BaseAgent } from "./_base";
 import { BaseTool } from "../tools/base";
 
-import { ANTHROPIC_ENDPOINT } from "../../../commons/constants.js";
-import { Message } from "../../../commons/models/message.js";
-import { Role } from "../../../commons/models/role.js";
+import { ANTHROPIC_ENDPOINT, Message, Role } from "../../../commons";
 
 export class AnthropicBasedAgent extends BaseAgent {
   private readonly _toolsSchemas: Record<string, unknown>[];

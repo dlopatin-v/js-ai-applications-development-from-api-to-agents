@@ -1,6 +1,6 @@
 import OpenAI from "openai";
-import { Message } from "commons/models/message";
-import { Role } from "commons/models/role";
+import { Message } from "../../../commons/models/message.js";
+import { Role } from "../../../commons/models/role.js";
 import { BaseTool } from "./tools/base.js";
 import { UMSDataGuardrail } from "./guardrail.js";
 

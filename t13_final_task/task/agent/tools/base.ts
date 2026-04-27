@@ -1,5 +1,5 @@
-import { Message } from "commons/models/message.js";
-import { Role } from "commons/models/role.js";
+import { Message } from "../../../../commons/models/message.js";
+import { Role } from "../../../../commons/models/role.js";
 
 export abstract class BaseTool {
   abstract get name(): string;

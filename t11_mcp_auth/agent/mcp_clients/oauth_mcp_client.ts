@@ -25,6 +25,7 @@ function generatePkcePair(): { codeVerifier: string; codeChallenge: string } {
   // 1. Generate codeVerifier = crypto.randomBytes(32).toString("base64url")
   // 2. Generate codeChallenge = crypto.createHash("sha256").update(codeVerifier).digest("base64url")
   // 3. Return { codeVerifier, codeChallenge }
+  throw new Error("Not implemented.");
 }
 
 function buildAuthUrl(codeChallenge: string, state: string): string {
@@ -32,6 +33,7 @@ function buildAuthUrl(codeChallenge: string, state: string): string {
   // Build URLSearchParams with: response_type="code", client_id=CLIENT_ID, redirect_uri=REDIRECT_URI,
   //   scope="openid", state, code_challenge=codeChallenge, code_challenge_method="S256"
   // Return `${AUTH_ENDPOINT}?${params}`
+  throw new Error("Not implemented.");
 }
 
 // ==================== LOCAL CALLBACK SERVER ====================
@@ -41,12 +43,14 @@ function waitForCallback(): Promise<{ code: string; state: string }> {
   // Start a temporary http.createServer on REDIRECT_PORT
   // Parse req.url to extract `code` and `state` query params
   // Send a success HTML response, close the server, and resolve the promise with { code, state }
+  throw new Error("Not implemented.");
 }
 
 function openBrowser(url: string): void {
   //TODO:
   // Use exec() to open the URL in the default browser:
   //   macOS: "open <url>", Linux: "xdg-open <url>", Windows: "start <url>"
+  throw new Error("Not implemented.");
 }
 
 // ==================== TOKEN EXCHANGE ====================
@@ -57,12 +61,14 @@ async function exchangeCodeForTokens(code: string, codeVerifier: string): Promis
   //   grant_type="authorization_code", code, redirect_uri=REDIRECT_URI,
   //   client_id=CLIENT_ID, code_verifier=codeVerifier
   // Return the parsed JSON response
+  throw new Error("Not implemented.");
 }
 
 async function refreshAccessToken(refreshToken: string): Promise<Record<string, unknown>> {
   //TODO:
   // POST to TOKEN_ENDPOINT with: grant_type="refresh_token", refresh_token=refreshToken, client_id=CLIENT_ID
   // Return the parsed JSON response
+  throw new Error("Not implemented.");
 }
 
 // ==================== OAUTH TOKEN MANAGER ====================
@@ -81,6 +87,7 @@ class OAuthTokenManager {
     // 5. Wait for callback: { code } = await waitForCallback()
     // 6. Exchange code: tokens = await exchangeCodeForTokens(code, codeVerifier)
     // 7. Store tokens: this._storeTokens(tokens)
+    throw new Error("Not implemented.");
   }
 
   private _storeTokens(tokens: Record<string, unknown>): void {
@@ -88,11 +95,13 @@ class OAuthTokenManager {
     // 1. Set this._accessToken = tokens["access_token"] as string
     // 2. Set this._refreshToken = tokens["refresh_token"] as string
     // 3. Set this._expiresAt = Date.now() + ((tokens["expires_in"] as number) * 1000) - 10000
+    throw new Error("Not implemented.");
   }
 
   isTokenExpired(): boolean {
     //TODO:
     // Return true if _expiresAt is null or Date.now() >= _expiresAt
+    throw new Error("Not implemented.");
   }
 
   async refresh(): Promise<void> {
@@ -104,6 +113,7 @@ class OAuthTokenManager {
   authHeaders(): Record<string, string> {
     //TODO:
     // Return { Authorization: `Bearer ${this._accessToken}` }
+    throw new Error("Not implemented.");
   }
 }
 
@@ -124,6 +134,7 @@ export class OauthMCPClient extends T11MCPClient {
     //TODO:
     // 1. Await this.tokenManager.authenticate() to run the PKCE browser flow
     // 2. Await this._connectWithCurrentToken()
+    throw new Error("Not implemented.");
   }
 
   private async _connectWithCurrentToken(): Promise<void> {
@@ -133,11 +144,13 @@ export class OauthMCPClient extends T11MCPClient {
     //    this.tokenManager.authHeaders() into every request's headers; assign to this.transport
     // 3. Call await this.client.connect(this.transport)
     // 4. Log: `Connected to OAuth MCP server at ${this.serverUrl}`
+    throw new Error("Not implemented.");
   }
 
   async disconnect(): Promise<void> {
     //TODO:
     // Call await this.transport?.close()
+    throw new Error("Not implemented.");
   }
 
   async callTool(toolName: string, toolArgs: Record<string, unknown>): Promise<unknown> {
@@ -148,11 +161,13 @@ export class OauthMCPClient extends T11MCPClient {
     //       - Print "    🔄 Token expired — refreshing and reconnecting..."
     //       - Await this._reconnectWithFreshToken()
     // 4. Return await this._doCallTool(toolName, toolArgs)
+    throw new Error("Not implemented.");
   }
 
   private async _doCallTool(toolName: string, toolArgs: Record<string, unknown>): Promise<unknown> {
     //TODO:
     // Delegate to super.callTool(toolName, toolArgs) and return the result
+    throw new Error("Not implemented.");
   }
 
   private async _reconnectWithFreshToken(): Promise<void> {
@@ -160,5 +175,6 @@ export class OauthMCPClient extends T11MCPClient {
     // 1. Await this.tokenManager.refresh()
     // 2. Await this._connectWithCurrentToken()
     // 3. Log: "Reconnected with fresh token"
+    throw new Error("Not implemented.");
   }
 }

@@ -20,6 +20,7 @@ function getJwks() {
   //TODO:
   // Lazy-initialize _jwks: if null, create with createRemoteJWKSet(JWKS_URL)
   // Return _jwks
+  throw new Error("Not implemented.");
 }
 
 // ==================== MIDDLEWARE ====================
@@ -35,4 +36,5 @@ export async function checkOAuth(req: http.IncomingMessage, res: http.ServerResp
   // 5. If REQUIRED_ROLE not in roles: send 403 JSON
   //    { error: "Forbidden", detail: `Role '${REQUIRED_ROLE}' is required. User has roles: ${roles}` } and return false
   // 6. Print `✅ Authenticated: ${payload.preferred_username} | roles: ${roles}` and return true
+  throw new Error("Not implemented.");
 }

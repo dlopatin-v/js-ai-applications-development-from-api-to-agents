@@ -5,6 +5,8 @@
   "main": "index.js",
   "scripts": {
     "ts": "tsx",
+    "lint": "eslint \"**/*.ts\"",
+    "lint:fix": "eslint \"**/*.ts\" --fix",
     "test": "echo \"Error: no test specified\" && exit 1",
     "t1:openai-chat": "tsx t1_llm_api/openai/completions/openai_chat_completions_app.ts",
     "t1:openai-responses": "tsx t1_llm_api/openai/responses/openai_responses_app.ts",
@@ -79,6 +81,9 @@
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^25.4.0",
     "@types/pg": "^8.18.0",
+    "@typescript-eslint/parser": "^8.59.0",
+    "eslint": "^9.39.4",
+    "eslint-plugin-import": "^2.32.0",
     "tsx": "^4.21.0",
     "typescript": "^5.8.2"
   }

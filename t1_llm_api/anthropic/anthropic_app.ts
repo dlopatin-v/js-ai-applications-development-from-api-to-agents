@@ -1,4 +1,4 @@
-import { ANTHROPIC_API_KEY, ANTHROPIC_ENDPOINT, DEFAULT_SYSTEM_PROMPT } from "../../commons/index.js";
+import { ANTHROPIC_API_KEY, ANTHROPIC_ENDPOINT, DEFAULT_SYSTEM_PROMPT } from "../../commons";
 import { start } from "../base_app";
 import { AnthropicAIClient } from "./client";
 import { CustomAnthropicAIClient } from "./custom_client";

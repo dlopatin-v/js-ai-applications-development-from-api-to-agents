@@ -1,5 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
-import { Message, Role } from "../../commons/index.js";
+
+import { Message, Role } from "../../commons";
 import AIClient from "../base_client";
 
 /**

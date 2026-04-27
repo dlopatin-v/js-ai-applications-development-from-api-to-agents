@@ -1,10 +1,12 @@
-import * as fs from "fs";
-import * as path from "path";
-import * as os from "os";
 import { execSync } from "child_process";
+import * as fs from "fs";
+import * as os from "os";
+import * as path from "path";
 import * as readline from "readline";
+
 import OpenAI from "openai";
-import { OPENAI_API_KEY } from "../commons/constants.js";
+
+import { OPENAI_API_KEY } from "../commons/constants"
 
 function zipSkill(skillDir: string): Buffer {
   //TODO:
@@ -53,8 +55,6 @@ async function deleteSkills(client: OpenAI): Promise<void> {
   //    print `Deleted skill ${skill.name}`
   throw new Error("Not implemented");
 }
-
-const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
 const STYLE_SKILL_NAME = "style-guide";
 const STYLE_SKILL_DIR = path.join(__dirname, "_skills", STYLE_SKILL_NAME);

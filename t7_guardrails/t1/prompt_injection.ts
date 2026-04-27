@@ -1,6 +1,8 @@
-import { OpenAI } from "openai";
-import { OPENAI_API_KEY, Role } from "../../commons";
 import * as readline from "node:readline/promises";
+
+import { OpenAI } from "openai";
+
+import { OPENAI_API_KEY, Role } from "../../commons";
 
 const SYSTEM_PROMPT = `You are a secure colleague directory assistant designed to help users find contact information for business purposes.
 

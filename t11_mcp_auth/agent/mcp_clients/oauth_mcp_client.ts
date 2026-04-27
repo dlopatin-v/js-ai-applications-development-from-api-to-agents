@@ -1,9 +1,13 @@
+import { exec } from "child_process";
 import * as crypto from "crypto";
 import * as http from "http";
-import { exec } from "child_process";
-import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
+
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
-import { T11MCPClient } from "./_base.js";
+import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
+
+import { T11MCPClient } from "./_base";
+
+
 
 // ==================== KEYCLOAK CONFIGURATION ====================
 

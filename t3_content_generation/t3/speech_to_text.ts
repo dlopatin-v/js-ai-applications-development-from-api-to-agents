@@ -1,6 +1,7 @@
-import { OPENAI_HOST, OPENAI_API_KEY } from "../../commons";
 import * as fs from "node:fs";
 import * as path from "node:path";
+
+import { OPENAI_HOST, OPENAI_API_KEY } from "../../commons";
 
 // https://platform.openai.com/docs/guides/speech-to-text
 

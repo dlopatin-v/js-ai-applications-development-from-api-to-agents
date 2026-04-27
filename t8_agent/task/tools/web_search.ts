@@ -1,5 +1,6 @@
-import { OPENAI_RESPONSES_ENDPOINT } from "../../../commons/constants";
 import { BaseTool } from "./base";
+
+import { OPENAI_RESPONSES_ENDPOINT } from "../../../commons/constants";
 
 export class WebSearchTool extends BaseTool {
   private readonly apiKey: string;

@@ -1,7 +1,8 @@
-import http from "http";
-import { MCPRequest } from "./models/request.js";
-import { MCPResponse, ErrorResponse, createResponse } from "./models/response.js";
-import { UmsMCPServer } from "./ums_mcp_server.js";
+import express, { Request, Response } from "express";
+
+import { MCPRequest } from "./models/request";
+import { MCPResponse } from "./models/response";
+import { UmsMCPServer } from "./ums_mcp_server";
 
 const MCP_SESSION_ID_HEADER = "mcp-session-id";
 const PORT = 8006;
@@ -17,7 +18,7 @@ function validateAcceptHeader(accept: string | undefined): boolean {
 }
 
 function sendSseResponse(
-  res: http.ServerResponse,
+  res: Response,
   sessionId: string | undefined,
   response: MCPResponse
 ): void {
@@ -29,14 +30,17 @@ function sendSseResponse(
   throw new Error("Not implemented.");
 }
 
-function sendError(res: http.ServerResponse, status: number, body: string): void {
+function sendError(res: Response, status: number, body: string): void {
   //TODO:
   // 1. Set status code and Content-Type: application/json
   // 2. End the response with body
   throw new Error("Not implemented.");
 }
 
-const server = http.createServer(async (req, res) => {
+const app = express();
+app.use(express.json());
+
+app.post("/mcp", async (req: Request, res: Response) => {
   //TODO:
   // 1. Only handle POST /mcp and DELETE /mcp; return sendError(405, "Method Not Allowed") otherwise
   //
@@ -66,6 +70,6 @@ const server = http.createServer(async (req, res) => {
   throw new Error("Not implemented.");
 });
 
-server.listen(PORT, () => {
+app.listen(PORT, () => {
   console.log(`Custom MCP server running on http://localhost:${PORT}/mcp`);
 });

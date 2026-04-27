@@ -1,16 +1,19 @@
 import * as path from "path";
-import express from "express";
+
 import cors = require("cors");
+import express from "express";
 import { createClient } from "redis";
-import { Message } from "../../../commons/models/message.js";
-import { SkillMetadata, loadSkills } from "./models.js";
-import { BaseTool } from "./tools/base.js";
-import { McpTool } from "./tools/mcp_tool.js";
-import { ReadSkillTool } from "./tools/read_skill_tool.js";
-import { HttpMcpClient } from "./clients/http_mcp_client.js";
-import { StdioMcpClient } from "./clients/stdio_mcp_client.js";
-import { UMSAgent } from "./ums_agent.js";
-import { ConversationManager } from "./conversation_manager.js";
+
+import { HttpMcpClient } from "./clients/http_mcp_client";
+import { StdioMcpClient } from "./clients/stdio_mcp_client";
+import { ConversationManager } from "./conversation_manager";
+import { SkillMetadata, loadSkills } from "./models";
+import { BaseTool } from "./tools/base";
+import { McpTool } from "./tools/mcp_tool";
+import { ReadSkillTool } from "./tools/read_skill_tool";
+import { UMSAgent } from "./ums_agent";
+
+import { Message } from "../../../commons";
 
 const SKILLS_DIR = path.resolve(__dirname, "../_skills");
 

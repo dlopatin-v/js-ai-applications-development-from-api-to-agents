@@ -1,14 +1,13 @@
 import { randomUUID } from "crypto";
 
-import { MCPRequest } from "./models/request.js";
-import { MCPResponse, ErrorResponse, createResponse } from "./models/response.js";
-import { BaseTool } from "./tools/base.js";
-import { CreateUserTool } from "./tools/users/create_user_tool.js";
-import { DeleteUserTool } from "./tools/users/delete_user_tool.js";
-import { GetUserByIdTool } from "./tools/users/get_user_by_id_tool.js";
-import { SearchUsersTool } from "./tools/users/search_users_tool.js";
-import { UpdateUserTool } from "./tools/users/update_user_tool.js";
-
+import { MCPRequest } from "./models/request";
+import { MCPResponse, ErrorResponse, createResponse } from "./models/response";
+import { BaseTool } from "./tools/base";
+import { CreateUserTool } from "./tools/users/create_user_tool";
+import { DeleteUserTool } from "./tools/users/delete_user_tool";
+import { GetUserByIdTool } from "./tools/users/get_user_by_id_tool";
+import { SearchUsersTool } from "./tools/users/search_users_tool";
+import { UpdateUserTool } from "./tools/users/update_user_tool";
 
 export interface MCPSession {
   sessionId: string;

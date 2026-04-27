@@ -1,4 +1,4 @@
-import { BaseUserServiceTool } from "./base.js";
+import { BaseUserServiceTool } from "./base";
 
 export class DeleteUserTool extends BaseUserServiceTool {
   get name(): string {

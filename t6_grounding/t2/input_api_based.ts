@@ -1,8 +1,10 @@
 import { OpenAI } from "openai";
 import { zodResponseFormat } from 'openai/helpers/zod';
-import { OPENAI_API_KEY } from "../../commons";
-import { UserServiceClient } from "../user_service_client";
 import { z } from "zod";
+
+import { UserServiceClient } from "../user_service_client";
+
+import { OPENAI_API_KEY } from "../../commons";
 
 // TODO:
 // Define QUERY_ANALYSIS_PROMPT for extracting search parameters from user questions:

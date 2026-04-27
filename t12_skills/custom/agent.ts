@@ -1,7 +1,8 @@
 import OpenAI from "openai";
-import { Message } from "../../commons/models/message.js";
-import { Role } from "../../commons/models/role.js";
-import { BaseTool } from "./tools/base.js";
+
+import { BaseTool } from "./tools/base";
+
+import { Message, Role } from "../../commons";
 
 export class T12Agent {
   private readonly toolsMap: Map<string, BaseTool>;

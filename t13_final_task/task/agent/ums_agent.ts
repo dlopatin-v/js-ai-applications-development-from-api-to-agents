@@ -1,8 +1,9 @@
 import OpenAI from "openai";
-import { Message } from "../../../commons/models/message.js";
-import { Role } from "../../../commons/models/role.js";
-import { BaseTool } from "./tools/base.js";
-import { UMSDataGuardrail } from "./guardrail.js";
+
+import { UMSDataGuardrail } from "./guardrail";
+import { BaseTool } from "./tools/base";
+
+import { Message, Role } from "../../../commons";
 
 /** Serialise a Message into the OpenAI message param shape. */
 function serializeMessage(msg: Message): OpenAI.ChatCompletionMessageParam {

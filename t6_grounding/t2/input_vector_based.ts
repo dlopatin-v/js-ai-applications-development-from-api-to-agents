@@ -1,9 +1,12 @@
-import { OpenAI } from "openai";
-import { OpenAIEmbeddings } from "@langchain/openai";
 import { FaissStore } from "@langchain/community/vectorstores/faiss";
 import { Document } from "@langchain/core/documents";
-import { OPENAI_API_KEY } from "../../commons";
+import { OpenAIEmbeddings } from "@langchain/openai";
+import { OpenAI } from "openai";
+
+
 import { UserServiceClient } from "../user_service_client";
+
+import { OPENAI_API_KEY } from "../../commons";
 
 // TODO:
 // Define SYSTEM_PROMPT for the RAG assistant:

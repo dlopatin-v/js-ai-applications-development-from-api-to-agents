@@ -1,5 +1,6 @@
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
-import { MCPClient } from "./base.js";
+
+import { MCPClient } from "./base";
 
 export class HttpMCPClient extends MCPClient {
   private readonly serverUrl: string;

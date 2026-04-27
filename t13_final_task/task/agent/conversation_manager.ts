@@ -1,8 +1,9 @@
 import { createClient } from "redis";
 import { v4 as uuidv4 } from "uuid";
-import { Message } from "../../../commons/models/message.js";
-import { Role } from "../../../commons/models/role.js";
-import { UMSAgent } from "./ums_agent.js";
+
+import { UMSAgent } from "./ums_agent";
+
+import { Message, Role } from "../../../commons";
 
 const CONVERSATION_PREFIX = "conversation:";
 const CONVERSATION_LIST_KEY = "conversations:list";

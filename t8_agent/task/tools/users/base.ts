@@ -1,4 +1,5 @@
 import { BaseTool } from "../base";
+
 import { UserServiceClient } from "../../../../commons";
 
 /** Base class for tools that interact with the User Service.

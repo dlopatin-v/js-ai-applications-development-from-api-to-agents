@@ -1,11 +1,13 @@
-import * as readline from "readline";
 import * as path from "path";
+import * as readline from "readline";
+
+import { AgentMCPFundamentals } from "./agent";
+import { MCPClient, ToolSchema } from "./mcp_clients/base";
+import { HttpMCPClient } from "./mcp_clients/http";
+import { StdioMCPClient } from "./mcp_clients/stdio";
+import { SYSTEM_PROMPT } from "./prompts";
+
 import { OPENAI_API_KEY, Message, Role } from "../../commons";
-import { AgentMCPFundamentals } from "./agent.js";
-import { StdioMCPClient } from "./mcp_clients/stdio.js";
-import { HttpMCPClient } from "./mcp_clients/http.js";
-import { SYSTEM_PROMPT } from "./prompts.js";
-import { MCPClient, ToolSchema } from "./mcp_clients/base.js";
 
 // https://remote.mcpservers.org/fetch/mcp
 // Pay attention that `fetch` doesn't have resources and prompts

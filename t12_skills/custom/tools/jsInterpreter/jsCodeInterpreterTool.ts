@@ -1,8 +1,10 @@
 import * as path from "path";
-import { BaseTool } from "../base.js";
-import { T12MCPClient } from "../../mcp/mcp_client.js";
-import { ExecutionResult } from "./_response.js";
-import { getFileContent } from "../../file_utils.js";
+
+import { BaseTool } from "../base";
+import { ExecutionResult } from "./_response";
+
+import { getFileContent } from "../../file_utils";
+import { T12MCPClient } from "../../mcp/mcp_client";
 
 export class JsCodeInterpreterTool extends BaseTool {
   private constructor(

@@ -1,4 +1,4 @@
-import { McpToolModel } from "../models.js";
+import { McpToolModel } from "../models";
 
 export abstract class BaseMcpClient {
   abstract getTools(): Promise<McpToolModel[]>;

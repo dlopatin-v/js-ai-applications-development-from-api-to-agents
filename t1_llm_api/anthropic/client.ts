@@ -1,7 +1,9 @@
 import Anthropic from "@anthropic-ai/sdk";
-import { Message, Role } from "../../commons";
-import AIClient from "../base_client";
 import { MessageParam } from "@anthropic-ai/sdk/resources";
+
+import AIClient from "../base_client";
+
+import { Message, Role } from "../../commons";
 
 /**
  * Client for Anthropic's Claude API using the official SDK.

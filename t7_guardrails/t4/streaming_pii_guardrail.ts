@@ -1,6 +1,8 @@
-import { OpenAI } from "openai";
-import { OPENAI_API_KEY, Role } from "../../commons";
 import * as readline from "node:readline/promises";
+
+import { OpenAI } from "openai";
+
+import { OPENAI_API_KEY, Role } from "../../commons";
 
 // Note: JavaScript has no direct equivalent of Microsoft Presidio + spaCy.
 //       The PresidioStreamingPIIGuardrail class below delegates NLP-based PII detection

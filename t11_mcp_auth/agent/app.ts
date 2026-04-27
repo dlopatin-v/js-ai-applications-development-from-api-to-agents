@@ -1,10 +1,10 @@
 import * as readline from "readline";
-import { OPENAI_API_KEY, DEFAULT_SYSTEM_PROMPT } from "../../commons/constants.js";
-import { Message } from "../../commons/models/message.js";
-import { Role } from "../../commons/models/role.js";
-import { AgentMCPAuth } from "./_agent.js";
-import { ApiKeyMCPClient } from "./mcp_clients/api_key_mcp_client.js";
-import { OauthMCPClient } from "./mcp_clients/oauth_mcp_client.js";
+
+import { AgentMCPAuth } from "./_agent";
+import { ApiKeyMCPClient } from "./mcp_clients/api_key_mcp_client";
+import { OauthMCPClient } from "./mcp_clients/oauth_mcp_client";
+
+import { OPENAI_API_KEY, DEFAULT_SYSTEM_PROMPT, Message, Role } from "../../commons";
 
 const MCP_API_KEY = "dev-secret-key";
 

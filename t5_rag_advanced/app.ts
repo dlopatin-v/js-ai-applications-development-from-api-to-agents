@@ -1,3 +1,5 @@
+import * as readline from "node:readline/promises";
+
 import {
   Conversation,
   Message,
@@ -8,7 +10,7 @@ import {
 import { ChatCompletionClient } from "./chat/chat_completion_client";
 import { EmbeddingsClient } from "./embeddings/embeddings_client";
 import { SearchMode, TextProcessor } from "./embeddings/text_processor";
-import * as readline from "node:readline/promises";
+
 
 const SYSTEM_PROMPT = `You are a RAG-powered assistant that assists users with their questions about microwave usage.
             

@@ -1,6 +1,6 @@
-import { BaseMcpClient } from "../clients/base_mcp_client.js";
-import { McpToolModel } from "../models.js";
-import { BaseTool } from "./base.js";
+import { BaseMcpClient } from "../clients/base_mcp_client";
+import { McpToolModel } from "../models";
+import { BaseTool } from "./base";
 
 export class McpTool extends BaseTool {
   private readonly _client: BaseMcpClient;

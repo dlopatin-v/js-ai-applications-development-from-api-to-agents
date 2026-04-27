@@ -1,11 +1,13 @@
-import { OpenAI } from "openai";
-import { OpenAIEmbeddings } from "@langchain/openai";
 import { Chroma } from "@langchain/community/vectorstores/chroma";
 import { Document } from "@langchain/core/documents";
+import { OpenAIEmbeddings } from "@langchain/openai";
+import { OpenAI } from "openai";
 import { zodResponseFormat } from "openai/helpers/zod";
 import { z } from "zod";
-import { OPENAI_API_KEY } from "../../commons";
+
 import { UserServiceClient } from "../user_service_client";
+
+import { OPENAI_API_KEY } from "../../commons";
 
 /*
  HOBBIES SEARCHER:

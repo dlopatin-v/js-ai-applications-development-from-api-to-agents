@@ -1,5 +1,4 @@
-import { Message } from "../../../commons/models/message.js";
-import { Role } from "../../../commons/models/role.js";
+import { Message, Role } from "../../../commons";
 
 export abstract class BaseTool {
   async execute(toolCallId: string, args: Record<string, unknown>): Promise<Message> {

@@ -1,6 +1,8 @@
 import { GoogleGenAI, Content } from "@google/genai";
-import { Message, Role } from "../../commons";
+
 import AIClient from "../base_client";
+
+import { Message, Role } from "../../commons";
 
 /**
  * Client for Google Gemini API using the official SDK.

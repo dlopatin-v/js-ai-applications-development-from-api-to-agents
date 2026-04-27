@@ -1,6 +1,7 @@
 import * as fs from "fs";
 import * as path from "path";
-import { BaseTool } from "./base.js";
+
+import { BaseTool } from "./base";
 
 export class ReadSkillTool extends BaseTool {
   private readonly _skillsDir: string;

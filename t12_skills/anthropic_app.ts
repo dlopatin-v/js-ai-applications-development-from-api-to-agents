@@ -1,8 +1,10 @@
 import * as fs from "fs";
 import * as path from "path";
 import * as readline from "readline";
+
 import Anthropic from "@anthropic-ai/sdk";
-import { ANTHROPIC_API_KEY } from "../commons/constants.js";
+
+import { ANTHROPIC_API_KEY } from "../commons";
 
 const SKILLS_VERSION = "skills-2025-10-02";
 
@@ -63,8 +65,6 @@ function chat(client: Anthropic, skillId: string, logRequest = true, logResponse
   //       i. Append { role: "assistant", content: response.content } to messages
   throw new Error("Not implemented");
 }
-
-const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
 const STYLE_SKILL_TITLE = "style-guide";
 const STYLE_SKILL_DIR = path.join(__dirname, "_skills", STYLE_SKILL_TITLE);

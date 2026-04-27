@@ -1,6 +1,7 @@
-import { OPENAI_API_KEY, OPENAI_HOST } from "../../commons";
 import * as fs from "node:fs";
 import * as path from "node:path";
+
+import { OPENAI_API_KEY, OPENAI_HOST } from "../../commons";
 
 // https://platform.openai.com/docs/guides/audio#add-audio-to-your-existing-application
 

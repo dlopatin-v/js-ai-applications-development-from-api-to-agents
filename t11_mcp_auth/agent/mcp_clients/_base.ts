@@ -24,23 +24,22 @@ export abstract class T11MCPClient {
   abstract disconnect(): Promise<void>;
 
   async getTools(): Promise<ToolSchema[]> {
-    const result = await this.client.listTools();
-    return result.tools.map((tool) => ({
-      type: "function",
-      function: {
-        name: tool.name,
-        description: tool.description ?? "",
-        parameters: tool.inputSchema as Record<string, unknown>,
-      },
-    }));
+    // TODO:
+    // 1. Call this.client.listTools() to get available tools from the MCP server
+    // 2. Map each tool to a ToolSchema object:
+    //    { type: "function", function: { name, description, parameters: tool.inputSchema } }
+    // 3. Return the mapped array
+    throw new Error("Not implemented");
   }
 
   async callTool(toolName: string, toolArgs: Record<string, unknown>): Promise<unknown> {
-    console.log(`    Calling \`${toolName}\` with`, toolArgs);
-    const result = await this.client.callTool({ name: toolName, arguments: toolArgs });
-    const content = (result.content as any)[0];
-    console.log(`    ⚙️:`, content, "\n");
-    if (content && "text" in content) return content.text;
-    return content;
+    // TODO:
+    // 1. Log the tool name and args
+    // 2. Call this.client.callTool({ name: toolName, arguments: toolArgs })
+    // 3. Extract content[0] from result.content
+    // 4. Log the content
+    // 5. If content has a "text" property — return content.text
+    // 6. Otherwise return content
+    throw new Error("Not implemented");
   }
 }

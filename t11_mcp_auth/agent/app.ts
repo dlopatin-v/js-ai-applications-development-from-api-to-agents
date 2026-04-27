@@ -9,49 +9,21 @@ import { OPENAI_API_KEY, DEFAULT_SYSTEM_PROMPT, Message, Role } from "../../comm
 const MCP_API_KEY = "dev-secret-key";
 
 async function main(): Promise<void> {
-  // const mcpClient = new ApiKeyMCPClient("http://localhost:8007/mcp", MCP_API_KEY);
-  const mcpClient = new OauthMCPClient("http://localhost:8008/mcp");
-  await mcpClient.connect();
-
-  console.log("\n=== Available Tools ===");
-  const tools = await mcpClient.getTools();
-  for (const tool of tools) {
-    console.log(JSON.stringify(tool, null, 2));
-  }
-
-  const agent = new AgentMCPAuth({
-    apiKey: OPENAI_API_KEY,
-    model: "gpt-4o",
-    tools,
-    mcpClient,
-  });
-
-  const messages: Message[] = [
-    new Message(Role.SYSTEM, DEFAULT_SYSTEM_PROMPT),
-  ];
-
-  console.log("MCP-based Agent is ready! Type your query or 'exit' to exit.");
-
-  const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
-
-  const askQuestion = (): void => {
-    rl.question("\n> ", async (userInput) => {
-      userInput = userInput.trim();
-      if (userInput.toLowerCase() === "exit") {
-        rl.close();
-        await mcpClient.disconnect();
-        return;
-      }
-
-      messages.push(new Message(Role.USER, userInput));
-      const aiMessage = await agent.getCompletion(messages);
-      messages.push(aiMessage);
-
-      askQuestion();
-    });
-  };
-
-  askQuestion();
+  // TODO:
+  // 1. Create an MCP client — pick one (comment out the other):
+  //    - ApiKeyMCPClient: new ApiKeyMCPClient("http://localhost:8007/mcp", MCP_API_KEY)
+  //    - OauthMCPClient:  new OauthMCPClient("http://localhost:8008/mcp")
+  // 2. Connect the client: await mcpClient.connect()
+  // 3. List and log available tools: await mcpClient.getTools()
+  //    Print each tool as JSON.stringify(tool, null, 2)
+  // 4. Create an AgentMCPAuth with { apiKey: OPENAI_API_KEY, model: "gpt-4o", tools, mcpClient }
+  // 5. Set up a messages array with a SYSTEM message using DEFAULT_SYSTEM_PROMPT
+  // 6. Create a readline interface on stdin/stdout
+  // 7. In a recursive askQuestion() loop:
+  //    a. Prompt "> " for user input
+  //    b. If input is "exit" — close readline, disconnect mcpClient, return
+  //    c. Push a USER message, call agent.getCompletion(messages), push the response
+  //    d. Call askQuestion() again to continue the loop
 }
 
 main().catch(console.error);

@@ -1,6 +1,8 @@
-import { OpenAI } from "openai";
-import { OPENAI_API_KEY, Role } from "../../commons";
 import * as readline from "node:readline/promises";
+
+import { OpenAI } from "openai";
+
+import { OPENAI_API_KEY, Role } from "../../commons";
 
 // TODO:
 // You will need to enhance system prompt to avoid PII leaks. Follow instructions below and create a strong prompt.

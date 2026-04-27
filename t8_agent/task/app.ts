@@ -4,8 +4,6 @@ import Anthropic from "@anthropic-ai/sdk";
 
 import { AnthropicBasedAgent } from "./agents/anthropic";
 import { OpenAIBasedAgent } from "./agents/openai";
-import { ANTHROPIC_API_KEY, OPENAI_API_KEY, Conversation, Message, Role } from "../../commons";
-import userClient from "../../commons/user_service/client";
 import { SYSTEM_PROMPT } from "./prompts";
 import { CreateUserTool } from "./tools/users/create_user_tool";
 import { DeleteUserTool } from "./tools/users/delete_user_tool";
@@ -13,6 +11,9 @@ import { GetUserByIdTool } from "./tools/users/get_user_by_id_tool";
 import { SearchUsersTool } from "./tools/users/search_users_tool";
 import { UpdateUserTool } from "./tools/users/update_user_tool";
 import { WebSearchTool } from "./tools/web_search";
+
+import { ANTHROPIC_API_KEY, OPENAI_API_KEY, Conversation, Message, Role } from "../../commons";
+import userClient from "../../commons/user_service/client";
 
 async function main() {
   // TODO:

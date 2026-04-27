@@ -1,6 +1,6 @@
+import { exec } from "child_process";
 import * as crypto from "crypto";
 import * as http from "http";
-import { exec } from "child_process";
 
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";

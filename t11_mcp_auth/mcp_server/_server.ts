@@ -1,5 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
+
 import { UserServiceClient } from "../../commons";
 
 export function createServer(): McpServer {

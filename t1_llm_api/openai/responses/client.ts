@@ -1,6 +1,8 @@
 import { OpenAI } from "openai";
-import { Message, Role } from "../../../commons";
+
 import { BaseOpenAiClient } from "../base";
+
+import { Message, Role } from "../../../commons";
 
 /**
  * Client for OpenAI Responses API using the official SDK.

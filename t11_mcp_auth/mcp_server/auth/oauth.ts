@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-
 import { createRemoteJWKSet, jwtVerify, JWTPayload } from "jose";
 
 // ==================== CONFIGURATION ====================

@@ -1,5 +1,7 @@
 import * as path from "path";
+
 import { BaseTool } from "../base";
+
 import { getFileContent } from "../../file_utils";
 
 export class ReadSkillTool extends BaseTool {

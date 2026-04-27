@@ -1,11 +1,13 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import * as readline from "node:readline/promises";
-import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";
-import { HumanMessage, SystemMessage } from "@langchain/core/messages";
-import { FaissStore } from "@langchain/community/vectorstores/faiss";
+
 import { TextLoader } from "@langchain/classic/document_loaders/fs/text";
+import { FaissStore } from "@langchain/community/vectorstores/faiss";
+import { HumanMessage, SystemMessage } from "@langchain/core/messages";
+import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
+
 import { OPENAI_API_KEY } from "../commons";
 
 //TODO:

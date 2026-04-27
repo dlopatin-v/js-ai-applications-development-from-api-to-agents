@@ -1,4 +1,5 @@
 import { v4 as uuidV4 } from "uuid";
+
 import { Message } from "./message";
 
 export class Conversation<T> {

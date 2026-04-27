@@ -3,8 +3,8 @@ import * as path from "node:path";
 
 import { Client, ClientConfig } from "pg";
 
-import { chunkText } from "../utils/text";
 import { EmbeddingsClient } from "./embeddings_client";
+import { chunkText } from "../utils/text";
 
 export enum SearchMode {
   EUCLIDIAN_DISTANCE = "euclidean", // Euclidean distance (<->)

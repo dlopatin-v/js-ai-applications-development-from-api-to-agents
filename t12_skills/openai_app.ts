@@ -7,6 +7,7 @@ import OpenAI from "openai";
 import { OPENAI_API_KEY } from "../commons/constants.js";
 
 function zipSkill(skillDir: string): Buffer {
+  //TODO:
   // ZIP the skill directory so it can be uploaded.
   // Note: zip_skill() in Python is already implemented — replicate the same logic here:
   // - Recursively collect all files under skillDir
@@ -16,7 +17,7 @@ function zipSkill(skillDir: string): Buffer {
 }
 
 async function getOrCreateSkill(skillName: string, skillDir: string, client: OpenAI): Promise<string> {
-  // TODO:
+  //TODO:
   // - List existing skills and return the ID if one with a matching name already exists
   // - Otherwise zip the skill directory using zipSkill()
   // - Upload the zip as a new skill and return its ID
@@ -24,7 +25,7 @@ async function getOrCreateSkill(skillName: string, skillDir: string, client: Ope
 }
 
 function chat(client: OpenAI, skillId: string, logRequest = true, logResponse = true): void {
-  // TODO:
+  //TODO:
   // - Keep a previousResponseId variable (initially null)
   // - Print a ready message and loop reading user input (exit on "exit")
   // - For each turn:
@@ -41,7 +42,7 @@ function chat(client: OpenAI, skillId: string, logRequest = true, logResponse = 
 }
 
 async function deleteSkills(client: OpenAI): Promise<void> {
-  // TODO:
+  //TODO:
   // - List all uploaded skills
   // - Delete each one and print its name as confirmation
   throw new Error("Not implemented");
@@ -56,7 +57,7 @@ const CALCULATOR_SKILL_NAME = "calculator";
 const CALCULATOR_SKILL_DIR = path.join(__dirname, "_skills", CALCULATOR_SKILL_NAME);
 
 async function main(): Promise<void> {
-  // TODO:
+  //TODO:
   // - Create an OpenAI client
   // - Call getOrCreateSkill (choose CALCULATOR or STYLE skill dir/name to test)
   // - Call chat with the client and skillId

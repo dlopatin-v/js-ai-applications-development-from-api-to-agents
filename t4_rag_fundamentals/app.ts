@@ -8,7 +8,7 @@ import { TextLoader } from "@langchain/classic/document_loaders/fs/text";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import { OPENAI_API_KEY } from "../commons";
 
-// @TODO:
+//TODO:
 // Create a system prompt that:
 //   - Defines the assistant's role (microwave manual expert)
 //   - Describes the structure of the user message:
@@ -27,7 +27,7 @@ ${context}
 ${query}`;
 
 class MicrowaveRAG {
-  vectorStore: FaissStore;
+  vectorStore!: FaissStore;
 
   /** Resolves when the vector store is fully initialised and ready for queries. */
   readonly ready: Promise<void>;
@@ -39,7 +39,7 @@ class MicrowaveRAG {
     this.ready = this.setupVectorStore();
   }
 
-  // @TODO:
+  //TODO:
   // Check if the FAISS index folder already exists on disk.
   //   - If yes: load it with FaissStore.load()
   //   - If no:  call createNewIndex() to build and save a fresh one
@@ -47,7 +47,7 @@ class MicrowaveRAG {
     throw new Error("Not implemented");
   }
 
-  // @TODO:
+  //TODO:
   // Build a new FAISS index from the microwave manual:
   //   - Load 'microwave_manual.txt' with TextLoader
   //   - Split into chunks with RecursiveCharacterTextSplitter
@@ -57,7 +57,7 @@ class MicrowaveRAG {
     throw new Error("Not implemented");
   }
 
-  // @TODO:
+  //TODO:
   // Search the vector store for chunks most relevant to the query.
   //   - Use similaritySearchWithScore(query, k)
   //   - Print each chunk's L2 distance score and content
@@ -72,7 +72,7 @@ class MicrowaveRAG {
     throw new Error("Not implemented");
   }
 
-  // @TODO:
+  //TODO:
   // Format the user prompt by injecting context and query into getUserPrompt().
   //   - Print the formatted prompt
   //   - Return the formatted string
@@ -80,7 +80,7 @@ class MicrowaveRAG {
     throw new Error("Not implemented");
   }
 
-  // @TODO:
+  //TODO:
   // Send the augmented prompt to the LLM and return its answer.
   //   - Build a messages array: [SystemMessage(SYSTEM_PROMPT), HumanMessage(augmentedPrompt)]
   //   - Invoke llmClient and print the response content
@@ -108,7 +108,7 @@ const main = async (rag: MicrowaveRAG) => {
       process.exit(0);
     }
 
-    // @TODO:
+    //TODO:
     // Execute the 3-step RAG pipeline for each user question:
     //   Step 1 (Retrieval):   call rag.retrieveContext()  → context
     //   Step 2 (Augmentation): call rag.augmentPrompt()  → augmentedPrompt
@@ -117,7 +117,7 @@ const main = async (rag: MicrowaveRAG) => {
   }
 };
 
-// @TODO:
+//TODO:
 // Instantiate MicrowaveRAG and start the chat loop:
 //   - Create OpenAIEmbeddings with model "text-embedding-3-small"
 //   - Create ChatOpenAI with model "gpt-4o" and temperature 0

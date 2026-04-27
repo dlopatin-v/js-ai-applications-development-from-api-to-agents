@@ -28,8 +28,8 @@
 // required data and then returned back to 1st Service response in JSON format.
 // ---
 // Useful links:
-// Chroma DB: https://docs.langchain.com/oss/python/integrations/vectorstores/index#chroma
-// Document#id: https://docs.langchain.com/oss/python/langchain/knowledge-base#1-documents-and-document-loaders
+// Chroma DB: https://docs.langchain.com/oss/javascript/integrations/vectorstores/chroma
+// Document#id: https://docs.langchain.com/oss/javascript/langchain/knowledge-base#1-documents-and-document-loaders
 // ---
 // TASK:
 // Implement such application as described on the `flow.png` with adaptive vector based grounding and 'lite' version of

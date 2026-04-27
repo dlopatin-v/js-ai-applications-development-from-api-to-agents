@@ -181,7 +181,7 @@ Open [agent/guardrail.ts](task/agent/guardrail.ts) and implement `UMSDataGuardra
 
 The guardrail uses regex patterns to detect and redact:
 - **Credit card numbers** (num, cvv, exp_date fields from UMS)
-- **Salary values** in YAML-like, JSON, Python-dict, and plain-text formats
+- **Salary values** in YAML-like, JSON, and plain-text formats
 
 `UMSAgent` calls `guardrail.redact()` on every tool result before it is appended to the conversation history.
 

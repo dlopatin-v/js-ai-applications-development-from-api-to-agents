@@ -33,7 +33,7 @@ export abstract class MCPClient {
   }
 
   async callTool(toolName: string, toolArgs: Record<string, unknown>): Promise<string> {
-    console.log(`    🔧 Calling ${toolName} with ${toolArgs}`);
+    console.log(`    🔧 Calling ${toolName} with ${JSON.stringify(toolArgs)}`);
     const result = await this.client.callTool({ name: toolName, arguments: toolArgs }) as CallToolResult;
     const content = result.content[0] as TextContent;
 

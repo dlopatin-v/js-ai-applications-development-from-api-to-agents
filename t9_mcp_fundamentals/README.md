@@ -116,10 +116,10 @@ Open the file (create it if it doesn't exist) and add your server:
 {
   "mcpServers": {
     "users-management": {
-      "command": "npx",
+      "command": "{ABSOLUTE_PATH_TO_NODE}",
       "args": [
-        "tsx",
-        "{ABSOLUTE_PATH}/js-ai-applications-development-from-api-to-agents/t9_mcp_fundamentals/mcp_server/stdio_server.ts"
+        "{ABSOLUTE_PATH_TO_PROJECT}/js-ai-applications-development-from-api-to-agents/node_modules/.bin/tsx",
+        "{ABSOLUTE_PATH_TO_PROJECT}/js-ai-applications-development-from-api-to-agents/t9_mcp_fundamentals/mcp_server/stdio_server.ts"
       ]
     }
   }
@@ -128,8 +128,9 @@ Open the file (create it if it doesn't exist) and add your server:
 
 **Important notes:**
 
-- Don't forget to replace `{ABSOLUTE_PATH}` with the absolute path to the project on your local machine
-- Make sure `npx` resolves to the correct Node.js installation
+- Replace `{ABSOLUTE_PATH_TO_NODE}` with the absolute path to your Node.js 18+ binary (e.g. `which node` in your terminal)
+- Replace `{ABSOLUTE_PATH_TO_PROJECT}` with the absolute path to the project root on your local machine
+- Using absolute paths is required because Claude Desktop launches subprocesses without sourcing your shell profile, so version managers like nvm/fnm/volta are not available and `npx` may resolve to an older system Node that lacks the global `fetch` API
 
 
 <details> 
@@ -139,10 +140,10 @@ Open the file (create it if it doesn't exist) and add your server:
 {
   "mcpServers": {
     "users-management": {
-      "command": "npx",
+      "command": "/Users/<your_username>/.nvm/versions/node/v22.22.0/bin/node",
       "args": [
-        "tsx",
-        "/Users/<your_usrename>/dialx/courses/js-ai-applications-development-from-api-to-agents/t9_mcp_fundamentals/mcp_server/stdio_server.ts"
+        "/Users/<your_username>/dialx/courses/js-ai-applications-development-from-api-to-agents/node_modules/.bin/tsx",
+        "/Users/<your_username>/dialx/courses/js-ai-applications-development-from-api-to-agents/t9_mcp_fundamentals/mcp_server/stdio_server.ts"
       ]
     }
   }

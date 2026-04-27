@@ -2,9 +2,9 @@ import * as readline from "readline";
 
 import { OpenAI } from "openai";
 
-import { OPENAI_API_KEY } from "commons/constants";
-import { Message } from "commons/models/message";
-import { Role } from "commons/models/role";
+import { OPENAI_API_KEY } from "../../commons/constants.js";
+import { Message } from "../../commons/models/message.js";
+import { Role } from "../../commons/models/role.js";
 import { CustomAgentMCP } from "./agent.js";
 import { CustomMCPClient } from "./clients/custom_mcp_client.js";
 import { MCPClient, ToolSchema } from "./clients/mcp_client.js";

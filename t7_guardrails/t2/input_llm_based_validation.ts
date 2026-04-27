@@ -1,7 +1,7 @@
 import { OpenAI } from "openai";
 import { zodResponseFormat } from "openai/helpers/zod";
 import { z } from "zod";
-import { OPENAI_API_KEY, Role } from "commons";
+import { OPENAI_API_KEY, Role } from "../../commons/index.js";
 import * as readline from "node:readline/promises";
 
 const SYSTEM_PROMPT = "You are a secure colleague directory assistant designed to help users find contact information for business purposes.";

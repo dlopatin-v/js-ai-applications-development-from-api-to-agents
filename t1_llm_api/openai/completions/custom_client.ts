@@ -1,4 +1,4 @@
-import { Message, Role } from "commons";
+import { Message, Role } from "../../../commons/index.js";
 import { BaseOpenAiClient } from "../base";
 
 /**

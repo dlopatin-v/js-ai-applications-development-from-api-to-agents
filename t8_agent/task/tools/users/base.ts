@@ -1,5 +1,5 @@
 import { BaseTool } from "../base";
-import { UserServiceClient } from "commons";
+import { UserServiceClient } from "../../../../commons/index.js";
 
 /** Base class for tools that interact with the User Service.
  *  Extends BaseTool with a shared UserServiceClient instance. */

@@ -1,8 +1,8 @@
 import Anthropic, { ParsedMessage } from "@anthropic-ai/sdk";
 
-import { ANTHROPIC_ENDPOINT } from "commons/constants";
-import { Message } from "commons/models/message";
-import { Role } from "commons/models/role";
+import { ANTHROPIC_ENDPOINT } from "../../../commons/constants.js";
+import { Message } from "../../../commons/models/message.js";
+import { Role } from "../../../commons/models/role.js";
 import { BaseTool } from "../tools/base";
 import { BaseAgent } from "./_base";
 

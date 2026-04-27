@@ -1,4 +1,4 @@
-import { Message } from "commons/models/message";
+import { Message } from "../../../commons/models/message.js";
 import { BaseTool } from "../tools/base";
 
 /**

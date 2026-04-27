@@ -7,7 +7,7 @@ import * as readline from "readline";
 
 import OpenAI from "openai";
 
-import { OPENAI_API_KEY } from "commons/constants";
+import { OPENAI_API_KEY } from "../commons/constants.js";
 
 function zipSkill(skillDir: string): BlobPart {
   const tmpFile = path.join(os.tmpdir(), `skill-${Date.now()}.zip`);

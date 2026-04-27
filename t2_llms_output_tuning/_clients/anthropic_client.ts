@@ -1,6 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 
-import { ANTHROPIC_API_KEY, ANTHROPIC_ENDPOINT, Message, Role } from "commons";
+import { ANTHROPIC_API_KEY, ANTHROPIC_ENDPOINT, Message, Role } from "../../commons/index.js";
 import AIClient from "./base_client";
 
 const API_KEY_HEADER_NAME = "x-api-key";

@@ -1,7 +1,7 @@
 import { start } from "../../base_app";
 import { OpenAIClient } from "./client";
 import { CustomOpenAIClient } from "./custom_client";
-import { OPENAI_API_KEY, OPENAI_CHAT_COMPLETIONS_ENDPOINT, DEFAULT_SYSTEM_PROMPT } from "commons";
+import { OPENAI_API_KEY, OPENAI_CHAT_COMPLETIONS_ENDPOINT, DEFAULT_SYSTEM_PROMPT } from "../../../commons/index.js";
 
 const openAIClient = new OpenAIClient(
   OPENAI_CHAT_COMPLETIONS_ENDPOINT,

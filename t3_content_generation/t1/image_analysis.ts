@@ -1,7 +1,7 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 
-import { OPENAI_HOST } from "commons";
+import { OPENAI_HOST } from "../../commons/index.js";
 import { OpenAIClientT3 } from "../_openai_client";
 
 const encodeImage = (path: string): string => {

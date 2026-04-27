@@ -3,7 +3,7 @@ import * as readline from "readline";
 
 import { OpenAI } from "openai";
 
-import { OPENAI_API_KEY, Message, Role } from "commons";
+import { OPENAI_API_KEY, Message, Role } from "../../commons/index.js";
 import { AgentMCPFundamentals } from "./agent.js";
 import { MCPClient, ToolSchema } from "./mcp_clients/base.js";
 import { HttpMCPClient } from "./mcp_clients/http.js";

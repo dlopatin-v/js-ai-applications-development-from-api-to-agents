@@ -2,7 +2,7 @@ import * as readline from "node:readline/promises";
 
 import { OpenAI } from "openai";
 
-import { OPENAI_API_KEY, Role, UserInfo } from "commons";
+import { OPENAI_API_KEY, Role, UserInfo } from "../../commons/index.js";
 import { UserServiceClient } from "../user_service_client";
 
 const BATCH_SYSTEM_PROMPT = `You are a user search assistant. Your task is to find users from the provided list that match the search criteria.

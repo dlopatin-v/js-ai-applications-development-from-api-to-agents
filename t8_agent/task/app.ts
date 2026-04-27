@@ -2,8 +2,8 @@ import * as readline from "readline";
 
 import Anthropic from "@anthropic-ai/sdk";
 
-import { ANTHROPIC_API_KEY, OPENAI_API_KEY, Conversation, Message, Role } from "commons";
-import userClient from "commons/user_service/client";
+import { ANTHROPIC_API_KEY, OPENAI_API_KEY, Conversation, Message, Role } from "../../commons/index.js";
+import userClient from "../../commons/user_service/client.js";
 import { AnthropicBasedAgent } from "./agents/anthropic";
 import { SYSTEM_PROMPT } from "./prompts";
 import { CreateUserTool } from "./tools/users/create_user_tool";

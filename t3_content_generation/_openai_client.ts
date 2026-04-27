@@ -1,4 +1,4 @@
-import { OPENAI_API_KEY } from "commons";
+import { OPENAI_API_KEY } from "../commons/index.js";
 
 export class OpenAIClientT3 {
   constructor(

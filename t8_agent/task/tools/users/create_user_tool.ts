@@ -1,4 +1,4 @@
-import { UserCreate } from "commons";
+import { UserCreate } from "../../../../commons/index.js";
 import { BaseUserServiceTool } from "./base";
 
 export class CreateUserTool extends BaseUserServiceTool {

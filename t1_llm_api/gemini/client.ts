@@ -1,5 +1,5 @@
 import { GoogleGenAI, Content } from "@google/genai";
-import { Message, Role } from "commons";
+import { Message, Role } from "../../commons/index.js";
 import AIClient from "../base_client";
 
 /**

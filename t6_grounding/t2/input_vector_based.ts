@@ -2,7 +2,7 @@ import { OpenAI } from "openai";
 import { OpenAIEmbeddings } from "@langchain/openai";
 import { FaissStore } from "@langchain/community/vectorstores/faiss";
 import { Document } from "@langchain/core/documents";
-import { OPENAI_API_KEY, Role, UserInfo } from "commons";
+import { OPENAI_API_KEY, Role, UserInfo } from "../../commons/index.js";
 import { UserServiceClient } from "../user_service_client";
 import * as readline from "node:readline/promises";
 

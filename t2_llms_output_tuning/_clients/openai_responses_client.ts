@@ -1,6 +1,6 @@
 import { OpenAI } from "openai";
 
-import { Message, Role, OPENAI_API_KEY, OPENAI_RESPONSES_ENDPOINT } from "commons";
+import { Message, Role, OPENAI_API_KEY, OPENAI_RESPONSES_ENDPOINT } from "../../commons/index.js";
 import AIClient from "./base_client";
 
 const API_KEY_HEADER_NAME = "Authorization";

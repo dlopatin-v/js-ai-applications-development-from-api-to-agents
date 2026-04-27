@@ -1,4 +1,4 @@
-import { GEMINI_API_KEY, GEMINI_ENDPOINT, Message, Role } from "commons";
+import { GEMINI_API_KEY, GEMINI_ENDPOINT, Message, Role } from "../../commons/index.js";
 import AIClient from "./base_client";
 
 const API_KEY_HEADER_NAME = "x-goog-api-key";

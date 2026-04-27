@@ -2,8 +2,8 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import * as fs from "fs";
 import * as path from "path";
-import { UserServiceClient } from "commons/user_service/client";
-import { userSearchSchema } from "commons/user_service/user_info";
+import { UserServiceClient } from "../../commons/user_service/client.js";
+import { userSearchSchema } from "../../commons/user_service/user_info.js";
 
 const userClient = new UserServiceClient();
 

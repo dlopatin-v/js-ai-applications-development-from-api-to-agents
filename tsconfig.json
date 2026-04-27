@@ -14,11 +14,7 @@
     "isolatedModules": true,
     "allowJs": true,
     "checkJs": false,
-    "baseUrl": ".",
-    "paths": {
-      "commons": ["./commons/index"],
-      "commons/*": ["./commons/*"]
-    }
+    "baseUrl": "."
   },
   "include": [
     "commons/**/*",

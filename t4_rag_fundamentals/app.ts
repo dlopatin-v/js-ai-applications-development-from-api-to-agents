@@ -6,7 +6,7 @@ import { HumanMessage, SystemMessage } from "@langchain/core/messages";
 import { FaissStore } from "@langchain/community/vectorstores/faiss";
 import { TextLoader } from "@langchain/classic/document_loaders/fs/text";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
-import { OPENAI_API_KEY } from "commons";
+import { OPENAI_API_KEY } from "../commons/index.js";
 
 const SYSTEM_PROMPT = `You are a RAG-powered assistant that assists users with their questions about microwave usage.
             

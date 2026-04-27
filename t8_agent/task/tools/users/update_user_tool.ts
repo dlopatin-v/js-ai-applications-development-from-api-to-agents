@@ -1,4 +1,4 @@
-import { UserUpdate } from "commons";
+import { UserUpdate } from "../../../../commons/index.js";
 import { BaseUserServiceTool } from "./base";
 
 export class UpdateUserTool extends BaseUserServiceTool {

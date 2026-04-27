@@ -7,7 +7,7 @@ import { Document } from "@langchain/core/documents";
 import { zodResponseFormat } from "openai/helpers/zod";
 import { z } from "zod";
 
-import { OPENAI_API_KEY, Role, UserInfo } from "commons";
+import { OPENAI_API_KEY, Role, UserInfo } from "../../commons/index.js";
 import { UserServiceClient } from "../user_service_client";
 
 /*

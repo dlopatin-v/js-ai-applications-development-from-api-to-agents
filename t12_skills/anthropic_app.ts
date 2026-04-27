@@ -2,7 +2,7 @@ import * as fs from "fs";
 import * as path from "path";
 import * as readline from "readline";
 import Anthropic from "@anthropic-ai/sdk";
-import { ANTHROPIC_API_KEY } from "commons/constants";
+import { ANTHROPIC_API_KEY } from "../commons/constants.js";
 
 const SKILLS_VERSION = "skills-2025-10-02";
 

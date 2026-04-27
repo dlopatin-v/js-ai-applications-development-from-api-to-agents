@@ -1,5 +1,5 @@
 import { OpenAI } from "openai";
-import { OPENAI_API_KEY, Role } from "commons";
+import { OPENAI_API_KEY, Role } from "../../commons/index.js";
 import * as readline from "node:readline/promises";
 
 // Note: JavaScript has no direct equivalent of Microsoft Presidio + spaCy.

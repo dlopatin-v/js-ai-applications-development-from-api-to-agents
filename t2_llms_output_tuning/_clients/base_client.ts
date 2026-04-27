@@ -1,4 +1,4 @@
-import { Message } from "commons";
+import { Message } from "../../commons/index.js";
 
 /**
  * Abstract base class for AI service clients.

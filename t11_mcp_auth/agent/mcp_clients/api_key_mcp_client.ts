@@ -18,10 +18,21 @@ export class ApiKeyMCPClient extends T11MCPClient {
   }
 
   async connect(): Promise<void> {
-    // TODO
+    // TODO:
+    // 1. Create a StreamableHTTPClientTransport for this.serverUrl
+    //    Pass a requestInit with headers: { "X-API-Key": this.apiKey }
+    //    so the key is sent on every request automatically
+    // 2. Assign the transport to this.transport
+    // 3. Connect the SDK client: await this.client.connect(this.transport)
+    // 4. Read server capabilities with this.client.getServerCapabilities()
+    //    and log them (JSON.stringify)
+    throw new Error("Not implemented");
   }
 
   async disconnect(): Promise<void> {
-    // TODO
+    // TODO:
+    // 1. Close the SDK client: await this.client.close()
+    // 2. Set this.transport = null
+    throw new Error("Not implemented");
   }
 }

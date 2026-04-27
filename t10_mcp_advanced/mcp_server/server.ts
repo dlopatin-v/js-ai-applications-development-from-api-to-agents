@@ -20,7 +20,7 @@ function validateAcceptHeader(accept: string | undefined): boolean {
 }
 
 function sendSseResponse(
-  res: http.ServerResponse,
+  res: Response,
   sessionId: string | undefined,
   response: MCPResponse
 ): void {
@@ -32,14 +32,17 @@ function sendSseResponse(
   throw new Error("Not implemented");
 }
 
-function sendError(res: http.ServerResponse, status: number, body: string): void {
+function sendError(res: Response, status: number, body: string): void {
   // TODO:
   // 1. Call `res.writeHead(status, { "Content-Type": "application/json" })`
   // 2. Call `res.end(body)`
   throw new Error("Not implemented");
 }
 
-const server = http.createServer(async (req, res) => {
+const app = express();
+app.use(express.json());
+
+app.post("/mcp", async (req: Request, res: Response) => {
   // TODO:
   // 1. Validate Accept header:
   //       - Call `validateAcceptHeader(req.headers["accept"])`
@@ -66,8 +69,9 @@ const server = http.createServer(async (req, res) => {
   //           - else → build `mcpResponse` as MCPResponse with id=request.id and
   //               error=new ErrorResponse(-32602, `Method '${request.method}' not found`)
   //       - Call `sendSseResponse(res, session.sessionId, mcpResponse)`
+  throw new Error("Not implemented.");
 });
 
-server.listen(PORT, () => {
+app.listen(PORT, () => {
   console.log(`Custom MCP server running on http://localhost:${PORT}/mcp`);
 });

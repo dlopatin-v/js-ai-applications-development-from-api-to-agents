@@ -46,8 +46,6 @@ function chat(client: Anthropic, skillId: string, logRequest = true, logResponse
   throw new Error("Not implemented");
 }
 
-const __dirname = path.dirname(new URL(import.meta.url).pathname);
-
 const STYLE_SKILL_TITLE = "style-guide";
 const STYLE_SKILL_DIR = path.join(__dirname, "_skills", STYLE_SKILL_TITLE);
 

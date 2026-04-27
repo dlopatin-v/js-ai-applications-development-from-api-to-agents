@@ -38,7 +38,7 @@ export abstract class T11MCPClient {
   async callTool(toolName: string, toolArgs: Record<string, unknown>): Promise<unknown> {
     console.log(`    Calling \`${toolName}\` with`, toolArgs);
     const result = await this.client.callTool({ name: toolName, arguments: toolArgs });
-    const content = result.content[0];
+    const content = (result.content as any)[0];
     console.log(`    ⚙️:`, content, "\n");
     if (content && "text" in content) return content.text;
     return content;

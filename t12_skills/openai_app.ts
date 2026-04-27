@@ -52,8 +52,6 @@ async function deleteSkills(client: OpenAI): Promise<void> {
   throw new Error("Not implemented");
 }
 
-const __dirname = path.dirname(new URL(import.meta.url).pathname);
-
 // const STYLE_SKILL_NAME = "style-guide";
 // const STYLE_SKILL_DIR = path.join(__dirname, "_skills", STYLE_SKILL_NAME);
 

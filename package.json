@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "ts": "tsx",
+    "typecheck": "tsc --noEmit",
     "lint": "eslint \"**/*.ts\"",
     "lint:fix": "eslint \"**/*.ts\" --fix",
     "test": "echo \"Error: no test specified\" && exit 1",

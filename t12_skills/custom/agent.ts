@@ -39,7 +39,7 @@ export class T12Agent {
       tools: this.toolsSchemas,
     };
 
-    const response = await this.client.chat.completions.create(request as Parameters<typeof this.client.chat.completions.create>[0]);
+    const response = await this.client.chat.completions.create(request as Parameters<typeof this.client.chat.completions.create>[0]) as any;
     const choice = response.choices[0];
 
     const assistantMsg = new Message(Role.ASSISTANT, "");
@@ -47,7 +47,7 @@ export class T12Agent {
       assistantMsg.content = choice.message.content;
     }
     if (choice.message.tool_calls) {
-      assistantMsg.tool_calls = choice.message.tool_calls.map((tc) => ({
+      assistantMsg.tool_calls = choice.message.tool_calls.map((tc: OpenAI.Chat.ChatCompletionMessageFunctionToolCall) => ({
         id: tc.id,
         type: tc.type,
         function: { name: tc.function.name, arguments: tc.function.arguments },
@@ -75,7 +75,7 @@ export class T12Agent {
   }
 
   private async _dispatchToolCalls(
-    toolCalls: OpenAI.Chat.Completions.ChatCompletionMessageToolCall[],
+    toolCalls: OpenAI.Chat.ChatCompletionMessageFunctionToolCall[],
   ): Promise<Message[]> {
     const toolMessages: Message[] = [];
 

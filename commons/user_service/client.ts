@@ -34,8 +34,8 @@ export class UserServiceClient {
     const response = await fetch(`${USER_SERVICE_PATH}/search?${params.toString()}`, { headers: DEFAULT_HEADERS })
 
     if (response.status === 200) {
-      const result = await response.json();
-      console.info(`Get: ${result.length} users successfuly`);
+      const result = await response.json() as any;
+      console.info(`Get: ${result.length} users successfully`);
       return this.usersToString(result);
     }
 

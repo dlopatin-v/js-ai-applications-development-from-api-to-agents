@@ -2,7 +2,7 @@ import * as path from "path";
 import express from "express";
 import cors = require("cors");
 import { createClient } from "redis";
-import { Message } from "commons/models/message";
+import { Message } from "../../../commons/models/message.js";
 import { SkillMetadata, loadSkills } from "./models.js";
 import { BaseTool } from "./tools/base.js";
 import { McpTool } from "./tools/mcp_tool.js";

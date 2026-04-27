@@ -11,11 +11,12 @@ module.exports = [
       import: importPlugin,
     },
     rules: {
-      // Enforce group order: 1) external packages, 2) internal/relative paths
+      // Enforce group order: 1) Node built-ins, 2) external packages, 3) internal/relative paths
       "import/order": [
         "error",
         {
           "groups": [
+            "builtin",    // e.g. import * as fs from "fs"
             "external",   // e.g. import OpenAI from "openai"
             "internal",   // e.g. import { Foo } from "../../commons/..."
           ],

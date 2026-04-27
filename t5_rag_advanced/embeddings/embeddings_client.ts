@@ -1,3 +1,5 @@
+import { OpenAI } from "openai";
+
 type EmbeddingList = Record<number, Array<number>>;
 
 /**

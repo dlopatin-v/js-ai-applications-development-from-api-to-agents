@@ -1,4 +1,4 @@
-import * as http from "http";
+import { Request, Response } from "express";
 
 export const API_KEY = "dev-secret-key";
 
@@ -7,7 +7,7 @@ export const API_KEY = "dev-secret-key";
  * Returns true if the request contains a valid X-API-Key header.
  * Sends a 401 JSON response and returns false if the key is missing or invalid.
  */
-export function checkApiKey(req: http.IncomingMessage, res: http.ServerResponse): boolean {
+export function checkApiKey(req: Request, res: Response): boolean {
   // TODO:
   // 1. Read the X-API-Key header from req.headers
   // 2. If it doesn't match API_KEY — write a 401 JSON response with an error message

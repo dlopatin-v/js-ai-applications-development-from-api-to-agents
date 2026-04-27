@@ -1,10 +1,13 @@
-import { OpenAI } from "openai";
-import { OpenAIEmbeddings } from "@langchain/openai";
+import * as readline from "node:readline/promises";
+
 import { FaissStore } from "@langchain/community/vectorstores/faiss";
 import { Document } from "@langchain/core/documents";
-import { OPENAI_API_KEY } from "../../commons";
+import { OpenAIEmbeddings } from "@langchain/openai";
+import { OpenAI } from "openai";
+
 import { UserServiceClient } from "../user_service_client";
-import * as readline from "node:readline/promises";
+
+import { OPENAI_API_KEY, Role, UserInfo } from "../../commons";
 
 // TODO:
 // Define SYSTEM_PROMPT - instructs the LLM to act as a RAG-powered assistant:

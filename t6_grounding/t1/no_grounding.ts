@@ -1,7 +1,10 @@
-import { OpenAI } from "openai";
-import { OPENAI_API_KEY } from "../../commons";
-import { UserServiceClient } from "../user_service_client";
 import * as readline from "node:readline/promises";
+
+import { OpenAI } from "openai";
+
+import { UserServiceClient } from "../user_service_client";
+
+import { OPENAI_API_KEY, Role, UserInfo } from "../../commons";
 
 // TODO:
 // Define BATCH_SYSTEM_PROMPT - instructs the LLM to act as a user search assistant:

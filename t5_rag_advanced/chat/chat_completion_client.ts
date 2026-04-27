@@ -1,3 +1,5 @@
+import { OpenAI } from "openai";
+
 import { Message, Role } from "../../commons";
 
 /** HTTP client for the OpenAI Chat Completions API. */

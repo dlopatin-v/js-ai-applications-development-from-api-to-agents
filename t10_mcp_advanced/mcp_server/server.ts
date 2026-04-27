@@ -1,7 +1,8 @@
-import http from "http";
-import { MCPRequest } from "./models/request.js";
-import { MCPResponse, ErrorResponse } from "./models/response.js";
-import { UmsMCPServer } from "./ums_mcp_server.js";
+import express, { Request, Response } from "express";
+
+import { MCPRequest } from "./models/request";
+import { MCPResponse } from "./models/response";
+import { UmsMCPServer } from "./ums_mcp_server";
 
 const MCP_SESSION_ID_HEADER = "mcp-session-id";
 const PORT = 8006;

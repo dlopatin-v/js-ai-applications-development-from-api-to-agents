@@ -1,9 +1,12 @@
+import * as readline from "node:readline/promises";
+
 import { OpenAI } from "openai";
 import { zodResponseFormat } from 'openai/helpers/zod';
-import { OPENAI_API_KEY, UserSearchRequest } from "../../commons";
-import { UserServiceClient } from "../user_service_client";
 import { z } from "zod";
-import * as readline from "node:readline/promises";
+
+import { UserServiceClient } from "../user_service_client";
+
+import { OPENAI_API_KEY, Role, UserInfo, UserSearchRequest } from "../../commons";
 
 // TODO:
 // Define QUERY_ANALYSIS_PROMPT - instructs the LLM to act as a query analysis system:

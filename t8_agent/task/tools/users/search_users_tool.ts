@@ -1,5 +1,7 @@
 import { BaseUserServiceTool } from "./base";
 
+import { UserSearchRequest } from "../../../../commons";
+
 export class SearchUsersTool extends BaseUserServiceTool {
   // TODO: Provide tool name as `search_users`
   get name(): string {

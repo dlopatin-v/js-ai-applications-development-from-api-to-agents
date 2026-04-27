@@ -1,5 +1,6 @@
-import { UserCreate } from "../../../../commons/user_service/user_info.js";
-import { BaseUserServiceTool } from "./base.js";
+import { BaseUserServiceTool } from "./base";
+
+import { UserCreate } from "../../../../commons";
 
 export class CreateUserTool extends BaseUserServiceTool {
   get name(): string {

@@ -1,8 +1,9 @@
-import { OPENAI_CHAT_COMPLETIONS_ENDPOINT } from "../../../commons/constants";
-import { Message } from "../../../commons/models/message";
-import { Role } from "../../../commons/models/role";
-import { BaseTool } from "../tools/base";
+import OpenAI from "openai";
+
 import { BaseAgent } from "./_base";
+import { BaseTool } from "../tools/base";
+
+import { OPENAI_CHAT_COMPLETIONS_ENDPOINT, Message, Role } from "../../../commons";
 
 export class OpenAIBasedAgent extends BaseAgent {
   private readonly _toolsSchemas: Record<string, unknown>[];

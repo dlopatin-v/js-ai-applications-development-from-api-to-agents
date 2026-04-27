@@ -1,5 +1,5 @@
 import { OpenAI } from "openai";
-import { Message, Role } from "../../../commons/index.js";
+import { Message, Role } from "../../../commons";
 import { BaseOpenAiClient } from "../base";
 
 /**

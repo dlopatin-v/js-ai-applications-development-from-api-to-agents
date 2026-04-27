@@ -1,4 +1,5 @@
-import * as http from "http";
+import { Request, Response } from "express";
+
 import { createRemoteJWKSet, jwtVerify, JWTPayload } from "jose";
 
 // ==================== CONFIGURATION ====================
@@ -36,7 +37,7 @@ function getJwks() {
  * Returns true if authenticated and authorised.
  * Sends a 401/403 JSON response and returns false otherwise.
  */
-export async function checkOAuth(req: http.IncomingMessage, res: http.ServerResponse): Promise<boolean> {
+export async function checkOAuth(req: Request, res: Response): Promise<boolean> {
   const authHeader = req.headers["authorization"] ?? "";
 
   // ── Step 1: Check header presence ──────────────────────────────

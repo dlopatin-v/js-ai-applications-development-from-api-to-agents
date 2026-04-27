@@ -1,5 +1,7 @@
 import { BaseUserServiceTool } from "./base";
 
+import { UserCreate } from "../../../../commons";
+
 export class CreateUserTool extends BaseUserServiceTool {
   // TODO: Provide tool name as `add_user`
   get name(): string {

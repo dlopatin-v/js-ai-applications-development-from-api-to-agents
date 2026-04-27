@@ -1,3 +1,16 @@
+import * as readline from "node:readline/promises";
+
+import { Chroma } from "@langchain/community/vectorstores/chroma";
+import { Document } from "@langchain/core/documents";
+import { OpenAIEmbeddings } from "@langchain/openai";
+import { OpenAI } from "openai";
+import { zodResponseFormat } from "openai/helpers/zod";
+import { z } from "zod";
+
+import { UserServiceClient } from "../user_service_client";
+
+import { OPENAI_API_KEY, Role, UserInfo } from "../../commons";
+
 // TODO: Info about app:
 // HOBBIES SEARCHING WIZARD
 // Searches users by hobbies and provides their full info in JSON format:

@@ -1,14 +1,15 @@
-import * as readline from "readline";
 import * as path from "path";
+import * as readline from "readline";
+
 import OpenAI from "openai";
-import { OPENAI_API_KEY } from "../../commons/constants.js";
-import { Message } from "../../commons/models/message.js";
-import { Role } from "../../commons/models/role.js";
-import { BaseTool } from "./tools/base.js";
-import { SkillMetadata, loadSkills } from "./models.js";
-import { ReadSkillTool } from "./tools/skills/read_skill_tool.js";
-import { JsCodeInterpreterTool } from "./tools/jsInterpreter/jsCodeInterpreterTool.js";
-import { T12Agent } from "./agent.js";
+
+import { T12Agent } from "./agent";
+import { SkillMetadata, loadSkills } from "./models";
+import { BaseTool } from "./tools/base";
+import { JsCodeInterpreterTool } from "./tools/jsInterpreter/jsCodeInterpreterTool";
+import { ReadSkillTool } from "./tools/skills/read_skill_tool";
+
+import { OPENAI_API_KEY, Message, Role } from "../../commons";
 
 const SKILLS_DIR = path.join(__dirname, "_skills");
 const MCP_TOOL_NAME = "execute_code";

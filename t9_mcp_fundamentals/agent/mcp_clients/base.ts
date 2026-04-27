@@ -1,5 +1,5 @@
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
-import { Resource, Prompt } from "@modelcontextprotocol/sdk/types.js";
+import { Resource, Prompt, TextContent, CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 
 export interface ToolSchema {
   type: "function";

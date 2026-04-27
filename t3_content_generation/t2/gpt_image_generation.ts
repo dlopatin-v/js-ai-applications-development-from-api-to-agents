@@ -1,4 +1,8 @@
+import * as fs from "fs";
+import * as path from "node:path";
+
 import { OpenAIClientT3 } from "../_openai_client";
+
 import { OPENAI_HOST } from "../../commons";
 
 // https://developers.openai.com/api/reference/resources/images/methods/generate

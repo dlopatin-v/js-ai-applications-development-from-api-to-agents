@@ -1,4 +1,4 @@
-import { USER_SERVICE_ENDPOINT, UserSearchRequest } from "../commons";
+import { USER_SERVICE_ENDPOINT, UserInfo, UserSearchRequest } from "../commons";
 
 export class UserServiceClient {
   private headers = { "Content-Type": "application/json" };

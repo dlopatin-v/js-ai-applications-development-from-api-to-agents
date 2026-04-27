@@ -1,5 +1,7 @@
 import { BaseUserServiceTool } from "./base";
 
+import { UserUpdate } from "../../../../commons";
+
 export class UpdateUserTool extends BaseUserServiceTool {
   // TODO: Provide tool name as `update_user`
   get name(): string {

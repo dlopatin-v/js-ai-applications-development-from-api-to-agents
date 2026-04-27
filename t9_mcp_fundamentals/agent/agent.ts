@@ -1,7 +1,7 @@
 import OpenAI from "openai";
-import { Message } from "../../commons/models/message.js";
-import { Role } from "../../commons/models/role.js";
-import { MCPClient, ToolSchema } from "./mcp_clients/base.js";
+import { MCPClient, ToolSchema } from "./mcp_clients/base";
+
+import { Message, Role } from "../../commons";
 
 interface ToolCallDelta {
   index: number;

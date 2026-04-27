@@ -1,6 +1,6 @@
 import * as path from "path";
-import { BaseTool } from "../base.js";
-import { getFileContent } from "../../file_utils.js";
+import { BaseTool } from "../base";
+import { getFileContent } from "../../file_utils";
 
 export class ReadSkillTool extends BaseTool {
   private readonly resolvedSkillsDir: string;

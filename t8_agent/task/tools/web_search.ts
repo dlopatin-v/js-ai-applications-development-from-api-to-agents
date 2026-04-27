@@ -1,4 +1,4 @@
-import { OPENAI_API_KEY, OPENAI_RESPONSES_ENDPOINT } from "../../../commons/constants";
+import { OPENAI_API_KEY, OPENAI_RESPONSES_ENDPOINT } from "../../../commons";
 import { BaseTool } from "./base";
 
 export class WebSearchTool extends BaseTool {

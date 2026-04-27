@@ -1,6 +1,6 @@
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
-import { MCPToolModel } from "./mcp_tool_model.js";
+import { MCPToolModel } from "./mcp_tool_model";
 
 const DOCKER_IMAGE = "mcp/node-code-sandbox";
 

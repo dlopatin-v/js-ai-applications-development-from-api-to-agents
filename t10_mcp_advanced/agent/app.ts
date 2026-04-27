@@ -25,12 +25,13 @@ async function collectTools(
 
 async function main(): Promise<void> {
   const toolNameClientMap = new Map<string, MCPClient | CustomMCPClient>();
+  const tools: ToolSchema[] = [];
 
-  // const umsMcpClient = await CustomMCPClient.create("http://localhost:8006/mcp");
-  // const tools = await collectTools(umsMcpClient, toolNameClientMap);
+  const umsMcpClient = await MCPClient.create("http://localhost:8006/mcp");
+  tools.push(...await collectTools(umsMcpClient, toolNameClientMap));
 
   const fetchMcpClient = await CustomMCPClient.create("https://remote.mcpservers.org/fetch/mcp");
-  const tools = await collectTools(fetchMcpClient, toolNameClientMap);
+  tools.push(...await collectTools(fetchMcpClient, toolNameClientMap));
 
   const agent = new CustomAgentMCP({
     apiKey: OPENAI_API_KEY,

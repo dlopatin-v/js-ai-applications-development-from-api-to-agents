@@ -1,6 +1,6 @@
 import { randomUUID } from "crypto";
 
-const MCP_SESSION_ID_HEADER = "Mcp-Session-Id";
+const MCP_SESSION_ID_HEADER = "mcp-session-id";
 
 export type ToolSchema = {
   type: "function";
@@ -39,8 +39,6 @@ export class CustomMCPClient {
       requestBody.params = params;
     }
 
-    console.log( { method });
-
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
       Accept: "application/json, text/event-stream",
@@ -55,8 +53,6 @@ export class CustomMCPClient {
       headers,
       body: JSON.stringify(requestBody),
     });
-
-    console.log({ response });
 
     // Capture session ID from response header
     const newSessionId = response.headers.get(MCP_SESSION_ID_HEADER);

@@ -21,18 +21,12 @@ function sendSseResponse(
   sessionId: string | undefined,
   response: MCPResponse
 ): void {
+  console.log(JSON.stringify(response));
   const payload = JSON.stringify(response);
-  const headers: Record<string, string> = {
-    "Content-Type": "text/event-stream",
-    "Cache-Control": "no-cache",
-    Connection: "keep-alive",
-  };
-  if (sessionId) headers[MCP_SESSION_ID_HEADER] = sessionId;
+  const sseBody = `data: ${payload}\n\ndata: [DONE]\n\n`;
 
-  res.writeHead(200, headers);
-  res.write(`data: ${payload}\n\n`);
-  res.write("data: [DONE]\n\n");
-  res.end();
+  if (sessionId) res.set(MCP_SESSION_ID_HEADER, sessionId);
+  res.status(200).type("text/event-stream").send(sseBody);
 }
 
 function sendError(res: Response, status: number, body: string): void {
@@ -90,6 +84,7 @@ app.post("/mcp", async (req: Request, res: Response) => {
   // Handle notifications/initialized
   if (request.method === "notifications/initialized") {
     session.readyForOperation = true;
+    console.log("Client initialization complete");
     res.status(202).set(MCP_SESSION_ID_HEADER, session.sessionId).end();
     return;
   }

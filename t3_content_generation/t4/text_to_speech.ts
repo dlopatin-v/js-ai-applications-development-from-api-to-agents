@@ -1,6 +1,7 @@
-import { OPENAI_API_KEY, OPENAI_HOST } from "../../commons/index.js";
 import * as fs from "node:fs";
 import * as path from "node:path";
+
+import { OPENAI_API_KEY, OPENAI_HOST } from "../../commons";
 
 enum Voice {
   ALLOY = 'alloy',

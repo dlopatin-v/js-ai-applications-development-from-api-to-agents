@@ -1,7 +1,9 @@
 import * as fs from "fs";
-import { OpenAIClientT3 } from "../_openai_client";
-import { OPENAI_HOST } from "../../commons/index.js";
 import path from "node:path";
+
+import { OpenAIClientT3 } from "../_openai_client";
+
+import { OPENAI_HOST } from "../../commons";
 
 // https://platform.openai.com/docs/guides/image-generation?image-generation-model=gpt-image-1&api=image&multi-turn=imageid
 // ---

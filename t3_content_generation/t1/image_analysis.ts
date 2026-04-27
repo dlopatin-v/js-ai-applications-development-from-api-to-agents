@@ -1,8 +1,9 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 
-import { OPENAI_HOST } from "../../commons/index.js";
 import { OpenAIClientT3 } from "../_openai_client";
+
+import { OPENAI_HOST } from "../../commons";
 
 const encodeImage = (path: string): string => {
   const image = fs.readFileSync(path);

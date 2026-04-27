@@ -1,5 +1,5 @@
-import { run } from "./_main";
 import { OpenAIResponsesClient } from "./_clients/openai_responses_client";
+import { run } from "./_main";
 
  // Responses API differences from Chat Completions:
  //  - "messages" -> "input", "system" message -> "instructions" param

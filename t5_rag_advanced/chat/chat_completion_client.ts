@@ -1,5 +1,6 @@
-import { Message, Role } from "../../commons/index.js";
 import { OpenAI } from "openai";
+
+import { Message, Role } from "../../commons";
 
 /** HTTP client for the OpenAI Chat Completions API. */
 export class ChatCompletionClient {

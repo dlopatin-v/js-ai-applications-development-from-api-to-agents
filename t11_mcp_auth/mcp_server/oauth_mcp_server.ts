@@ -1,7 +1,8 @@
-import express from "express";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
-import { createServer } from "./_server.js";
-import { checkOAuth } from "./auth/oauth.js";
+import express from "express";
+
+import { createServer } from "./_server";
+import { checkOAuth } from "./auth/oauth";
 
 const PORT = 8008;
 

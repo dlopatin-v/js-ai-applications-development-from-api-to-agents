@@ -1,5 +1,5 @@
-import { run } from "./_main";
 import { OpenAIClient } from "./_clients/openai_chat_completions_client";
+import { run } from "./_main";
 
  // TODO 1: n — number of completions to generate per request. Default: 1
  //  ⚠️ Note: NOT available in Responses API

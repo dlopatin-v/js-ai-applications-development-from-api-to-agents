@@ -1,14 +1,15 @@
+import * as readline from "node:readline/promises";
+
 import {
   Conversation,
   Message,
   OPENAI_API_KEY,
   OPENAI_CHAT_COMPLETIONS_ENDPOINT,
   OPENAI_EMBEDDINGS_ENDPOINT, Role
-} from "../commons/index.js";
+} from "../commons";
 import { ChatCompletionClient } from "./chat/chat_completion_client";
 import { EmbeddingsClient } from "./embeddings/embeddings_client";
 import { SearchMode, TextProcessor } from "./embeddings/text_processor";
-import * as readline from "node:readline/promises";
 
 const SYSTEM_PROMPT = `You are a RAG-powered assistant that assists users with their questions about microwave usage.
             

@@ -1,5 +1,6 @@
-import { OPENAI_HOST } from "../../commons/index.js";
 import { OpenAIClientT3 } from "../_openai_client";
+
+import { OPENAI_HOST } from "../../commons";
 
 /**
  * The size of the generated image.

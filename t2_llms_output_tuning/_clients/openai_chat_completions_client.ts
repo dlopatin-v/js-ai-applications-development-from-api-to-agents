@@ -1,5 +1,6 @@
-import { Message, Role, OPENAI_API_KEY, OPENAI_CHAT_COMPLETIONS_ENDPOINT } from "../../commons/index.js";
 import AIClient from "./base_client";
+
+import { Message, Role, OPENAI_API_KEY, OPENAI_CHAT_COMPLETIONS_ENDPOINT } from "../../commons";
 
 const API_KEY_HEADER_NAME = "Authorization";
 

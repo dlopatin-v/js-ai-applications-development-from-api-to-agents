@@ -1,13 +1,13 @@
-import { BlobPart } from "node:buffer";
 import { execSync } from "child_process";
 import * as fs from "fs";
+import { BlobPart } from "node:buffer";
 import * as os from "os";
 import * as path from "path";
 import * as readline from "readline";
 
 import OpenAI from "openai";
 
-import { OPENAI_API_KEY } from "../commons/constants.js";
+import { OPENAI_API_KEY } from "../commons";
 
 function zipSkill(skillDir: string): BlobPart {
   const tmpFile = path.join(os.tmpdir(), `skill-${Date.now()}.zip`);

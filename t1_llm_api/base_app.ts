@@ -1,6 +1,7 @@
 import * as readline from "node:readline/promises";
-import { Conversation, Message, Role } from "../commons/index.js";
+
 import AIClient from "./base_client";
+import { Conversation, Message, Role } from "../commons";
 
 
 /**

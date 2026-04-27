@@ -1,5 +1,6 @@
-import { UserUpdate } from "../../../../commons/index.js";
 import { BaseUserServiceTool } from "./base";
+
+import { UserUpdate } from "../../../../commons";
 
 export class UpdateUserTool extends BaseUserServiceTool {
   get name() { return "update_user"; }

@@ -4,8 +4,9 @@ import { OpenAI } from "openai";
 import { zodResponseFormat } from 'openai/helpers/zod';
 import { z } from "zod";
 
-import { OPENAI_API_KEY, Role, UserInfo, UserSearchRequest } from "../../commons/index.js";
 import { UserServiceClient } from "../user_service_client";
+
+import { OPENAI_API_KEY, Role, UserInfo, UserSearchRequest } from "../../commons";
 
 const QUERY_ANALYSIS_PROMPT = `You are a query analysis system that extracts search parameters from user questions about users.
 

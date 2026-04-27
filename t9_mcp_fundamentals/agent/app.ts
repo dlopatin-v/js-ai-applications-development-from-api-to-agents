@@ -3,12 +3,13 @@ import * as readline from "readline";
 
 import { OpenAI } from "openai";
 
-import { OPENAI_API_KEY, Message, Role } from "../../commons/index.js";
-import { AgentMCPFundamentals } from "./agent.js";
-import { MCPClient, ToolSchema } from "./mcp_clients/base.js";
-import { HttpMCPClient } from "./mcp_clients/http.js";
-import { StdioMCPClient } from "./mcp_clients/stdio.js";
-import { SYSTEM_PROMPT } from "./prompts.js";
+import { AgentMCPFundamentals } from "./agent";
+import { MCPClient, ToolSchema } from "./mcp_clients/base";
+import { HttpMCPClient } from "./mcp_clients/http";
+import { StdioMCPClient } from "./mcp_clients/stdio";
+import { SYSTEM_PROMPT } from "./prompts";
+
+import { OPENAI_API_KEY, Message, Role } from "../../commons";
 
 // https://remote.mcpservers.org/fetch/mcp
 // Pay attention that `fetch` doesn't have resources and prompts

@@ -1,5 +1,6 @@
-import userServiceClient from "../../../../commons/user_service/client.js";
-import { BaseTool } from "../base.js";
+import { BaseTool } from "../base";
+
+import userServiceClient from "../../../../commons/user_service/client";
 
 export abstract class BaseUserServiceTool extends BaseTool {
   protected readonly userClient: typeof userServiceClient;

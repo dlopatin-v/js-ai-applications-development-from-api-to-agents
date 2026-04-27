@@ -1,5 +1,6 @@
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
-import { MCPClient } from "./base.js";
+
+import { MCPClient } from "./base";
 
 interface StdioMCPClientOptions {
   /** Docker image to run as the MCP server (alternative to command+args) */

@@ -1,5 +1,6 @@
-import { UserSearchRequest } from "../../../../commons/index.js";
 import { BaseUserServiceTool } from "./base";
+
+import { UserSearchRequest } from "../../../../commons";
 
 export class SearchUsersTool extends BaseUserServiceTool {
   get name() { return "search_users"; }

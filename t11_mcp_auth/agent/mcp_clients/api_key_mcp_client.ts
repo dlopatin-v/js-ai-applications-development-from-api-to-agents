@@ -1,5 +1,6 @@
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
-import { T11MCPClient } from "./_base.js";
+
+import { T11MCPClient } from "./_base";
 
 /**
  * MCP client that authenticates with the server using an API key.

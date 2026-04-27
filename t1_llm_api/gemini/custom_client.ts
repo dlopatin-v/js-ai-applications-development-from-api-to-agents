@@ -1,5 +1,6 @@
-import { Message, Role } from "../../commons/index.js";
 import AIClient from "../base_client";
+
+import { Message, Role } from "../../commons";
 
 /**
  * Custom HTTP client for Google Gemini API.

@@ -1,6 +1,7 @@
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import express from "express";
-import { createServer } from "./_server.js";
+
+import { createServer } from "./_server";
 
 const PORT = 8005;
 

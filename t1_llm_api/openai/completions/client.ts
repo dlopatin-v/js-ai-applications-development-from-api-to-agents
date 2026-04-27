@@ -1,6 +1,8 @@
 import { OpenAI } from "openai";
-import { Message, Role } from "../../../commons/index.js";
+
 import { BaseOpenAiClient } from "../base";
+
+import { Message, Role } from "../../../commons";
 
 /**
  * Client for OpenAI Chat Completions API using the official SDK.

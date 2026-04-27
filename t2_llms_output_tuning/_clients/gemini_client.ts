@@ -53,10 +53,10 @@ export class GeminiAICLient extends AIClient {
     };
 
     const url = `${this.endpoint}/${this.modelName}:generateContent`;
-    const requestData = {
+    const requestData: Record<string, unknown> = {
       contents: this._toGeminiContents(messages),
       generationConfig: args?.["generationConfig"] || { maxOutputTokens: 1024 }
-    };
+    } ;
 
     const response = await fetch(url, {
       headers,
@@ -74,7 +74,10 @@ export class GeminiAICLient extends AIClient {
 
 
     if (response.status === 200) {
-      const result = await response.json();
+      interface GeminiResponse {
+        candidates: { content: { parts: { text: string }[] } }[];
+      }
+      const result = await response.json() as GeminiResponse;
       const message = result.candidates[0].content.parts
         .map((part: { text: string }) => part.text || "")
         .join("");

@@ -1,3 +1,5 @@
+import { OpenAI } from "openai";
+
 import AIClient from "./base_client";
 
 import { Message, Role, OPENAI_API_KEY, OPENAI_CHAT_COMPLETIONS_ENDPOINT } from "../../commons";
@@ -47,7 +49,11 @@ export class OpenAIClient extends AIClient {
     }
 
     if (response.status === 200) {
-      const result = await response.json();
+      interface ChatCompletionResponse {
+        choices: { message: { content: string } }[];
+      }
+      const result = await response.json() as ChatCompletionResponse;
+
       const message = result.choices[0].message.content;
 
       if (printOnlyContent) {

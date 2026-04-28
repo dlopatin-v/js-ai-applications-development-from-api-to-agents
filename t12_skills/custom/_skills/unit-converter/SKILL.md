@@ -12,26 +12,26 @@
 # Unit Converter
 
 <!--
-TODO: Fill in the workflow for the agent. The script is at scripts/convert.ts.
+TODO: Fill in the workflow for the agent. The script is at scripts/convert.py.
 See references/how-code-execution-works.md to understand how execute_code works.
 See examples.md for invocation examples and supported units.
 
 ## Workflow
 
-### Step 1: Load the script (first call, container_id = "")
-Call execute_code with script_path, the conversion code, and container_id = "".
-Save the returned container_id from session_info for reuse.
+### Step 1: Load the script (first call, session_id = "")
+Call execute_code with script_path, the conversion code, and session_id = "".
+Save the returned session_id from session_info for reuse.
 
 ### Step 2: Write the conversion call
-Pass as code: call convertUnits(value, fromUnit, toUnit) and console.log Category, Input, Result.
+Pass as code: call convert_units(value, from_unit, to_unit) and print Category, Input, Result.
 
 ### Step 3: Return output
 Return the printed output as-is.
 
 ### Step 4: Reuse sandbox
-On follow-up conversions skip Step 1 — pass only code + saved container_id.
+On follow-up conversions skip Step 1 — pass only code + saved session_id.
 
 ### Step 5: Error handling
 Unknown unit / incompatible categories: report the error and list supported units from examples.md.
-Invalid number: ask to clarify. Container not found: silently restart from Step 1.
+Invalid number: ask to clarify. Session expired: silently restart from Step 1.
 -->

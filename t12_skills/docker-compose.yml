@@ -1,10 +1,10 @@
 version: '3.8'
 
-# The node-code-sandbox MCP server (mcp/node-code-sandbox) is launched automatically
-# by the agent via `docker run --rm -i mcp/node-code-sandbox` — no persistent service
-# needs to be started here.
-#
-# Make sure the Docker image is available locally before running the custom agent:
-#   docker pull mcp/node-code-sandbox
-
-services: {}
+services:
+  python-interpreter:
+    image: khshanovskyi/python-code-interpreter-mcp-server:latest
+    ports:
+      - "8050:8000"
+    environment:
+      LOG_LEVEL: "INFO"
+    restart: unless-stopped

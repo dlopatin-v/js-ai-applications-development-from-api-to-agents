@@ -1,11 +1,14 @@
-#!/usr/bin/env npx tsx
+#!/usr/bin/env node
 /**
- * Safe math expression evaluator.
- * No eval() on raw strings — only whitelisted operations are allowed.
- * Usage: npx tsx calculate.ts "<expression>"
+ * Safe math expression evaluator (vanilla Node.js, no dependencies).
+ * No eval() on raw strings — only a hand-written recursive-descent parser
+ * over a whitelisted grammar.
+ * Usage: node calculate.js "<expression>"
  */
 
-const SAFE_NAMES: Record<string, number | ((...args: number[]) => number)> = {
+"use strict";
+
+const SAFE_NAMES = {
   sqrt: Math.sqrt,
   abs: Math.abs,
   round: Math.round,
@@ -20,31 +23,38 @@ const SAFE_NAMES: Record<string, number | ((...args: number[]) => number)> = {
   e: Math.E,
 };
 
+class ZeroDivisionError extends Error {
+  constructor(msg) {
+    super(msg);
+    this.name = "ZeroDivisionError";
+  }
+}
+
 /**
  * Tokenises and evaluates a math expression using a recursive-descent parser.
- * Supports: +, -, *, /, ** (and ^ as alias), unary minus, parentheses,
- * and the functions/constants listed in SAFE_NAMES.
+ * Supports: +, -, *, /, **, ^, %, //, unary +/-, parentheses, and the
+ * functions/constants listed in SAFE_NAMES.
  */
-function safeEval(raw: string): number {
+function safeEval(raw) {
   const expr = raw.replace(/\^/g, "**");
   let pos = 0;
 
-  function peek(): string {
+  function peek() {
     while (pos < expr.length && expr[pos] === " ") pos++;
     return expr[pos] ?? "";
   }
 
-  function consume(ch: string): void {
+  function consume(ch) {
     while (pos < expr.length && expr[pos] === " ") pos++;
     if (expr[pos] !== ch) throw new Error(`Expected '${ch}' at position ${pos}`);
     pos++;
   }
 
-  function parseExpr(): number {
+  function parseExpr() {
     return parseAddSub();
   }
 
-  function parseAddSub(): number {
+  function parseAddSub() {
     let left = parseMulDiv();
     while (true) {
       const ch = peek();
@@ -55,23 +65,34 @@ function safeEval(raw: string): number {
     return left;
   }
 
-  function parseMulDiv(): number {
+  function parseMulDiv() {
     let left = parsePow();
     while (true) {
       const ch = peek();
-      if (ch === "*" && expr[pos + 1] !== "*") { pos++; left *= parsePow(); }
-      else if (ch === "/") {
+      if (ch === "*" && expr[pos + 1] !== "*") {
+        pos++;
+        left *= parsePow();
+      } else if (ch === "/" && expr[pos + 1] === "/") {
+        pos += 2;
+        const right = parsePow();
+        if (right === 0) throw new ZeroDivisionError("Division by zero");
+        left = Math.floor(left / right);
+      } else if (ch === "/") {
         pos++;
         const right = parsePow();
         if (right === 0) throw new ZeroDivisionError("Division by zero");
         left /= right;
-      } else if (ch === "%") { pos++; left %= parsePow(); }
-      else break;
+      } else if (ch === "%") {
+        pos++;
+        left %= parsePow();
+      } else {
+        break;
+      }
     }
     return left;
   }
 
-  function parsePow(): number {
+  function parsePow() {
     const base = parseUnary();
     if (peek() === "*" && expr[pos + 1] === "*") {
       pos += 2;
@@ -81,14 +102,14 @@ function safeEval(raw: string): number {
     return base;
   }
 
-  function parseUnary(): number {
+  function parseUnary() {
     const ch = peek();
     if (ch === "-") { pos++; return -parseUnary(); }
     if (ch === "+") { pos++; return parseUnary(); }
     return parseAtom();
   }
 
-  function parseAtom(): number {
+  function parseAtom() {
     const ch = peek();
 
     // Parenthesised expression
@@ -100,13 +121,22 @@ function safeEval(raw: string): number {
     }
 
     // Number literal
-    if (ch >= "0" && ch <= "9" || ch === ".") {
+    if ((ch >= "0" && ch <= "9") || ch === ".") {
       let s = "";
-      while (pos < expr.length && (expr[pos] >= "0" && expr[pos] <= "9" || expr[pos] === "." || expr[pos] === "e" || expr[pos] === "E" || (expr[pos] === "-" && (expr[pos - 1] === "e" || expr[pos - 1] === "E")))) {
+      while (
+        pos < expr.length &&
+        (
+          (expr[pos] >= "0" && expr[pos] <= "9") ||
+          expr[pos] === "." ||
+          expr[pos] === "e" ||
+          expr[pos] === "E" ||
+          (expr[pos] === "-" && (expr[pos - 1] === "e" || expr[pos - 1] === "E"))
+        )
+      ) {
         s += expr[pos++];
       }
       const n = Number(s);
-      if (isNaN(n)) throw new Error(`Invalid number: ${s}`);
+      if (Number.isNaN(n)) throw new Error(`Invalid number: ${s}`);
       return n;
     }
 
@@ -124,7 +154,7 @@ function safeEval(raw: string): number {
       consume("(");
       const arg = parseExpr();
       consume(")");
-      return (entry as (...args: number[]) => number)(arg);
+      return entry(arg);
     }
 
     throw new Error(`Unexpected character '${ch}' at position ${pos}`);
@@ -133,25 +163,22 @@ function safeEval(raw: string): number {
   while (pos < expr.length && expr[pos] === " ") pos++;
   const result = parseExpr();
   while (pos < expr.length && expr[pos] === " ") pos++;
-  if (pos < expr.length) throw new Error(`Unexpected characters after expression: '${expr.slice(pos)}'`);
+  if (pos < expr.length) {
+    throw new Error(`Unexpected characters after expression: '${expr.slice(pos)}'`);
+  }
   return result;
 }
 
-class ZeroDivisionError extends Error {
-  constructor(msg: string) { super(msg); this.name = "ZeroDivisionError"; }
-}
-
-function fmtResult(result: number): string {
+function fmtResult(result) {
   if (Number.isInteger(result)) return String(result);
   // Up to 10 significant digits, strip trailing zeros
-  const s = result.toPrecision(10).replace(/\.?0+$/, "");
-  return s;
+  return result.toPrecision(10).replace(/\.?0+$/, "");
 }
 
-function main(): void {
+function main() {
   const args = process.argv.slice(2);
   if (args.length === 0) {
-    console.log('Usage: npx tsx calculate.ts "<expression>"');
+    console.log('Usage: node calculate.js "<expression>"');
     process.exit(1);
   }
 
@@ -160,11 +187,11 @@ function main(): void {
     const result = safeEval(expression);
     console.log(`Expression: ${expression}`);
     console.log(`Result: ${fmtResult(result)}`);
-  } catch (e: unknown) {
+  } catch (e) {
     if (e instanceof ZeroDivisionError) {
       console.log(`Error: Division by zero in: ${expression}`);
     } else {
-      console.log(`Error: ${(e as Error).message}`);
+      console.log(`Error: ${e.message}`);
     }
     process.exit(1);
   }

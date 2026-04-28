@@ -10,13 +10,14 @@ import OpenAI from "openai";
 
 import { OPENAI_API_KEY } from "../commons";
 
-function zipSkill(skillDir: string): Buffer {
+function zipSkill(skillDir: string): BlobPart {
   //TODO:
   // ZIP the skill directory so it can be uploaded.
   // Note: zip_skill() in Python is already implemented — replicate the same logic here:
   // - Recursively collect all files under skillDir
   // - Write each into a zip archive using the path relative to skillDir's parent
-  // - Return the zip contents as a Buffer
+  //   (so the zip contains "<dirName>/SKILL.md" rather than loose files)
+  // - Return the zip contents as a BlobPart (Buffer is fine — it satisfies BlobPart)
   throw new Error("Not implemented");
 }
 

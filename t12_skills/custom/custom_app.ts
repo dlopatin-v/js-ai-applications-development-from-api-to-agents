@@ -6,12 +6,13 @@ import OpenAI from "openai";
 import { T12Agent } from "./agent";
 import { SkillMetadata, loadSkills } from "./models";
 import { BaseTool } from "./tools/base";
-import { JsCodeInterpreterTool } from "./tools/jsInterpreter/jsCodeInterpreterTool";
+import { PyCodeInterpreterTool } from "./tools/pyInterpreter/pyCodeInterpreterTool";
 import { ReadSkillTool } from "./tools/skills/read_skill_tool";
 
 import { OPENAI_API_KEY, Message, Role } from "../../commons";
 
 const SKILLS_DIR = path.join(__dirname, "_skills");
+const MCP_URL = "http://localhost:8050/mcp";
 const MCP_TOOL_NAME = "execute_code";
 
 
@@ -50,8 +51,8 @@ When the user's request matches a skill, activate it:
    its full instructions.
 2. Follow the instructions in the loaded SKILL.md precisely.
 3. If the instructions reference additional files (scripts, references, assets), read them on demand
-   using \`read_skill\` (e.g. path="/<skill-name>/scripts/calculate.ts").
-4. If the skill requires running a script, execute it with \`${MCP_TOOL_NAME}\`.
+   using \`read_skill\` (e.g. path="/<skill-name>/scripts/convert.py").
+4. If the skill requires running a Python script, execute it with \`${MCP_TOOL_NAME}\`.
 
 Always read the relevant SKILL.md before performing the task.`;
 }
@@ -72,7 +73,7 @@ async function main(): Promise<void> {
   // - Initialise the messages list with a SYSTEM message containing systemPrompt
   // - Build the tools list:
   //   - ReadSkillTool (pass SKILLS_DIR)
-  //   - JsCodeInterpreterTool (use async factory .create() with SKILLS_DIR)
+  //   - PyCodeInterpreterTool (use async factory .create() with MCP_URL, MCP_TOOL_NAME, SKILLS_DIR)
   // - Create a T12Agent with an OpenAI client, model "gpt-5.2", and the tools list
   // - Run a chat loop: read user input, break on "exit",
   //   append USER message, call agent.chatCompletion, append the returned assistant message

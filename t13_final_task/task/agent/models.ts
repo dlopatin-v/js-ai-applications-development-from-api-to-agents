@@ -3,6 +3,10 @@ import * as path from "path";
 
 import * as yaml from "js-yaml";
 
+import { getLogger } from "./logger.js";
+
+const log = getLogger("models");
+
 export interface McpToolModel {
   name: string;
   description: string;
@@ -60,7 +64,7 @@ export function loadSkills(skillsDir: string): SkillMetadata[] {
   const skills: SkillMetadata[] = [];
 
   if (!fs.existsSync(skillsDir)) {
-    console.warn(`WARN: skills directory not found: ${skillsDir}`);
+    log.warn(`skills directory not found: ${skillsDir}`);
     return skills;
   }
 
@@ -73,13 +77,13 @@ export function loadSkills(skillsDir: string): SkillMetadata[] {
 
     const skillMdPath = path.join(skillDir, "SKILL.md");
     if (!fs.existsSync(skillMdPath)) {
-      console.warn(`WARN: skipping '${entry}' — no SKILL.md`);
+      log.warn(`skipping '${entry}' — no SKILL.md`);
       continue;
     }
 
     const content = fs.readFileSync(skillMdPath, "utf-8");
     if (!content.startsWith("---")) {
-      console.warn(`WARN: skipping '${entry}' — missing YAML frontmatter`);
+      log.warn(`skipping '${entry}' — missing YAML frontmatter`);
       continue;
     }
 
@@ -88,7 +92,7 @@ export function loadSkills(skillsDir: string): SkillMetadata[] {
       const end = content.indexOf("---", 3);
       fm = (yaml.load(content.slice(3, end)) as Record<string, unknown>) || {};
     } catch (e) {
-      console.warn(`WARN: skipping '${entry}' — frontmatter parse error: ${e}`);
+      log.warn(`skipping '${entry}' — frontmatter parse error: ${e}`);
       continue;
     }
 
@@ -99,7 +103,7 @@ export function loadSkills(skillsDir: string): SkillMetadata[] {
 
     const errors = validate(name, description, compatibility, entry);
     if (errors.length > 0) {
-      console.warn(`WARN: skipping '${entry}' — ${errors.join("; ")}`);
+      log.warn(`skipping '${entry}' — ${errors.join("; ")}`);
       continue;
     }
 

@@ -20,6 +20,21 @@ export abstract class MCPClient {
   abstract connect(): Promise<void>;
   abstract disconnect(): Promise<void>;
 
+  /**
+   * Print the negotiated initialize result (server info, capabilities,
+   * instructions). Intended to be called by subclasses right after
+   * `this.client.connect(transport)` succeeds. Mirrors Python's
+   * `print(init_result.model_dump_json(indent=2))`.
+   */
+  protected printInitResult(): void {
+    const initResult = {
+      serverInfo: this.client.getServerVersion() ?? null,
+      capabilities: this.client.getServerCapabilities() ?? null,
+      instructions: this.client.getInstructions() ?? null,
+    };
+    console.log(JSON.stringify(initResult, null, 2));
+  }
+
   async getTools(): Promise<ToolSchema[]> {
     const result = await this.client.listTools();
     return result.tools.map((tool) => ({
@@ -48,7 +63,8 @@ export abstract class MCPClient {
       const result = await this.client.listResources();
       return result.resources;
     } catch (error) {
-      throw new Error(`Server doesn't support list_resources:  ${error}`);
+      console.warn(`Server doesn't support list_resources: ${error}`);
+      return [];
     }
   }
 
@@ -66,7 +82,8 @@ export abstract class MCPClient {
       const result = await this.client.listPrompts();
       return result.prompts;
     } catch (error) {
-      throw new Error(`Server doesn't support list_prompts: ${error}`);
+      console.warn(`Server doesn't support list_prompts: ${error}`);
+      return [];
     }
   }
 

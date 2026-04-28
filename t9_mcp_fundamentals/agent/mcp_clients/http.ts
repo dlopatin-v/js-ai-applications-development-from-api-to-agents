@@ -14,6 +14,7 @@ export class HttpMCPClient extends MCPClient {
     const transport = new StreamableHTTPClientTransport(new URL(this.serverUrl));
     await this.client.connect(transport);
     console.log(`Connected to MCP server at ${this.serverUrl}`);
+    this.printInitResult();
   }
 
   async disconnect(): Promise<void> {

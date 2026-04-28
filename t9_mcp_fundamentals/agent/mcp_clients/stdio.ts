@@ -22,6 +22,16 @@ export class StdioMCPClient extends MCPClient {
     this.options = options;
   }
 
+  private _startupMessage(command: string, args: string[]): string {
+    if (this.options.dockerImage) {
+      return (
+        `Starting Docker container: ${this.options.dockerImage}\n` +
+        `To inspect running containers: docker ps --filter 'ancestor=${this.options.dockerImage}'`
+      );
+    }
+    return `Starting local stdio server: ${command} ${args.join(" ")}`;
+  }
+
   async connect(): Promise<void> {
     let command: string;
     let args: string[];
@@ -36,14 +46,19 @@ export class StdioMCPClient extends MCPClient {
       throw new Error("StdioMCPClient requires either dockerImage or command");
     }
 
+    console.log(this._startupMessage(command, args));
+
     this.transport = new StdioClientTransport({
       command,
       args,
       env: this.options.env,
     });
 
+    console.log("Initializing MCP session...");
     await this.client.connect(this.transport);
     console.log(`Connected via stdio to: ${command} ${args.join(" ")}`);
+    console.log("Capabilities:");
+    this.printInitResult();
   }
 
   async disconnect(): Promise<void> {

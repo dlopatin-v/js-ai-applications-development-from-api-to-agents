@@ -1,14 +1,14 @@
-# Node.js Code Sandbox (node-code-sandbox MCP Server)
+# Python Code Sandbox (python-code-interpreter MCP Server)
 
-A stateful JavaScript execution environment built on the Model Context Protocol (MCP). The JS agent launches disposable Docker containers on demand and runs JavaScript code inside them via the `run_js` tool — all managed transparently through the `execute_code` tool wrapper.
+A stateful Python execution environment built on the Model Context Protocol (MCP). The JS agent connects to a long-lived `khshanovskyi/python-code-interpreter-mcp-server` container over **Streamable HTTP** and runs Python code inside isolated, per-session sandboxes — all managed transparently through the `execute_code` tool.
 
 ## Features
 
-- **Stateful Execution**: Variables and state persist across multiple code executions within the same container session
-- **Isolated Containers**: Each conversation gets its own Docker container (started on first call, reused for follow-up calls)
-- **npm Dependency Support**: Install packages on demand before running code
-- **ESModules**: Code must use ESModules syntax (`import`/`export`)
-- **Automatic Cleanup**: Containers are removed (`--rm`) when the agent stops or the session ends
+- **Stateful Execution**: Variables and state persist across multiple code executions within the same sandbox session
+- **Isolated Sessions**: Each conversation gets its own sandbox session (started on first call, reused for follow-up calls)
+- **Standard Library + Common Packages**: Python 3 with standard scientific stack available in the sandbox
+- **Streamable HTTP Transport**: Single long-lived server you start with `docker compose up`, no per-request container spin-up
+- **Automatic Cleanup**: Sessions are reclaimed when the agent disconnects or the session is no longer used
 
 ---
 
@@ -23,52 +23,53 @@ A stateful JavaScript execution environment built on the Model Context Protocol 
          │ execute_code tool call
          │
 ┌────────▼─────────────────┐
-│  JsCodeInterpreterTool   │
-│  (wraps sandbox tools)   │
+│  PyCodeInterpreterTool   │
+│  (wraps MCP execute_code)│
 └────────┬─────────────────┘
          │
-         │ MCP Protocol (STDIO)
+         │ MCP Protocol (Streamable HTTP)
+         │ http://localhost:8050/mcp
          │
-┌────────▼────────────────────────┐
-│  mcp/node-code-sandbox          │
-│  (Docker container, STDIO MCP)  │
-└────────┬────────────────────────┘
+┌────────▼──────────────────────────────────────────┐
+│  khshanovskyi/python-code-interpreter-mcp-server  │
+│  (Docker service started via docker-compose)      │
+└────────┬──────────────────────────────────────────┘
          │
-         │ docker run --rm -i
+         │ in-process Python sessions
          │
 ┌────────▼────────┐
-│  Sandbox        │
-│  Containers     │
+│  Python         │
+│  Sandboxes      │
 │  (per session)  │
 └─────────────────┘
 ```
 
-The agent calls `execute_code`. `JsCodeInterpreterTool` translates that into two underlying MCP operations: `sandbox_initialize` (first call only) and `run_js` (every call). The MCP server itself is launched via `docker run --rm -i mcp/node-code-sandbox` — no persistent service required.
+The agent calls `execute_code`. `PyCodeInterpreterTool` forwards that call straight to the MCP server's `execute_code` tool via Streamable HTTP. The MCP server is a single long-running container started by `docker compose up` — no per-request `docker run` is performed.
 
 ---
 
 ## Usage
 
-The tool is exposed to the agent as `execute_code` with these parameters:
+The tool is exposed to the agent as `execute_code`. Its parameter schema is discovered dynamically from the MCP server, plus a `script_path` field that the JS wrapper injects:
 
 | Parameter | Type | Description |
 |---|---|---|
-| `code` | `string` | JavaScript code to run (ESModules syntax) |
-| `container_id` | `string` | Sandbox container ID. Empty string on first call; reuse on subsequent calls |
+| `code` | `string` | Python code to run |
+| `session_id` | `string` | Sandbox session ID. Empty string on first call; reuse on subsequent calls |
 | `script_path` | `string` (optional) | Path to a skill script relative to the skills root. Its content is prepended to `code` |
 
 ### First call — initialize sandbox and run code
 
-Pass `container_id = ""`. The tool will:
-1. Call `sandbox_initialize` to start a fresh Node.js Docker container
-2. Call `run_js` with the full code (script content + your call)
-3. Return the result including `session_info.container_id` — **save this for reuse**
+Pass `session_id = ""`. The tool will:
+1. Read the script referenced by `script_path` (if provided) and prepend it to `code`
+2. Call `execute_code` on the MCP server with `session_id = ""` — the server allocates a fresh sandbox session
+3. Return the result including `session_info.session_id` — **save this for reuse**
 
 ```json
 {
-  "code": "const [result, category] = convertUnits(100, 'km', 'miles');\nconsole.log(`Category: ${category}`);\nconsole.log(`Input:    ${fmt(100)} km`);\nconsole.log(`Result:   ${fmt(result)} miles`);",
-  "container_id": "",
-  "script_path": "unit-converter/scripts/convert.ts"
+  "code": "result, category = convert_units(100, 'km', 'miles')\nprint(f'Category: {category}')\nprint(f'Input:    {fmt(100)} km')\nprint(f'Result:   {fmt(result)} miles')",
+  "session_id": "",
+  "script_path": "unit-converter/scripts/convert.py"
 }
 ```
 
@@ -77,20 +78,22 @@ Pass `container_id = ""`. The tool will:
 {
   "success": true,
   "output": ["Category: length\nInput:    100 km\nResult:   62.1371 miles\n"],
+  "traceback": [],
+  "files": [],
   "session_info": {
-    "container_id": "abc123def456"
+    "session_id": "abc123def456"
   }
 }
 ```
 
-### Subsequent calls — reuse the container
+### Subsequent calls — reuse the session
 
-Pass the saved `container_id`. The script is already in memory — omit `script_path` and just send the conversion call:
+Pass the saved `session_id`. The script is already in memory — omit `script_path` and just send the conversion call:
 
 ```json
 {
-  "code": "const [result, category] = convertUnits(5, 'kg', 'lbs');\nconsole.log(`Category: ${category}`);\nconsole.log(`Input:    ${fmt(5)} kg`);\nconsole.log(`Result:   ${fmt(result)} lbs`);",
-  "container_id": "abc123def456"
+  "code": "result, category = convert_units(5, 'kg', 'lbs')\nprint(f'Category: {category}')\nprint(f'Input:    {fmt(5)} kg')\nprint(f'Result:   {fmt(result)} lbs')",
+  "session_id": "abc123def456"
 }
 ```
 
@@ -98,49 +101,52 @@ Pass the saved `container_id`. The script is already in memory — omit `script_
 
 ## How `script_path` Works
 
-When `script_path` is provided, `JsCodeInterpreterTool` reads the file from the local skills directory and prepends its content to `code`, separated by a blank line:
+When `script_path` is provided, `PyCodeInterpreterTool` reads the file from the local skills directory and prepends its content to `code`, separated by a blank line:
 
 ```
-<contents of convert.ts>
+<contents of convert.py>
 
 <your conversion call code>
 ```
 
-This means the functions defined in `convert.ts` (`convertUnits`, `fmt`) are available in the same execution context as your call code — without needing to copy the entire script into the request.
+This means the functions defined in `convert.py` (`convert_units`, `fmt`) are available in the same execution context as your call code — without needing to copy the entire script into the request.
 
 ---
 
 ## Session Lifecycle
 
-1. **Creation**: First call with `container_id = ""` starts a new Docker container
-2. **Active**: The same container is reused for every subsequent call in the conversation
-3. **End of session**: The container is stopped and removed when the agent or process exits
+1. **Creation**: First call with `session_id = ""` allocates a new sandbox session on the server
+2. **Active**: The same `session_id` is reused for every subsequent call in the conversation
+3. **End of session**: The session is reclaimed when the agent disconnects or the server is stopped
 
-### Container not found
+### Session not found
 
-If a container ID is no longer valid (container was stopped externally), you will see an error in the output:
+If a session ID is no longer valid (server restarted, session GC'd), you will see an error in the output:
 
 ```json
 {
   "success": false,
   "output": [],
-  "error": "Container not found: abc123def456"
+  "traceback": ["..."],
+  "files": [],
+  "error": "Session not found: abc123def456"
 }
 ```
 
-**Solution**: Restart from Step 1 — pass `container_id = ""` to create a new sandbox and reload the script.
+**Solution**: Restart from Step 1 — pass `session_id = ""` to allocate a new sandbox and reload the script.
 
 ---
 
 ## Prerequisites
 
-The `mcp/node-code-sandbox` Docker image must be available locally:
+Start the MCP server once before running the custom agent:
 
 ```bash
-docker pull mcp/node-code-sandbox
+cd t12_skills
+docker compose up -d
 ```
 
-No `docker compose up` is required — the agent launches containers on demand.
+This launches `khshanovskyi/python-code-interpreter-mcp-server` and exposes the MCP endpoint at `http://localhost:8050/mcp`.
 
 ---
 
@@ -148,21 +154,24 @@ No `docker compose up` is required — the agent launches containers on demand.
 
 ### `execute_code` (agent-facing tool)
 
-Execute JavaScript code in a persistent Node.js sandbox container.
+Execute Python code in a persistent sandbox session.
 
 **Parameters:**
-- `code` (string): JavaScript code to execute (ESModules syntax, multi-line supported)
-- `container_id` (string, optional): Container identifier. Empty or omitted for a new sandbox; reuse the returned ID for subsequent calls
+- `code` (string): Python code to execute (multi-line supported)
+- `session_id` (string, optional): Session identifier. Empty or omitted for a new sandbox; reuse the returned ID for subsequent calls
 - `script_path` (string, optional): Skill script path relative to the skills root — prepended to `code`
 
 **Returns:**
 ```json
 {
   "success": true,
-  "output": ["...stdout/stderr..."],
+  "output": ["...stdout..."],
+  "result": "...optional final-expression value...",
   "error": "...error message if failed...",
+  "traceback": ["...optional traceback frames..."],
+  "files": [],
   "session_info": {
-    "container_id": "abc123def456"
+    "session_id": "abc123def456"
   }
 }
 ```

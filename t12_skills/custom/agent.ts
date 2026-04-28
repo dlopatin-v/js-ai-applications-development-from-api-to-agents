@@ -46,7 +46,7 @@ export class T12Agent {
   }
 
   private async _dispatchToolCalls(
-    toolCalls: OpenAI.Chat.Completions.ChatCompletionMessageToolCall[],
+    toolCalls: OpenAI.Chat.ChatCompletionMessageFunctionToolCall[],
   ): Promise<Message[]> {
     // TODO:
     // 1. Initialize `toolMessages: Message[] = []`

@@ -6,12 +6,13 @@ import OpenAI from "openai";
 import { T12Agent } from "./agent";
 import { SkillMetadata, loadSkills } from "./models";
 import { BaseTool } from "./tools/base";
-import { JsCodeInterpreterTool } from "./tools/jsInterpreter/jsCodeInterpreterTool";
+import { PyCodeInterpreterTool } from "./tools/pyInterpreter/pyCodeInterpreterTool";
 import { ReadSkillTool } from "./tools/skills/read_skill_tool";
 
 import { OPENAI_API_KEY, Message, Role } from "../../commons";
 
 const SKILLS_DIR = path.join(__dirname, "_skills");
+const MCP_URL = "http://localhost:8050/mcp";
 const MCP_TOOL_NAME = "execute_code";
 
 
@@ -40,8 +41,9 @@ function buildSystemPrompt(skills: SkillMetadata[]): string {
   //    - Explains "How to use skills" workflow:
   //      * Call `read_skill` with the skill's SKILL.md path (e.g. path="/<skill-name>/SKILL.md")
   //      * Follow the instructions in the loaded SKILL.md precisely
-  //      * If instructions reference additional files, read them using `read_skill`
-  //      * If the skill requires running a script, execute it with `${MCP_TOOL_NAME}`
+  //      * If instructions reference additional files (scripts, references, assets), read them on demand
+  //        using `read_skill` (e.g. path="/<skill-name>/scripts/convert.py")
+  //      * If the skill requires running a Python script, execute it with `${MCP_TOOL_NAME}`
   //    - Ends with "Always read the relevant SKILL.md before performing the task."
   throw new Error("Not implemented");
 }
@@ -57,7 +59,7 @@ async function main(): Promise<void> {
   // 5. Initialize `messages: Message[] = [new Message(Role.SYSTEM, systemPrompt)]`
   // 6. Build tools list:
   //       - new ReadSkillTool(SKILLS_DIR)
-  //       - await JsCodeInterpreterTool.create(SKILLS_DIR)
+  //       - await PyCodeInterpreterTool.create(MCP_URL, MCP_TOOL_NAME, SKILLS_DIR)
   // 7. Create `agent = new T12Agent(new OpenAI({ apiKey: OPENAI_API_KEY }), "gpt-5.2", tools)`
   // 8. Start a readline loop:
   //       - Read user input with prompt "➡️: "; break on "exit"

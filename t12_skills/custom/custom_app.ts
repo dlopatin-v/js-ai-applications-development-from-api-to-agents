@@ -6,13 +6,14 @@ import OpenAI from "openai";
 import { T12Agent } from "./agent";
 import { SkillMetadata, loadSkills } from "./models";
 import { BaseTool } from "./tools/base";
-import { JsCodeInterpreterTool } from "./tools/jsInterpreter/jsCodeInterpreterTool";
+import { PyCodeInterpreterTool } from "./tools/pyInterpreter/pyCodeInterpreterTool";
 import { ReadSkillTool } from "./tools/skills/read_skill_tool";
 
 import { OPENAI_API_KEY, Message, Role } from "../../commons";
 
 
 const SKILLS_DIR = path.join(__dirname, "_skills");
+const MCP_URL = "http://localhost:8050/mcp";
 const MCP_TOOL_NAME = "execute_code";
 
 
@@ -52,8 +53,8 @@ When the user's request matches a skill, activate it:
    its full instructions.
 2. Follow the instructions in the loaded SKILL.md precisely.
 3. If the instructions reference additional files (scripts, references, assets), read them on demand
-   using \`read_skill\` (e.g. path="/<skill-name>/scripts/convert.ts").
-4. If the skill requires running a script, execute it with \`${MCP_TOOL_NAME}\`.
+   using \`read_skill\` (e.g. path="/<skill-name>/scripts/convert.py").
+4. If the skill requires running a Python script, execute it with \`${MCP_TOOL_NAME}\`.
 
 Always read the relevant SKILL.md before performing the task.`;
 }
@@ -74,7 +75,7 @@ async function main(): Promise<void> {
 
   const tools: BaseTool[] = [
     new ReadSkillTool(SKILLS_DIR),
-    await JsCodeInterpreterTool.create(SKILLS_DIR),
+    await PyCodeInterpreterTool.create(MCP_URL, MCP_TOOL_NAME, SKILLS_DIR),
   ];
 
   const agent = new T12Agent(new OpenAI({ apiKey: OPENAI_API_KEY }), "gpt-4o", tools);

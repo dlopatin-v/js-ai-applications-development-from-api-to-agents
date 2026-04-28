@@ -97,39 +97,50 @@ What is 2^10 + sqrt(144)?
 ### Custom Agent Skills
 
 Instead of relying on a managed VM provided by Anthropic or OpenAI, the custom agent loads skills from the **local
-filesystem** and executes JavaScript code via an external **Node.js MCP Code Sandbox**.
+filesystem** and executes Python code via an external **Python Code Interpreter MCP Server** over Streamable HTTP.
 
 **How it works:**
 
 - `read_skill` tool: reads any skill file (SKILL.md, scripts, references) directly from disk. The agent calls it to
   load skill instructions before acting.
-- `execute_code` tool (via MCP): runs JavaScript code in a persistent Node.js sandbox container managed by the MCP server.
+- `execute_code` tool (via MCP): runs Python code in a persistent sandbox session managed by the MCP server at
+  `http://localhost:8050/mcp`.
 
-### Setup: Node.js Code Sandbox
+### Setup: Python Code Interpreter MCP Server
 
-The custom agent launches the sandbox automatically via Docker — no persistent service needs to be started.
+> **Why a Python sandbox in a JS course?** The custom skill executor is intentionally language-agnostic — the agent
+> just shells out to an MCP `execute_code` tool. A JavaScript sandbox could fit as well, but at the time of
+> writing this course no publicly available JS code-sandbox MCP server supported the **Streamable HTTP** transport
+> used here in the course. To keep parity with the Python course and
+> demonstrate the same Streamable-HTTP MCP pattern, we use `khshanovskyi/python-code-interpreter-mcp-server`. The
+> skill script (`scripts/convert.py`) is therefore Python; everything else — the agent, tools, MCP client — stays
+> TypeScript.
 
-Pull the image once before running:
+The custom agent talks to a long-lived MCP server you start with `docker compose`. From the `t12_skills/` directory:
 
 ```bash
-docker pull mcp/node-code-sandbox
+docker compose up -d
 ```
 
-The `execute_code` tool exposed to the agent has these parameters:
+This launches `khshanovskyi/python-code-interpreter-mcp-server` and exposes the MCP endpoint at
+`http://localhost:8050/mcp`.
+
+The `execute_code` tool exposed to the agent has these parameters (the schema is discovered dynamically from the MCP
+server, plus a `script_path` field injected by the JS wrapper):
 
 ```json
 {
   "name": "execute_code",
-  "description": "Execute JavaScript code in a persistent Node.js sandbox container.",
+  "description": "Execute Python code in a persistent sandbox session.",
   "parameters": {
     "properties": {
       "code": {
         "type": "string",
-        "description": "JavaScript code to execute (ESModules syntax)."
+        "description": "Python code to execute."
       },
-      "container_id": {
+      "session_id": {
         "type": "string",
-        "description": "Sandbox container ID. Empty string on first call; reuse on subsequent calls.",
+        "description": "Sandbox session ID. Empty string on first call; reuse on subsequent calls.",
         "default": ""
       },
       "script_path": {
@@ -142,19 +153,17 @@ The `execute_code` tool exposed to the agent has these parameters:
 }
 ```
 
-> Source code: https://github.com/alfonsograziano/node-code-sandbox-mcp
-
 ### Task
 
 **[Request flow](custom_request_flow.html)**
 
 1. Implement all TODO in [custom/_skills/SKILL.md](custom/_skills/unit-converter/SKILL.md)
 2. Open [custom/tools/skills/readSkillTool.ts](custom/tools/skills/read_skill_tool.ts) and implement all `TODO`
-3. Open [custom/tools/jsInterpreter/jsCodeInterpreterTool.ts](custom/tools/jsInterpreter/jsCodeInterpreterTool.ts) and implement all `TODO`
+3. Open [custom/tools/pyInterpreter/pyCodeInterpreterTool.ts](custom/tools/pyInterpreter/pyCodeInterpreterTool.ts) and implement all `TODO`
 4. Open [custom/agent.ts](custom/agent.ts) and implement all `TODO`
 5. Open [custom/customApp.ts](custom/custom_app.ts) and implement all `TODO`
-6. Make sure Docker is running, then run [custom/customApp.ts](custom/custom_app.ts) and test it using the **Convertor** sample
-   requests below.
+6. Make sure Docker is running and `docker compose up -d` has been executed in `t12_skills/`, then run
+   [custom/customApp.ts](custom/custom_app.ts) and test it using the **Convertor** sample requests below.
 
 ### Sample Requests: Convertor
 

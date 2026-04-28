@@ -14,6 +14,12 @@ export class HttpMCPClient extends MCPClient {
     // TODO: Create a StreamableHTTPClientTransport using new URL(this.serverUrl).
     //   Call await this.client.connect(transport).
     //   Log: `Connected to MCP server at ${this.serverUrl}`
+    //   After connect, log the negotiated init result so you can inspect server
+    //   capabilities. Compose it from:
+    //     - this.client.getServerVersion()       (server name/version)
+    //     - this.client.getServerCapabilities()  (tools/resources/prompts caps)
+    //     - this.client.getInstructions()        (optional usage hints)
+    //   e.g. console.log(JSON.stringify({ serverInfo, capabilities, instructions }, null, 2));
     throw new Error("Not implemented");
   }
 

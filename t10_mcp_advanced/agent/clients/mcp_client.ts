@@ -29,7 +29,11 @@ export class MCPClient {
   private async connect(): Promise<void> {
     const transport = new StreamableHTTPClientTransport(new URL(this.serverUrl));
     await this.client.connect(transport);
-    const initResult = await this.client.getServerCapabilities();
+    const initResult = {
+      serverInfo: this.client.getServerVersion() ?? null,
+      capabilities: this.client.getServerCapabilities() ?? null,
+      instructions: this.client.getInstructions() ?? null,
+    };
     console.log(JSON.stringify(initResult, null, 2));
   }
 

@@ -12,7 +12,7 @@ description: >
 ## Quick Start
 
 ```bash
-npx tsx /skills/calculator/scripts/calculate.ts "<expression>"
+node /skills/calculator/scripts/calculate.js "<expression>"
 ```
 
 ## Supported Operations
@@ -28,6 +28,6 @@ npx tsx /skills/calculator/scripts/calculate.ts "<expression>"
 ## Workflow
 
 1. Parse the expression from the user's question
-2. Run: `npx tsx /skills/calculator/scripts/calculate.ts "<expression>"`
+2. Run: `node /skills/calculator/scripts/calculate.js "<expression>"`
 3. Return the script output as-is
 4. On error (division by zero, bad syntax), explain what went wrong clearly

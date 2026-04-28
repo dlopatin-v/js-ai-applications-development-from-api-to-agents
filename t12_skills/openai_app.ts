@@ -117,7 +117,9 @@ async function main(): Promise<void> {
   const client = new OpenAI({ apiKey: OPENAI_API_KEY });
   const skillId = await getOrCreateSkill(CALCULATOR_SKILL_NAME, CALCULATOR_SKILL_DIR, client);
   chat(client, skillId);
-  await deleteSkills(client);
+  // Note: deleteSkills is called after chat() exits (on readline close)
+  // For cleanup after session, uncomment:
+  // await deleteSkills(client);
 }
 
 main();

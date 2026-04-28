@@ -111,10 +111,14 @@ filesystem** and executes Python code via an external **Python Code Interpreter 
 > **Why a Python sandbox in a JS course?** The custom skill executor is intentionally language-agnostic — the agent
 > just shells out to an MCP `execute_code` tool. A JavaScript sandbox could fit as well, but at the time of
 > writing this course no publicly available JS code-sandbox MCP server supported the **Streamable HTTP** transport
-> used here in the course. To keep parity with the Python course and
-> demonstrate the same Streamable-HTTP MCP pattern, we use `khshanovskyi/python-code-interpreter-mcp-server`. The
-> skill script (`scripts/convert.py`) is therefore Python; everything else — the agent, tools, MCP client — stays
-> TypeScript.
+> used here in the course. The closest JS equivalent — `node-code-sandbox-mcp`
+> ([Docker Hub](https://hub.docker.com/r/mcp/node-code-sandbox) ·
+> [GitHub](https://github.com/alfonsograziano/node-code-sandbox-mcp)) — ships only an STDIO transport, which doesn't
+> match the HTTP-based MCP client pattern we use throughout t9–t12. To keep parity with the Python course and
+> demonstrate the same Streamable-HTTP MCP pattern, we use
+> [`khshanovskyi/python-code-interpreter-mcp-server`](https://hub.docker.com/r/khshanovskyi/python-code-interpreter-mcp-server)
+> instead. The skill script (`scripts/convert.py`) is therefore Python; everything else — the agent, tools,
+> MCP client — stays TypeScript.
 
 The custom agent talks to a long-lived MCP server you start with `docker compose`. From the `t12_skills/` directory:
 

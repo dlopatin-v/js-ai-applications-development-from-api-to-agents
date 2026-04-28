@@ -22,7 +22,7 @@ function filesFromDir(skillDir: string): File[] {
       } else {
         const relativePath = path.relative(parentDir, fullPath);
         const buf = fs.readFileSync(fullPath);
-        const mimeType = entry.name.endsWith(".ts")
+        const mimeType = entry.name.endsWith(".ts") || entry.name.endsWith(".js")
           ? "text/plain"
           : entry.name.endsWith(".md")
             ? "text/markdown"

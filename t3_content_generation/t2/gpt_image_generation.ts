@@ -5,14 +5,14 @@ import { OpenAIClientT3 } from "../_openai_client";
 
 import { OPENAI_HOST } from "../../commons";
 
-// https://platform.openai.com/docs/guides/image-generation?image-generation-model=gpt-image-1&api=image&multi-turn=imageid
+// https://developers.openai.com/api/reference/resources/images/methods/generate
 // ---
 // Request:
 // curl -X POST "https://api.openai.com/v1/images/generations" \
 //     -H "Authorization: Bearer $OPENAI_API_KEY" \
 //     -H "Content-type: application/json" \
 //     -d '{
-//          "model": "gpt-image-1",
+//          "model": "gpt-image-2",
 //          "prompt": "smiling catdog."
 //     }'
 // Response:
@@ -47,4 +47,4 @@ function main(modelName: string, request: string, args?: GptImageParams) {
   });
 }
 
-main("gpt-image-1", "smiling catdog");
+main("gpt-image-2", "smiling catdog");

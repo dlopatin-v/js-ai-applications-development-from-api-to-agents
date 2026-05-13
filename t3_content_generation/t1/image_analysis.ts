@@ -9,7 +9,7 @@ import { OPENAI_HOST } from "../../commons";
 // https://developers.openai.com/api/docs/guides/images-vision?lang=javascript
 
 function encodeImage(imagePath: string): string {
-  // TODO:
+  //TODO:
   // Function to encode image to base64 you can find in documentation
   // https://developers.openai.com/api/docs/guides/images-vision?lang=javascript
   // 1. Read the file as a Buffer using fs.readFileSync(imagePath)
@@ -19,7 +19,7 @@ function encodeImage(imagePath: string): string {
 }
 
 async function main(modelName: string, imgUrls: string[], request: string = "What's in this image/s?") {
-  // TODO:
+  //TODO:
   // 1. Create an OpenAIClientT3 with OPENAI_HOST + "/v1/chat/completions" as the endpoint
   // 2. Prepare imgContent array:
   //    - iterate through imgUrls and map each to: { type: "image_url", image_url: { url: imgUrl } }
@@ -30,7 +30,7 @@ async function main(modelName: string, imgUrls: string[], request: string = "Wha
 }
 
 main(
-  // TODO:
+  //TODO:
   // - modelName: "gpt-4o-mini"
   // - imgUrls: [
   //     "https://a-z-animals.com/media/2019/11/Elephant-male-1024x535.jpg",

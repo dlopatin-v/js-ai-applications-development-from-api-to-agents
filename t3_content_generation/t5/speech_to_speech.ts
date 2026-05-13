@@ -10,7 +10,7 @@ class _OpenAIClient {
   private _endpoint: string;
 
   constructor() {
-    // TODO:
+    //TODO:
     // 1. Check that OPENAI_API_KEY is present; if not, throw an error
     // 2. Set this._apiKey = "Bearer " + OPENAI_API_KEY
     // 3. Set this._endpoint = OPENAI_HOST + "/v1/chat/completions"
@@ -18,7 +18,7 @@ class _OpenAIClient {
   }
 
   async call(printRequest = true, printResponse = true, kwargs: Record<string, unknown> = {}): Promise<void> {
-    // TODO:
+    //TODO:
     // 1. Set up headers: Authorization: this._apiKey, Content-Type: "application/json"
     // 2. If printRequest: console.log(JSON.stringify(kwargs, null, 2))
     // 3. Make a POST request to this._endpoint:
@@ -39,7 +39,7 @@ class _OpenAIClient {
 }
 
 function encodeAudio(audioFilePath: string): string {
-  // TODO:
+  //TODO:
   // Function to encode audio to base64 (works the same way as image encoding)
   // 1. Read the file as a Buffer using fs.readFileSync(audioFilePath)
   // 2. Convert to base64 string using buffer.toString("base64")
@@ -49,7 +49,7 @@ function encodeAudio(audioFilePath: string): string {
 
 const client = new _OpenAIClient();
 client.call(
-  // TODO:
+  //TODO:
   // - printRequest: true
   // - printResponse: true
   // - kwargs: {

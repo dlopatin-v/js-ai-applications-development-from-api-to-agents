@@ -5,15 +5,15 @@ import { OpenAIClientT3 } from "../_openai_client";
 
 import { OPENAI_HOST } from "../../commons";
 
-// https://platform.openai.com/docs/guides/image-generation?image-generation-model=gpt-image-1
+// https://developers.openai.com/api/reference/resources/images/methods/generate
 // ---
 // Request:
 // curl -X POST "https://api.openai.com/v1/images/generations" \
 //     -H "Authorization: Bearer $OPENAI_API_KEY" \
 //     -H "Content-type: application/json" \
 //     -d '{
-//         "model": "gpt-image-1",
-//         "prompt": "smiling catdog."
+//          "model": "gpt-image-2",
+//          "prompt": "smiling catdog."
 //     }'
 // Response:
 // {
@@ -26,7 +26,7 @@ import { OPENAI_HOST } from "../../commons";
 // }
 
 async function main(modelName: string, request: string) {
-  // TODO:
+  //TODO:
   // 1. Create an OpenAIClientT3 with OPENAI_HOST + "/v1/images/generations" as the endpoint
   // 2. Call client.call() with:
   //    - model: modelName
@@ -39,9 +39,8 @@ async function main(modelName: string, request: string) {
 }
 
 main(
-  // TODO:
-  // - modelName: "gpt-image-1"
+  //TODO:
   // - request: "Smiling catdog"
-  "gpt-image-1",
+  "gpt-image-2",
   ""
 );

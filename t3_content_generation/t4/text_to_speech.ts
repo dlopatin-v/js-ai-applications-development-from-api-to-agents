@@ -35,7 +35,7 @@ class _OpenAIClient {
   private _endpoint: string;
 
   constructor() {
-    // TODO:
+    //TODO:
     // 1. Check that OPENAI_API_KEY is present; if not, throw an error
     // 2. Set this._apiKey = "Bearer " + OPENAI_API_KEY
     // 3. Set this._endpoint = OPENAI_HOST + "/v1/audio/speech"
@@ -43,7 +43,7 @@ class _OpenAIClient {
   }
 
   async call(printRequest = true, kwargs: Record<string, unknown> = {}): Promise<void> {
-    // TODO:
+    //TODO:
     // 1. Set up headers: Authorization: this._apiKey, Content-Type: "application/json"
     // 2. Create outputFile name as `${new Date().toISOString()}.mp3`
     // 3. If printRequest: console.log(JSON.stringify(kwargs, null, 2))
@@ -62,7 +62,7 @@ class _OpenAIClient {
 
 const client = new _OpenAIClient();
 client.call(
-  // TODO:
+  //TODO:
   // - printRequest: true
   // - kwargs: {
   //     model: "gpt-4o-mini-tts",

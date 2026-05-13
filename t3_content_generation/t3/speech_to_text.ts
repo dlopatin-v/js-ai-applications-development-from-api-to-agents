@@ -10,7 +10,7 @@ class _OpenAIClient {
   private _endpoint: string;
 
   constructor() {
-    // TODO:
+    //TODO:
     // 1. Check that OPENAI_API_KEY is present; if not, throw an error
     // 2. Set this._apiKey = "Bearer " + OPENAI_API_KEY
     // 3. Set this._endpoint = OPENAI_HOST + "/v1/audio/transcriptions"
@@ -18,7 +18,7 @@ class _OpenAIClient {
   }
 
   async call(audioFilePath: string, printResponse = true, kwargs: Record<string, string> = {}): Promise<void> {
-    // TODO:
+    //TODO:
     // 1. Build a FormData object:
     //    - append "file" with fs.createReadStream(audioFilePath) and the filename
     //    - append each key/value pair from kwargs (e.g. model, language)
@@ -36,7 +36,7 @@ class _OpenAIClient {
 
 const client = new _OpenAIClient();
 client.call(
-  // TODO:
+  //TODO:
   // - audioFilePath: path.join(__dirname, "audio_sample.mp3")
   // - kwargs: { model: "whisper-1" }  or  { model: "gpt-4o-transcribe" }
   // - Optional: try audio in different languages

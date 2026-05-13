@@ -8,7 +8,7 @@ import { OPENAI_HOST } from "../../commons";
 // https://platform.openai.com/docs/guides/vision?format=url
 // https://platform.openai.com/docs/guides/vision?format=base64-encoded
 
-// @TODO:
+//TODO:
 // You need to analyse these 2 images:
 //   - https://a-z-animals.com/media/2019/11/Elephant-male-1024x535.jpg
 //   - in this folder we have 'logo.png', load it as encoded data (see documentation)

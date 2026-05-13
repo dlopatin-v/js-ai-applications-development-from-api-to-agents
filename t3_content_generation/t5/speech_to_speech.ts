@@ -5,7 +5,7 @@ import { OPENAI_API_KEY, OPENAI_HOST } from "../../commons";
 
 // https://developers.openai.com/api/docs/guides/audio#add-audio-to-your-existing-application
 
-// @TODO:
+//TODO:
 // You need to generate an answer in audio format based on an audio message:
 //   - Create a client that extracts audio from the response (instead of text content)
 //   - Call API

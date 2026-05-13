@@ -12,7 +12,7 @@ import { OPENAI_HOST } from "../../commons";
 //     -H "Authorization: Bearer $OPENAI_API_KEY" \
 //     -H "Content-type: application/json" \
 //     -d '{
-//          "model": "gpt-image-1",
+//          "model": "gpt-image-2",
 //          "prompt": "smiling catdog."
 //     }'
 // Response:
@@ -25,8 +25,8 @@ import { OPENAI_HOST } from "../../commons";
 // ]
 // }
 
-// @TODO:
-// You need to create some images with `gpt-image-1` model:
+//TODO:
+// You need to create some images with `gpt-image-2` model:
 //   - Generate an image with 'Smiling catdog'
 //   - Decode and save it locally
 // ---

@@ -8,8 +8,8 @@ and audio. The goal is to understand how to work with vision models, image gener
 | Task | Command |
 |---|---|
 | Image Analysis | `npm run t3:image-analysis` |
-| DALL-E 3 Image Generation | `npm run t3:dalle` |
 | GPT Image 1 Generation | `npm run t3:gpt-image` |
+| GPT Image 1 Edit | `npm run t3:gpt-image-edit` |
 | Speech to Text | `npm run t3:speech-to-text` |
 | Text to Speech | `npm run t3:text-to-speech` |
 | Speech to Speech | `npm run t3:speech-to-speech` |
@@ -30,16 +30,20 @@ Open [t1/image_analysis.ts](t1/image_analysis.ts) and implement the TODO:
 - Pass both images in a single message and ask the model to generate a poem based on them
 
 ### 2. Image Generation
-#### DALL-E 3
-Open [t2/dalle_image_generation.ts](t2/dalle_image_generation.ts) and implement the TODO:
-- Generate an image of `"Smiling catdog"` using `dall-e-3` via `/v1/images/generations`
-- Play with parameters: `size` (square / portrait / landscape), `style` (vivid / natural), `quality` (standard / hd)
-- The response contains a URL to the generated image
-
 #### GPT Image 1
 Open [t2/gpt_image_generation.ts](t2/gpt_image_generation.ts) and implement the TODO:
-- Generate an image of `"Smiling catdog"` using `gpt-image-1` via `/v1/images/generations`
+- Generate an image of `"Smiling catdog"` using `gpt-image-2` via `/v1/images/generations`
 - Decode the base64 response and save the image locally
+
+#### GPT Image 1 Edit
+Open [t2/gpt_image_edit.ts](t2/gpt_image_edit.ts) and implement the TODO:
+- Edit the local image `logo.png` using `gpt-image-2` via `/v1/images/edits`
+- Send the request as `multipart/form-data` (NOT JSON):
+  - `model` — the image model name
+  - `image` — the source PNG file
+  - `prompt` — describe the edit (e.g. *"Add magical sparkles and a glowing aura around the logo"*)
+- Decode the base64 (`b64_json`) response and save the edited image locally
+- See the [API reference](https://developers.openai.com/api/reference/resources/images/methods/edit)
 
 ### 3. Speech to Text
 Open [t3/speech_to_text.ts](t3/speech_to_text.ts) and implement the TODO:

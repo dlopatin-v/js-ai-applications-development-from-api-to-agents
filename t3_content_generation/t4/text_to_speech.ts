@@ -30,7 +30,7 @@ enum Voice {
 // Response:
 //   bytes with audio
 
-// @TODO:
+//TODO:
 // You need to convert text to speech:
 //   - Create a client that will go to OpenAI speech API
 //   - Call API

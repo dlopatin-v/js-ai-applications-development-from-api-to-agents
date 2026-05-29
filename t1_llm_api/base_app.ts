@@ -20,13 +20,41 @@ import AIClient from "./base_client";
  * @param client The AI client instance to use for generating responses.
  */
 export async function start(stream: boolean, client: AIClient) {
-  //TODO:
-  // - Create a Conversation instance
-  // - Set up a readline interface for user input
-  // - Loop until user types 'exit':
-  //     - Prompt the user for input
-  //     - Add a USER Message to the conversation
-  //     - Call client.streamResponse or client.response based on `stream`
-  //     - Add the AI response Message to the conversation
-  throw new Error("Not implemented.");
+  // TODO ✓ Create a Conversation instance — хранилище истории диалога.
+  // Дженерик <unknown>, потому что в t1 ещё нет tool_calls.
+  const conversation = new Conversation<unknown>();
+
+  // TODO ✓ Set up a readline interface for user input — асинхронный stdin/stdout.
+  const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+
+  console.log("Chat started. Type 'exit' to quit.\n");
+
+  try {
+    // TODO ✓ Loop until user types 'exit'
+    while (true) {
+      // Запрашиваем ввод пользователя (await — потому что используем readline/promises).
+      const userInput = (await rl.question("You: ")).trim();
+      if (userInput.toLowerCase() === "exit") break;
+      if (!userInput) continue; // пустой ввод просто пропускаем
+
+      // TODO ✓ Add a USER Message to the conversation
+      conversation.addMessage(new Message(Role.USER, userInput));
+
+      // TODO ✓ Call client.streamResponse or client.response based on `stream`
+      // В streaming-режиме клиент сам печатает токены в stdout по мере прихода,
+      // поэтому достаточно вывести префикс "AI: " заранее.
+      process.stdout.write("AI: ");
+      const aiMessage = stream
+        ? await client.streamResponse(conversation.messages)
+        : await client.response(conversation.messages);
+      process.stdout.write("\n\n");
+
+      // TODO ✓ Add the AI response Message to the conversation
+      // На следующей итерации этот ответ уйдёт обратно в LLM как часть контекста.
+      conversation.addMessage(aiMessage);
+    }
+  } finally {
+    // Закрываем readline, иначе процесс не завершится — stdin останется открытым.
+    rl.close();
+  }
 }

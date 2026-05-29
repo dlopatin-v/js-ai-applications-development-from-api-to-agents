@@ -1,21 +1,25 @@
-import { OpenAIResponsesClient } from "./client";
-import { CustomOpenAIResponsesClient } from "./custom_client";
+import { OpenAIResponsesClient } from './client'
+import { CustomOpenAIResponsesClient } from './custom_client'
 
-import { DEFAULT_SYSTEM_PROMPT, OPENAI_API_KEY, OPENAI_RESPONSES_ENDPOINT } from "../../../commons";
-import { start } from "../../base_app";
+import {
+  DEFAULT_SYSTEM_PROMPT,
+  OPENAI_API_KEY,
+  OPENAI_RESPONSES_ENDPOINT
+} from '../../../commons'
+import { start } from '../../base_app'
 
 const openAIClient = new OpenAIResponsesClient(
   OPENAI_RESPONSES_ENDPOINT,
   'gpt-5.2',
   OPENAI_API_KEY,
-  DEFAULT_SYSTEM_PROMPT,
-);
+  DEFAULT_SYSTEM_PROMPT
+)
 
 const openAICustomClient = new CustomOpenAIResponsesClient(
   OPENAI_RESPONSES_ENDPOINT,
   'gpt-5.2',
   OPENAI_API_KEY,
-  DEFAULT_SYSTEM_PROMPT,
-);
+  DEFAULT_SYSTEM_PROMPT
+)
 
-start(true, openAIClient);
+start(true, openAICustomClient)

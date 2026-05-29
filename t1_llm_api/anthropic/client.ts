@@ -1,8 +1,8 @@
-import Anthropic from "@anthropic-ai/sdk";
+import Anthropic from '@anthropic-ai/sdk'
 
-import AIClient from "../base_client";
+import AIClient from '../base_client'
 
-import { Message, Role } from "../../commons";
+import { Message, Role } from '../../commons'
 
 /**
  * Client for Anthropic's Claude API using the official SDK.
@@ -13,7 +13,7 @@ import { Message, Role } from "../../commons";
  * Inherits all attributes from AIClient.
  */
 export class AnthropicAIClient extends AIClient {
-  client!: Anthropic;
+  client!: Anthropic
 
   /**
    * Initialize the Anthropic client with the official SDK.
@@ -21,13 +21,19 @@ export class AnthropicAIClient extends AIClient {
    * @param args Constructor parameters inherited from AIClient (endpoint, modelName, apiKey, systemPrompt).
    */
   constructor(...args: ConstructorParameters<typeof AIClient>) {
-    super(...args);
+    super(...args)
     //TODO:
     // - Initialize the Anthropic SDK client https://github.com/anthropics/anthropic-sdk-typescript?tab=readme-ov-file#getting-started
     // Useful links with request/response samples:
     //   - https://docs.anthropic.com/en/api/overview
     //   - https://docs.anthropic.com/en/api/messages
-    throw new Error("Not implemented.");
+
+    // Создаём экземпляр Anthropic SDK клиента.
+    // apiKey — ключ авторизации, baseURL — endpoint (по умолчанию https://api.anthropic.com)
+    this.client = new Anthropic({
+      apiKey: this.apiKey,
+      baseURL: new URL(this.endpoint).origin
+    })
   }
 
   /**
@@ -45,8 +51,32 @@ export class AnthropicAIClient extends AIClient {
     // - Call the SDK client (use system parameter for system prompt)
     // - Print the response to console
     // - Return an ASSISTANT Message
-    throw new Error("Not implemented.");
-  };
+
+    // Отправляем запрос к Claude API.
+    // Важно: system prompt передаётся отдельным параметром "system",
+    // а НЕ как сообщение с ролью "system" в массиве messages (отличие от OpenAI).
+    const result = await this.client.messages.create({
+      model: this.modelName,
+      max_tokens: 1024,
+      system: this.systemPrompt,
+      // Маппим наши Message объекты в формат Anthropic API (role + content)
+      messages: messages.map(m => ({
+        role: m.role as 'user' | 'assistant',
+        content: m.content
+      }))
+    })
+
+    // В синхронном ответе всегда один текстовый блок — берём его напрямую
+    const textBlock = result.content.find(block => block.type === 'text') as
+      | Anthropic.TextBlock
+      | undefined
+    const text = textBlock?.text ?? ''
+    // Печатаем ответ в консоль
+    console.log(text)
+
+    // Возвращаем сообщение с ролью ASSISTANT
+    return new Message(Role.ASSISTANT, text)
+  }
 
   /**
    * Get a streaming response from Anthropic's Claude API.
@@ -65,6 +95,36 @@ export class AnthropicAIClient extends AIClient {
     // - Call the SDK client with streaming (use system parameter for system prompt)
     // - Listen for text events and write to stdout
     // - Return the assembled ASSISTANT Message
-    throw new Error("Not implemented.");
-  };
+
+    // Создаём стрим — используем .stream() вместо .create().
+    // Параметры аналогичны обычному запросу, но ответ приходит частями (дельтами).
+    const stream = this.client.messages.stream({
+      model: this.modelName,
+      max_tokens: 1024,
+      system: this.systemPrompt,
+      messages: messages.map(m => ({
+        role: m.role as 'user' | 'assistant',
+        content: m.content
+      }))
+    })
+
+    // Переменная для сборки полного текста из дельт
+    let fullText = ''
+
+    // Подписываемся на событие "text" — каждый раз приходит кусочек текста (delta).
+    // Сразу пишем его в stdout для real-time отображения (без перевода строки).
+    stream.on('text', text => {
+      process.stdout.write(text)
+      fullText += text
+    })
+
+    // Ждём завершения стрима — finalMessage() резолвится когда все дельты получены
+    await stream.finalMessage()
+
+    // Перевод строки после завершения стрима
+    console.log()
+
+    // Возвращаем собранное сообщение целиком
+    return new Message(Role.ASSISTANT, fullText)
+  }
 }

@@ -17,8 +17,11 @@ export class BaseOpenAiClient extends AIClient {
    */
   constructor(...args: ConstructorParameters<typeof AIClient>) {
     super(...args);
-    //TODO:
-    // - Format the apiKey as a Bearer token (OpenAI uses "Authorization: Bearer <key>")
-    throw new Error("Not implemented.");
+    // TODO ✓ Format the apiKey as a Bearer token
+    // OpenAI ждёт заголовок Authorization вида "Bearer <key>".
+    // Храним ключ уже с префиксом — кастомному (fetch) клиенту так удобнее:
+    // он сможет подставить this.apiKey в headers.Authorization без изменений.
+    // SDK-клиент (см. completions/client.ts) при инициализации этот префикс срезает.
+    this.apiKey = `Bearer ${this.apiKey}`;
   }
 }
